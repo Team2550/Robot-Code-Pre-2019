@@ -1,6 +1,6 @@
 #include "Robot.h"
 
-Robot::Robot() : drive(), chooser()
+Robot::Robot() : driver(0), drive(1, 3, 2, 0), chooser()
 {
 
 }
@@ -28,7 +28,8 @@ void Robot::RobotInit()
  */
 void Robot::AutonomousInit()
 {
-	autoSelected = *((std::string*)chooser->GetSelected());
+	/*autoSelected endif
+= *((std::string*)chooser->GetSelected());
 	//std::string autoSelected = SmartDashboard::GetString("Auto Selector", autoNameDefault);
 	std::cout << "Auto selected: " << autoSelected << std::endl;
 
@@ -36,7 +37,7 @@ void Robot::AutonomousInit()
 		//Custom Auto goes here
 	} else {
 		//Default Auto goes here
-	}
+	}*/
 
 	drive.autoInit();
 }
@@ -59,7 +60,8 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	drive.teleopPeriodic();
+	drive.teleopPeriodic(driver.GetRawAxis(xbox::axis::leftY),
+			             driver.GetRawAxis(xbox::axis::leftX));
 }
 
 void Robot::TestPeriodic()

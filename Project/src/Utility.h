@@ -1,4 +1,4 @@
-#include "Utility.h"
+#include <math.h>
 
 /*================================================
 Name: deadzone
@@ -9,8 +9,4 @@ Arguments:
 Return:
 	none
 ================================================*/
-void deadzone(float& value, float tolerance)
-{
-	if (fabs(value) <= tolerance)
-		value = 0;
-}
+void deadzone(float& value, float tolerance = 0.2);

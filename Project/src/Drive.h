@@ -1,6 +1,8 @@
 #ifndef DRIVE_H
 #define DRIVE_H
+
 #include "WPILib.h"
+#include "Utility.h"
 
 class Drive {
 private:
@@ -15,3 +17,5 @@ public:
 	void teleopInit();
 	void teleopPeriodic(float speed, float rotation);
 };
+
+#endif

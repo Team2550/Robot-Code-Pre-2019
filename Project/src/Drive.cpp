@@ -1,9 +1,8 @@
 #include "Drive.h"
-#include "Utility.cpp"
 
 Drive::Drive(int frontLeftPort, int frontRightPort, int backLeftPort, int backRightPort) :
 				frontLeftMotor(frontLeftPort), frontRightMotor(frontRightPort),
-				backLeftMotor(backLeftPort), backRightMotor(backLeftPort)
+				backLeftMotor(backLeftPort), backRightMotor(backRightPort)
 {
 
 }
@@ -20,7 +19,10 @@ void Drive::autoPeriodic()
 
 void Drive::teleopInit()
 {
-
+	frontLeftMotor.Set(0);
+	frontRightMotor.Set(0);
+	backLeftMotor.Set(0);
+	backRightMotor.Set(0);
 }
 
 void Drive::teleopPeriodic(float speed, float rotation)
