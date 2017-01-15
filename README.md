@@ -11,5 +11,6 @@ into the current directory; if you've done it right, you should see
 * README\.md
 * workspace\.tar\.gz
 * workspace\.zip
+
 Once that's done, you're ready to checkout one of the branches with code \(for
 example, Testbed\-Master\)\.
