@@ -4,11 +4,14 @@
 
 class Drive {
 private:
-
+	Victor frontLeftMotor;
+	Victor frontRightMotor;
+	Victor backLeftMotor;
+	Victor backRightMotor;
 public:
-	Drive();
+	Drive(int frontLeftPort, int frontRightPort, int backLeftPort, int backRightPort);
 	void autoInit();
 	void autoPeriodic();
 	void teleopInit();
-	void teleopPeriodic();
+	void teleopPeriodic(float speed, float rotation);
 };
