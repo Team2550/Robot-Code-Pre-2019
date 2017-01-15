@@ -1,5 +1,6 @@
 #ifndef DRIVE_H
 #define DRIVE_H
+
 #include "WPILib.h"
 
 class Drive {
@@ -12,3 +13,5 @@ public:
 	void teleopInit();
 	void teleopPeriodic();
 };
+
+#endif

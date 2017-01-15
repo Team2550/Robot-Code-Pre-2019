@@ -1,5 +1,6 @@
 #ifndef ROBOT_H
 #define ROBOT_H
+
 #include "WPILib.h"
 
 class Robot: public IterativeRobot
@@ -23,3 +24,5 @@ public:
 	void TeleopPeriodic();
 	void TestPeriodic();
 };
+
+#endif
