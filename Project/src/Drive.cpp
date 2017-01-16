@@ -1,7 +1,8 @@
 #include "Drive.h"
 
-Drive::Drive(float _maxSpeed, int leftPort, int rightPort) :
-            maxSpeed(_maxSpeed), leftMotor(leftPort), rightMotor(rightPort)
+Drive::Drive(float _maxSpeed, float _maxBoostSpeed, int leftPort, int rightPort) :
+            maxSpeed(_maxSpeed), maxBoostSpeed(_maxBoostSpeed),
+			leftMotor(leftPort), rightMotor(rightPort)
 {
 	rightMotor.SetInverted(true);
 }
@@ -22,13 +23,13 @@ void Drive::teleopInit()
 	rightMotor.Set(0);
 }
 
-void Drive::teleopPeriodic(float leftSpeed, float rightSpeed)
+void Drive::teleopPeriodic(float leftSpeed, float rightSpeed, bool boost)
 {
 	deadzone(leftSpeed);
 	deadzone(rightSpeed);
 
-	leftSpeed = leftSpeed * fabs(leftSpeed) * maxSpeed;
-	rightSpeed = rightSpeed * fabs(rightSpeed) * maxSpeed;
+	leftSpeed = leftSpeed * fabs(leftSpeed) * (boost ? maxBoostSpeed : maxSpeed);
+	rightSpeed = rightSpeed * fabs(rightSpeed) * (boost ? maxBoostSpeed : maxSpeed);
 
 	leftMotor.Set(leftSpeed);
 	rightMotor.Set(rightSpeed);
