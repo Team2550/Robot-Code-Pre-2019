@@ -27,6 +27,9 @@ void Drive::teleopPeriodic(float leftSpeed, float rightSpeed)
 	deadzone(leftSpeed);
 	deadzone(rightSpeed);
 
-	leftMotor.Set(leftSpeed * maxSpeed);
-	rightMotor.Set(rightSpeed * maxSpeed);
+	leftSpeed = leftSpeed * fabs(leftSpeed) * maxSpeed;
+	rightSpeed = rightSpeed * fabs(rightSpeed) * maxSpeed;
+
+	leftMotor.Set(leftSpeed);
+	rightMotor.Set(rightSpeed);
 }
