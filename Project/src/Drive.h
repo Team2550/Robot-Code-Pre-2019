@@ -6,12 +6,10 @@
 
 class Drive {
 private:
-	Victor frontLeftMotor;
-	Victor frontRightMotor;
-	Victor backLeftMotor;
-	Victor backRightMotor;
+	VictorSP leftMotor;
+	VictorSP rightMotor;
 public:
-	Drive(int frontLeftPort, int frontRightPort, int backLeftPort, int backRightPort);
+	Drive(int rightPort, int leftPort);
 	void autoInit();
 	void autoPeriodic();
 	void teleopInit();
