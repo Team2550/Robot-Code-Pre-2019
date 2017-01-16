@@ -1,18 +1,15 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "WPILib.h"
+#include <WPILib.h>
+#include "Drive.h"
+#include "xBox.h"
 
 class Robot: public IterativeRobot
 {
 private:
+	Joystick driver;
 	Drive drive;
-
-	LiveWindow *lw = LiveWindow::GetInstance();
-	SendableChooser *chooser;
-	const std::string autoNameDefault = "Default";
-	const std::string autoNameCustom = "My Auto";
-	std::string autoSelected;
 
 public:
 	Robot();
