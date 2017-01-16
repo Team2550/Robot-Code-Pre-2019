@@ -1,8 +1,8 @@
 #include "Drive.h"
 
 Drive::Drive(int frontLeftPort, int frontRightPort, int backLeftPort, int backRightPort) :
-				frontLeftMotor(frontLeftPort), frontRightMotor(frontRightPort),
-				backLeftMotor(backLeftPort), backRightMotor(backRightPort)
+            frontLeftMotor(frontLeftPort), frontRightMotor(frontRightPort),
+            backLeftMotor(backLeftPort), backRightMotor(backRightPort)
 {
 
 }
