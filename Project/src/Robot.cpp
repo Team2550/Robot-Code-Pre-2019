@@ -1,6 +1,6 @@
 #include "Robot.h"
 
-Robot::Robot() : driver(0), drive(1, 0)
+Robot::Robot() : driver(0), drive(0.4, 1, 0)
 {
 
 }
@@ -33,8 +33,8 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	drive.teleopPeriodic(driver.GetRawAxis(xbox::axis::leftY),
-			             driver.GetRawAxis(xbox::axis::leftX));
+	drive.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
+			             -driver.GetRawAxis(xbox::axis::rightY));
 }
 
 void Robot::TestPeriodic()

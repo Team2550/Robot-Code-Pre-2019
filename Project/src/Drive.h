@@ -6,14 +6,15 @@
 
 class Drive {
 private:
+	float maxSpeed;
 	VictorSP leftMotor;
 	VictorSP rightMotor;
 public:
-	Drive(int rightPort, int leftPort);
+	Drive(float _maxSpeed, int rightPort, int leftPort);
 	void autoInit();
 	void autoPeriodic();
 	void teleopInit();
-	void teleopPeriodic(float speed, float rotation);
+	void teleopPeriodic(float leftSpeed, float rightSpeed);
 };
 
 #endif
