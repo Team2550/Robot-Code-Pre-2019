@@ -2,6 +2,7 @@
 #define DRIVE_H
 
 #include <WPILib.h>
+#include <math.h>
 #include "Utility.h"
 
 class Drive {
