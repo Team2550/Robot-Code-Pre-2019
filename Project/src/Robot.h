@@ -2,16 +2,17 @@
 #define ROBOT_H
 
 #include <WPILib.h>
-#include "Drive.h"
 #include "Shooter.h"
+#include "DriveBase.h"
 #include "xBox.h"
 
 class Robot: public IterativeRobot
 {
 private:
 	Joystick driver;
-	Drive drive;
 	Shooter shooter;
+	DriveBase driveBase;
+
 public:
 	Robot();
 	~Robot();
