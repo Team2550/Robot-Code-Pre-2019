@@ -29,12 +29,17 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit()
 {
 	drive.teleopInit();
+
+	udpReceive();
 }
 
 void Robot::TeleopPeriodic()
 {
 	drive.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
-			             -driver.GetRawAxis(xbox::axis::rightY));
+			             -driver.GetRawAxis(xbox::axis::rightY),
+						 dataFromPi[0]);
+
+	printf(std::to_string(dataFromPi[0]).c_str());
 }
 
 void Robot::TestPeriodic()

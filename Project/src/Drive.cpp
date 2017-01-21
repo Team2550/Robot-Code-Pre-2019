@@ -22,7 +22,7 @@ void Drive::teleopInit()
 	rightMotor.Set(0);
 }
 
-void Drive::teleopPeriodic(float leftSpeed, float rightSpeed)
+void Drive::teleopPeriodic(float leftSpeed, float rightSpeed, int distanceFromTarget)
 {
 	deadzone(leftSpeed);
 	deadzone(rightSpeed);

@@ -14,7 +14,7 @@ public:
 	void autoInit();
 	void autoPeriodic();
 	void teleopInit();
-	void teleopPeriodic(float leftSpeed, float rightSpeed);
+	void teleopPeriodic(float leftSpeed, float rightSpeed, int distanceFromTarget);
 };
 
 #endif
