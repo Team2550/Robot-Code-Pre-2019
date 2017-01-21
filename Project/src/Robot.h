@@ -3,6 +3,7 @@
 
 #include <WPILib.h>
 #include "Drive.h"
+#include "Shooter.h"
 #include "xBox.h"
 
 class Robot: public IterativeRobot
@@ -10,7 +11,7 @@ class Robot: public IterativeRobot
 private:
 	Joystick driver;
 	Drive drive;
-
+	Shooter shooter;
 public:
 	Robot();
 	~Robot();

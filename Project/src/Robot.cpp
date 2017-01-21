@@ -1,6 +1,6 @@
 #include "Robot.h"
 
-Robot::Robot() : driver(0), drive(0.4, 1, 0)
+Robot::Robot() : driver(0), drive(0.4, 1, 0), shooter(2)
 {
 
 }
