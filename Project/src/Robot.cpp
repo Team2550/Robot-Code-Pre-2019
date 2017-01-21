@@ -42,17 +42,20 @@ void Robot::TeleopPeriodic()
 			                 -driver.GetRawAxis(xbox::axis::rightY),
 					    	 driver.GetRawButton(xbox::btn::rb));
 
-	SmartDashboard::GetNumber("shooterSpeed", shooterSpeed);
 	if(driver.GetRawButton(xbox::btn::x) && !xIsPressed)
 	{
 		shooterSpeed -= 0.01;
 		xIsPressed = true;
 	}
+	else if(!driver.GetRawButton(xbox::btn::x))
+		xIsPressed = false;
 	if(driver.GetRawButton(xbox::btn::y) && !yIsPressed)
 	{
 		shooterSpeed += 0.01;
 		yIsPressed = true;
 	}
+	else if(!driver.GetRawButton(xbox::btn::y))
+			yIsPressed = false;
 	SmartDashboard::PutNumber("shooterSpeed", shooterSpeed);
 
 	if(driver.GetRawButton(xbox::btn::b))
