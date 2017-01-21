@@ -1,18 +1,18 @@
-#ifndef DRIVE_H
-#define DRIVE_H
+#ifndef DRIVEBASE_H
+#define DRIVEBASE_H
 
 #include <WPILib.h>
 #include <math.h>
 #include "Utility.h"
 
-class Drive {
+class DriveBase {
 private:
 	float maxSpeed;
 	float maxBoostSpeed;
 	VictorSP leftMotor;
 	VictorSP rightMotor;
 public:
-	Drive(float _maxSpeed, float _maxBoostSpeed, int rightPort, int leftPort);
+	DriveBase(float _maxSpeed, float _maxBoostSpeed, int rightPort, int leftPort);
 	void autoInit();
 	void autoPeriodic();
 	void teleopInit();

@@ -1,9 +1,9 @@
 #include "Robot.h"
 
 // driver: (int) xBox controller number
-// drive:  (float) max power, (float) max boost power, (int) left motor port,
-//         (int) right motor port
-Robot::Robot() : driver(0), drive(0.4, 0.8, 1, 0)
+// driveBase:  (float) max power, (float) max boost power, (int) left motor port,
+//             (int) right motor port
+Robot::Robot() : driver(0), driveBase(0.4, 0.8, 1, 0)
 {
 
 }
@@ -21,24 +21,24 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
-	drive.autoInit();
+	driveBase.autoInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
-	drive.autoPeriodic();
+	driveBase.autoPeriodic();
 }
 
 void Robot::TeleopInit()
 {
-	drive.teleopInit();
+	driveBase.teleopInit();
 }
 
 void Robot::TeleopPeriodic()
 {
-	drive.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
-			             -driver.GetRawAxis(xbox::axis::rightY),
-						 driver.GetRawButton(xbox::btn::rb));
+	driveBase.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
+			                 -driver.GetRawAxis(xbox::axis::rightY),
+					    	 driver.GetRawButton(xbox::btn::rb));
 }
 
 void Robot::TestPeriodic()
