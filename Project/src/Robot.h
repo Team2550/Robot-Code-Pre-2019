@@ -10,8 +10,8 @@ class Robot: public IterativeRobot
 {
 private:
 	Joystick driver;
-	Shooter shooter;
 	DriveBase driveBase;
+	Shooter shooter;
 
 public:
 	Robot();
