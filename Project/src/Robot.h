@@ -2,7 +2,7 @@
 #define ROBOT_H
 
 #include <WPILib.h>
-#include "Drive.h"
+#include "DriveBase.h"
 #include "UDP-Receive.c"
 #include "xBox.h"
 
@@ -10,7 +10,7 @@ class Robot: public IterativeRobot
 {
 private:
 	Joystick driver;
-	Drive drive;
+	DriveBase driveBase;
 
 public:
 	Robot();

@@ -1,6 +1,9 @@
 #include "Robot.h"
 
-Robot::Robot() : driver(0), drive(0.4, 1, 0)
+// driver: (int) xBox controller number
+// driveBase:  (float) max power, (float) max boost power, (int) left motor port,
+//             (int) right motor port
+Robot::Robot() : driver(0), driveBase(0.4, 0.8, 1, 0)
 {
 
 }
@@ -18,26 +21,26 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
-	drive.autoInit();
+	driveBase.autoInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
-	drive.autoPeriodic();
+	driveBase.autoPeriodic();
 }
 
 void Robot::TeleopInit()
 {
-	drive.teleopInit();
+	driveBase.teleopInit();
 
 	udpReceive();
 }
 
 void Robot::TeleopPeriodic()
 {
-	drive.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
+	driveBase.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
 			             -driver.GetRawAxis(xbox::axis::rightY),
-						 dataFromPi[0]);
+				    	 driver.GetRawButton(xbox::btn::rb));
 
 	printf(std::to_string(dataFromPi[0]).c_str());
 }
