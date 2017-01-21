@@ -1,6 +1,6 @@
 #include "Lift.h"
 
-Lift::Lift()
+Lift::Lift(int liftPort) : liftMotor(liftPort)
 {
 
 }
@@ -20,7 +20,7 @@ void Lift::teleopInit()
 
 }
 
-void Lift::teleopPeriodic()
+void Lift::teleopPeriodic(bool doLift)
 {
-
+	liftMotor.Set(doLift ? 1.0 : 0.0);
 }

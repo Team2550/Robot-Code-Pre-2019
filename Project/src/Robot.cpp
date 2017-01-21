@@ -3,7 +3,7 @@
 // driver: (int) xBox controller number
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
-Robot::Robot() : driver(0), driveBase(0.4, 0.8, 1, 0), lift()
+Robot::Robot() : driver(0), driveBase(0.4, 0.8, 1, 0), lift(2)
 {
 
 }
@@ -42,7 +42,7 @@ void Robot::TeleopPeriodic()
 	driveBase.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
 			                 -driver.GetRawAxis(xbox::axis::rightY),
 					    	 driver.GetRawButton(xbox::btn::rb));
-	lift.teleopPeriodic();
+	lift.teleopPeriodic(driver.GetRawButton(xbox::btn::b));
 }
 
 void Robot::TestPeriodic()

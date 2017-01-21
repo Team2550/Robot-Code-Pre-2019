@@ -7,13 +7,13 @@
 
 class Lift {
 private:
-
+	Spark liftMotor;
 public:
-	Lift();
+	Lift(int liftPort);
 	void autoInit();
 	void autoPeriodic();
 	void teleopInit();
-	void teleopPeriodic();
+	void teleopPeriodic(bool doLift);
 };
 
 #endif
