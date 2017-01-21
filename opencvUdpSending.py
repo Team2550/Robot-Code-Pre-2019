@@ -22,7 +22,7 @@ from array import*
 
 ###################################################################################################
 
-UDP_IP = "10.25.50.43"    #declares udp ip and port
+UDP_IP = "10.25.50.55"    #declares udp ip and port
 UDP_PORT = 8890
 
 def main():

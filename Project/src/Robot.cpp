@@ -42,7 +42,12 @@ void Robot::TeleopPeriodic()
 			             -driver.GetRawAxis(xbox::axis::rightY),
 				    	 driver.GetRawButton(xbox::btn::rb));
 
-	printf(std::to_string(dataFromPi[0]).c_str());
+	printf("As numbers:");
+
+	for (int i = 0; i < 4; i++)
+		printf(std::to_string(dataFromPi[i]).c_str());
+
+	printf("\n");
 }
 
 void Robot::TestPeriodic()
