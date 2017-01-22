@@ -21,33 +21,28 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
+	udpReceiver.autoInit();
 	driveBase.autoInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
+	udpReceiver.autoPeriodic();
 	driveBase.autoPeriodic();
 }
 
 void Robot::TeleopInit()
 {
+	udpReceiver.teleopInit();
 	driveBase.teleopInit();
-
-	udpReceive();
 }
 
 void Robot::TeleopPeriodic()
 {
+	udpReceiver.teleopPeriodic();
 	driveBase.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
 			             -driver.GetRawAxis(xbox::axis::rightY),
 				    	 driver.GetRawButton(xbox::btn::rb));
-
-	printf("As numbers:");
-
-	for (int i = 0; i < 4; i++)
-		printf(std::to_string(dataFromPi[i]).c_str());
-
-	printf("\n");
 }
 
 void Robot::TestPeriodic()
