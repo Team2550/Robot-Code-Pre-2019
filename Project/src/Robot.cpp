@@ -15,35 +15,30 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-
+	driveBase.RobotInit();
 }
 
 
 void Robot::AutonomousInit()
 {
-	driveBase.autoInit();
+	driveBase.AutoInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
-	driveBase.autoPeriodic();
+	driveBase.AutoPeriodic();
 }
 
 void Robot::TeleopInit()
 {
-	driveBase.teleopInit();
+	driveBase.TeleopInit();
 }
 
 void Robot::TeleopPeriodic()
 {
-	driveBase.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
+	driveBase.TeleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
 			                 -driver.GetRawAxis(xbox::axis::rightY),
 					    	 driver.GetRawButton(xbox::btn::rb));
-}
-
-void Robot::TestPeriodic()
-{
-
 }
 
 START_ROBOT_CLASS(Robot)

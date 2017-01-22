@@ -19,7 +19,6 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
-	void TestPeriodic();
 };
 
 #endif
