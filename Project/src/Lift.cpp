@@ -5,22 +5,27 @@ Lift::Lift(int liftPort) : liftMotor(liftPort)
 
 }
 
-void Lift::autoInit()
+void Lift::RobotInit()
 {
 
 }
 
-void Lift::autoPeriodic()
+void Lift::AutoInit()
 {
 
 }
 
-void Lift::teleopInit()
+void Lift::AutoPeriodic()
 {
 
 }
 
-void Lift::teleopPeriodic(bool doLift)
+void Lift::TeleopInit()
+{
+
+}
+
+void Lift::TeleopPeriodic(bool doLift)
 {
 	liftMotor.Set(doLift ? 1.0 : 0.0);
 }

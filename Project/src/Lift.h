@@ -10,10 +10,11 @@ private:
 	Spark liftMotor;
 public:
 	Lift(int liftPort);
-	void autoInit();
-	void autoPeriodic();
-	void teleopInit();
-	void teleopPeriodic(bool doLift);
+	void RobotInit();
+	void AutoInit();
+	void AutoPeriodic();
+	void TeleopInit();
+	void TeleopPeriodic(bool doLift);
 };
 
 #endif
