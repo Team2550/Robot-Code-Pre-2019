@@ -5,12 +5,17 @@ UDP_Receiver::UDP_Receiver()
 	createUDPSocket();
 }
 
-void UDP_Receiver::autoInit()
+void UDP_Receiver::RobotInit()
 {
 
 }
 
-void UDP_Receiver::autoPeriodic()
+void UDP_Receiver::AutoInit()
+{
+
+}
+
+void UDP_Receiver::AutoPeriodic()
 {
 	checkUDP();
 
@@ -22,12 +27,12 @@ void UDP_Receiver::autoPeriodic()
 	printf("\n");
 }
 
-void UDP_Receiver::teleopInit()
+void UDP_Receiver::TeleopInit()
 {
 
 }
 
-void UDP_Receiver::teleopPeriodic()
+void UDP_Receiver::TeleopPeriodic()
 {
 	checkUDP();
 

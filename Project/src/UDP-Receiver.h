@@ -26,10 +26,11 @@ private:
 	void getNumsFromString(unsigned char str[], int length, int nums[]);
 public:
 	UDP_Receiver();
-	void autoInit();
-	void autoPeriodic();
-	void teleopInit();
-	void teleopPeriodic();
+	void RobotInit();
+	void AutoInit();
+	void AutoPeriodic();
+	void TeleopInit();
+	void TeleopPeriodic();
 
 	int* getUDPData();
 };

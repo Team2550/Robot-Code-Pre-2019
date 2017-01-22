@@ -15,39 +15,35 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-
+	udpReceiver.RobotInit();
+	driveBase.RobotInit();
 }
 
 
 void Robot::AutonomousInit()
 {
-	udpReceiver.autoInit();
-	driveBase.autoInit();
+	udpReceiver.AutoInit();
+	driveBase.AutoInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
-	udpReceiver.autoPeriodic();
-	driveBase.autoPeriodic();
+	udpReceiver.AutoPeriodic();
+	driveBase.AutoPeriodic();
 }
 
 void Robot::TeleopInit()
 {
-	udpReceiver.teleopInit();
-	driveBase.teleopInit();
+	udpReceiver.TeleopInit();
+	driveBase.TeleopInit();
 }
 
 void Robot::TeleopPeriodic()
 {
-	udpReceiver.teleopPeriodic();
-	driveBase.teleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
+	udpReceiver.TeleopPeriodic();
+	driveBase.TeleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
 			             -driver.GetRawAxis(xbox::axis::rightY),
 				    	 driver.GetRawButton(xbox::btn::rb));
-}
-
-void Robot::TestPeriodic()
-{
-
 }
 
 START_ROBOT_CLASS(Robot)
