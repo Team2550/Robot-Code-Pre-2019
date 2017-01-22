@@ -7,23 +7,28 @@ DriveBase::DriveBase(float _maxSpeed, float _maxBoostSpeed, int leftPort, int ri
 	rightMotor.SetInverted(true);
 }
 
-void DriveBase::autoInit()
+void DriveBase::RobotInit()
 {
 
 }
 
-void DriveBase::autoPeriodic()
+void DriveBase::AutoInit()
 {
 
 }
 
-void DriveBase::teleopInit()
+void DriveBase::AutoPeriodic()
+{
+
+}
+
+void DriveBase::TeleopInit()
 {
 	leftMotor.Set(0);
 	rightMotor.Set(0);
 }
 
-void DriveBase::teleopPeriodic(float leftSpeed, float rightSpeed, bool boost)
+void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost)
 {
 	deadzone(leftSpeed);
 	deadzone(rightSpeed);
