@@ -8,7 +8,9 @@
 class Robot: public IterativeRobot
 {
 private:
-	Joystick driver;
+	Joystick driveController;
+	Joystick perifController;
+
 	DriveBase driveBase;
 
 public:
