@@ -9,9 +9,10 @@
 class Robot: public IterativeRobot
 {
 private:
-	UDP_Receiver udpReceiver;
+	Joystick driveController;
+	Joystick perifController;
 
-	Joystick driver;
+	UDP_Receiver udpReceiver;
 	DriveBase driveBase;
 
 public:
