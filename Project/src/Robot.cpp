@@ -3,7 +3,7 @@
 // driver: (int) xBox controller number
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
-Robot::Robot() : driver(0), driveBase(0.4, 0.8, 1, 0), shooter(2)
+Robot::Robot() : driveController(0), perifController(1), driveBase(0.4, 0.8, 1, 0), shooter(2)
 {
 	shooterSpeed = 0.5;
 	xIsPressed = false;
@@ -38,29 +38,29 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	driveBase.TeleopPeriodic(-driver.GetRawAxis(xbox::axis::leftY),
-			                 -driver.GetRawAxis(xbox::axis::rightY),
-					    	 driver.GetRawButton(xbox::btn::rb));
+	driveBase.TeleopPeriodic(-driveController.GetRawAxis(xbox::axis::leftY),
+			                 -driveController.GetRawAxis(xbox::axis::rightY),
+							 driveController.GetRawButton(xbox::btn::rb));
 
-	if(driver.GetRawButton(xbox::btn::x) && !xIsPressed)
+	if(perifController.GetRawButton(xbox::btn::x) && !xIsPressed)
 	{
 		shooterSpeed -= 0.01;
 		xIsPressed = true;
 	}
-	else if(!driver.GetRawButton(xbox::btn::x))
+	else if(!perifController.GetRawButton(xbox::btn::x))
 		xIsPressed = false;
-	if(driver.GetRawButton(xbox::btn::y) && !yIsPressed)
+	if(perifController.GetRawButton(xbox::btn::y) && !yIsPressed)
 	{
 		shooterSpeed += 0.01;
 		yIsPressed = true;
 	}
-	else if(!driver.GetRawButton(xbox::btn::y))
+	else if(!perifController.GetRawButton(xbox::btn::y))
 			yIsPressed = false;
 	SmartDashboard::PutNumber("shooterSpeed", shooterSpeed);
 
-	if(driver.GetRawButton(xbox::btn::b))
+	if(perifController.GetRawButton(xbox::btn::b))
 		shooter.stop();
-	else if(driver.GetRawButton(xbox::btn::a))
+	else if(perifController.GetRawButton(xbox::btn::a))
 		shooter.shoot(shooterSpeed);
 }
 
