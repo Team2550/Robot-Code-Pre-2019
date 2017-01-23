@@ -9,13 +9,11 @@
 class Robot: public IterativeRobot
 {
 private:
-	Joystick driver;
+	Joystick driveController;
+	Joystick perifController;
+
 	DriveBase driveBase;
 	Shooter shooter;
-
-	float shooterSpeed;
-	bool xIsPressed;
-	bool yIsPressed;
 
 public:
 	Robot();
