@@ -14,3 +14,8 @@ void deadzone(float& value, float tolerance)
 	if (fabs(value) <= tolerance)
 		value = 0;
 }
+
+void rumbleController(Joystick& controller, Joystick::RumbleType rumbleSide, float rumbleAmount)
+{
+	controller.SetRumble(rumbleSide, rumbleAmount);
+}

@@ -1,6 +1,8 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include <WPILib.h>
+#include <xBox.h>
 #include <math.h>
 
 /*=================================================
@@ -13,5 +15,15 @@ Return:
 	none
 =================================================*/
 void deadzone(float& value, float tolerance = 0.2);
+
+/*=================================================
+Name: rumbleController
+Desc: Rumbles an xbox controller
+Arguments:
+	controller (I): controller to rumble
+Return:
+	none
+=================================================*/
+void rumbleController(Joystick& controller, Joystick::RumbleType rumbleSide, float rumbleAmount);
 
 #endif
