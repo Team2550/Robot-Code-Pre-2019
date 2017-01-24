@@ -21,7 +21,6 @@ public:
 
 	void driveForward(float speed);
 	void stop();
->>>>>>> 2017-Drive
 };
 
 #endif
