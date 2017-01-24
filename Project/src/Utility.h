@@ -24,6 +24,6 @@ Arguments:
 Return:
 	none
 =================================================*/
-void rumbleController(Joystick& controller, Joystick::RumbleType rumbleSide, float rumbleAmount);
+void setRumble(Joystick& controller, Joystick::RumbleType rumbleSide, float rumbleAmount);
 
 #endif

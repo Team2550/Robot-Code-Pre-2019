@@ -15,7 +15,7 @@ void deadzone(float& value, float tolerance)
 		value = 0;
 }
 
-void rumbleController(Joystick& controller, Joystick::RumbleType rumbleSide, float rumbleAmount)
+void setRumble(Joystick& controller, Joystick::RumbleType rumbleSide, float rumbleAmount)
 {
 	controller.SetRumble(rumbleSide, rumbleAmount);
 }
