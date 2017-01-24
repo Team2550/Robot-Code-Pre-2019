@@ -13,10 +13,11 @@ private:
 	VictorSP rightMotor;
 public:
 	DriveBase(float _maxSpeed, float _maxBoostSpeed, int rightPort, int leftPort);
-	void autoInit();
-	void autoPeriodic();
-	void teleopInit();
-	void teleopPeriodic(float leftSpeed, float rightSpeed, bool boost);
+	void RobotInit();
+	void AutoInit();
+	void AutoPeriodic();
+	void TeleopInit();
+	void TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, int openCVData[]);
 };
 
 #endif

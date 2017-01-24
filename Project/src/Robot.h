@@ -2,8 +2,8 @@
 #define ROBOT_H
 
 #include <WPILib.h>
+#include "UDP-Receiver.h"
 #include "DriveBase.h"
-#include "UDP-Receive.c"
 #include "xBox.h"
 
 class Robot: public IterativeRobot
@@ -12,6 +12,7 @@ private:
 	Joystick driveController;
 	Joystick perifController;
 
+	UDP_Receiver udpReceiver;
 	DriveBase driveBase;
 
 public:

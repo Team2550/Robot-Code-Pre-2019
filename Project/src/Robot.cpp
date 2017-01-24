@@ -15,39 +15,36 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-
+	udpReceiver.RobotInit();
+	driveBase.RobotInit();
 }
 
 
 void Robot::AutonomousInit()
 {
-	driveBase.autoInit();
+	udpReceiver.AutoInit();
+	driveBase.AutoInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
-	driveBase.autoPeriodic();
+	udpReceiver.AutoPeriodic();
+	driveBase.AutoPeriodic();
 }
 
 void Robot::TeleopInit()
 {
-	driveBase.teleopInit();
-
-	udpReceive();
+	udpReceiver.TeleopInit();
+	driveBase.TeleopInit();
 }
 
 void Robot::TeleopPeriodic()
 {
-	driveBase.teleopPeriodic(-driveController.GetRawAxis(xbox::axis::leftY),
+	udpReceiver.TeleopPeriodic();
+	driveBase.TeleopPeriodic(-driveController.GetRawAxis(xbox::axis::leftY),
 			                 -driveController.GetRawAxis(xbox::axis::rightY),
-							 driveController.GetRawButton(xbox::btn::rb));
-
-	printf("As numbers:");
-
-	for (int i = 0; i < 4; i++)
-		printf(std::to_string(dataFromPi[i]).c_str());
-
-	printf("\n");
+							 driveController.GetRawButton(xbox::btn::rb),
+							 udpReceiver.getUDPData());
 }
 
 START_ROBOT_CLASS(Robot)
