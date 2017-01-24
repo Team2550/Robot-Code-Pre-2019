@@ -8,8 +8,8 @@
 #include <arpa/inet.h>
 #include <vector>
 
-#define BUFSIZE      2048
-#define SERVICE_PORT 8890	/* hard-coded port number */
+const int  BUFSIZE      = 2048;
+const int  SERVICE_PORT = 8890;	/* hard-coded port number */
 
 class UDP_Receiver {
 private:
@@ -17,7 +17,7 @@ private:
 	struct sockaddr_in myAddress;
 	struct sockaddr_in remoteAddress;
 	socklen_t addressLength = sizeof(remoteAddress);
-	int bytesRecievedCount;
+	int bytesReceivedCount;
 	unsigned char buffer[BUFSIZE];
 	int newestUDPData[];
 
