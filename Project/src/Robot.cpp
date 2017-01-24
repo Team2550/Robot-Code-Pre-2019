@@ -43,7 +43,8 @@ void Robot::TeleopPeriodic()
 	udpReceiver.TeleopPeriodic();
 	driveBase.TeleopPeriodic(-driveController.GetRawAxis(xbox::axis::leftY),
 			                 -driveController.GetRawAxis(xbox::axis::rightY),
-							 driveController.GetRawButton(xbox::btn::rb));
+							 driveController.GetRawButton(xbox::btn::rb),
+							 udpReceiver.getUDPData());
 }
 
 START_ROBOT_CLASS(Robot)

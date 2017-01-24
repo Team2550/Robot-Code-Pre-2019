@@ -28,7 +28,7 @@ void DriveBase::TeleopInit()
 	rightMotor.Set(0);
 }
 
-void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost)
+void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, int openCVData[])
 {
 	deadzone(leftSpeed);
 	deadzone(rightSpeed);
