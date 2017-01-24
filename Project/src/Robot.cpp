@@ -42,8 +42,13 @@ void Robot::TeleopPeriodic()
 
 	if (driveController.GetRawButton(xbox::btn::a))
 	{
-		setRumble(driveController, Joystick::kLeftRumble, 0.5);
+		setRumble(driveController, Joystick::kLeftRumble, 0.75);
 		setRumble(driveController, Joystick::kRightRumble, 0.75);
+	}
+	else
+	{
+		setRumble(driveController, Joystick::kLeftRumble, 0);
+		setRumble(driveController, Joystick::kRightRumble, 0);
 	}
 }
 
