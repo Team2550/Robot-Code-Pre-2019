@@ -17,7 +17,7 @@ public:
 	void AutoInit();
 	void AutoPeriodic();
 	void TeleopInit();
-	void TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, int openCVData[]);
+	void TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, bool autoaiming, int openCVData[]);
 
 	void driveForward(float speed);
 	void stop();

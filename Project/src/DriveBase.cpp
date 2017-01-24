@@ -28,7 +28,7 @@ void DriveBase::TeleopInit()
 	rightMotor.Set(0);
 }
 
-void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, int openCVData[])
+void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, bool autoaiming, int openCVData[])
 {
 	deadzone(leftSpeed);
 	deadzone(rightSpeed);
@@ -38,6 +38,15 @@ void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, in
 
 	leftMotor.Set(leftSpeed);
 	rightMotor.Set(rightSpeed);
+
+	if(autoaiming=true){
+		printf "aiming";
+		if(openCVData[1] > 10){
+			driveForward(.5);
+
+
+		}
+	}
 }
 
 void DriveBase::driveForward(float speed)
