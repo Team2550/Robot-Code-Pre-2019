@@ -39,6 +39,12 @@ void Robot::TeleopPeriodic()
 	driveBase.TeleopPeriodic(-driveController.GetRawAxis(xbox::axis::leftY),
 			                 -driveController.GetRawAxis(xbox::axis::rightY),
 							 driveController.GetRawButton(xbox::btn::rb));
+
+	if (driveController.GetRawButton(xbox::btn::a))
+	{
+		setRumble(driveController, Joystick::kLeftRumble, 0.5);
+		setRumble(driveController, Joystick::kRightRumble, 0.75);
+	}
 }
 
 START_ROBOT_CLASS(Robot)
