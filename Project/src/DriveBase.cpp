@@ -39,8 +39,8 @@ void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, bo
 	leftMotor.Set(leftSpeed);
 	rightMotor.Set(rightSpeed);
 
-	if(autoaiming=true){
-		printf "aiming";
+	if(autoaiming){
+		std::cout << "aiming" << std::endl;
 		if(openCVData[1] > 10){
 			driveForward(.5);
 
