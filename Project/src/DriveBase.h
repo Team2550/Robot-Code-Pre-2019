@@ -18,6 +18,9 @@ public:
 	void AutoPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost);
+
+	void driveForward(float speed);
+	void stop();
 };
 
 #endif
