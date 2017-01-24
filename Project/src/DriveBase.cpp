@@ -39,3 +39,15 @@ void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, in
 	leftMotor.Set(leftSpeed);
 	rightMotor.Set(rightSpeed);
 }
+
+void DriveBase::driveForward(float speed)
+{
+	leftMotor.Set(speed);
+	rightMotor.Set(speed);
+}
+
+void DriveBase::stop()
+{
+	leftMotor.Set(0);
+	rightMotor.Set(0);
+}
