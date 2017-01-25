@@ -7,46 +7,13 @@ DriveBase::DriveBase(float _maxSpeed, float _maxBoostSpeed, int leftPort, int ri
 	rightMotor.SetInverted(true);
 }
 
-void DriveBase::RobotInit()
+void DriveBase::drive(float leftSpeed, float rightSpeed, bool boost)
 {
-
-}
-
-void DriveBase::AutoInit()
-{
-
-}
-
-void DriveBase::AutoPeriodic()
-{
-
-}
-
-void DriveBase::TeleopInit()
-{
-	leftMotor.Set(0);
-	rightMotor.Set(0);
-}
-
-void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost, bool autoaiming, int openCVData[])
-{
-	deadzone(leftSpeed);
-	deadzone(rightSpeed);
-
 	leftSpeed = leftSpeed * fabs(leftSpeed) * (boost ? maxBoostSpeed : maxSpeed);
 	rightSpeed = rightSpeed * fabs(rightSpeed) * (boost ? maxBoostSpeed : maxSpeed);
 
 	leftMotor.Set(leftSpeed);
 	rightMotor.Set(rightSpeed);
-
-	if(autoaiming){
-		std::cout << "aiming" << std::endl;
-		if(openCVData[1] > 10){
-			driveForward(.5);
-
-
-		}
-	}
 }
 
 void DriveBase::driveForward(float speed)
