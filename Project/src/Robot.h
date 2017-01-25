@@ -2,17 +2,13 @@
 #define ROBOT_H
 
 #include <WPILib.h>
+#include "Shooter.h"
 #include "DriveBase.h"
 #include "xBox.h"
+#include "Controls.h"
 
 class Robot: public IterativeRobot
 {
-private:
-	Joystick driveController;
-	Joystick perifController;
-
-	DriveBase driveBase;
-
 public:
 	Robot();
 	~Robot();
@@ -21,6 +17,15 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
+private:
+	Joystick driveController;
+	Joystick perifController;
+
+	DriveBase driveBase;
+	Shooter shooter;
+
+	void drive(float leftSpeed, float rightSpeed, bool boost);
+	void shoot(bool shoot, bool stop, bool increaseSpeed, bool decreaseSpeed);
 };
 
 #endif

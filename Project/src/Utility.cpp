@@ -4,15 +4,16 @@
 Name: deadzone
 Desc: Zeroes out values within a certain "deadzone"
 Arguments:
-	value (IO): value to deadzone
+	value (I): value to deadzone
 	tolerance (I): deadzone
 Return:
-	none
+	the input, adjusted for the deadzone
 ================================================*/
-void Utility::deadzone(float& value, float tolerance)
+float Utility::deadzone(float value, float tolerance)
 {
 	if (fabs(value) <= tolerance)
-		value = 0;
+		return 0;
+	return value;
 }
 
 void Utility::setRumble(Joystick& controller, Utility::RumbleSide rumbleSide, float rumbleAmount)
