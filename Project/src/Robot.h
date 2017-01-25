@@ -30,7 +30,7 @@ private:
 
 	void drive(float leftSpeed, float rightSpeed, bool boost);
 	void shoot(bool shoot, bool stop, bool increaseSpeed, bool decreaseSpeed);
-	void udpReceive(int openCVData[]);
+	void autoDrive();
 };
 
 #endif

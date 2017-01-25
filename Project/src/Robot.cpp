@@ -39,7 +39,7 @@ void Robot::TeleopPeriodic()
 	udpReceiver.TeleopPeriodic();
 
 	if(autoAiming)
-		udpReceive(udpReceiver.getUDPData());
+		autoDrive();
 	else
 	{
 		drive(deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left)),
@@ -90,10 +90,14 @@ void Robot::shoot(bool shoot, bool stop, bool increaseSpeed, bool decreaseSpeed)
 		shooter.shoot(shooterSpeed);
 }
 
-void Robot::udpReceive(int openCVData[])
+void Robot::autoDrive()
 {
+	int openCVData[] = udpReceiver.getUDPData();
+
 	std::cout << "aiming" << std::endl;
-	if(openCVData[1] > 10) {
+
+	if(openCVData[1] > 10)
 		driveBase.driveForward(.5);
-	}
+	else
+		driveBase.stop();
 }
