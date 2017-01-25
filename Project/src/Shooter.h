@@ -11,9 +11,10 @@ public:
 	void shoot(float power);
 	void stop();
 private:
-	Spark shooterMotor; // If anyone has an idea for a better name, go ahead and change it!
 	float shooterSpeed;
 	bool isShooting;
+
+	Spark shooterMotor; // If anyone has an idea for a better name, go ahead and change it!
 };
 
 #endif
