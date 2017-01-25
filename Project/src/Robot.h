@@ -4,7 +4,7 @@
 #include <WPILib.h>
 #include "Shooter.h"
 #include "DriveBase.h"
-#include "Lift.h"
+#include "Lifter.h"
 #include "xBox.h"
 #include "Controls.h"
 
