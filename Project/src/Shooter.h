@@ -4,23 +4,16 @@
 #include <WPILib.h>
 
 class Shooter {
+public:
+	Shooter(float shooterSpeed, int motorPort);
+
+	void shoot();
+	void shoot(float power);
+	void stop();
 private:
 	Spark shooterMotor; // If anyone has an idea for a better name, go ahead and change it!
-	bool isShooting;
-
 	float shooterSpeed;
-	bool didDecreaseSpeed;
-	bool didIncreaseSpeed;
-public:
-	Shooter(float _shooterSpeed, int motorPort);
-	void RobotInit();
-	void AutoInit();
-	void AutoPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic(bool _shoot, bool _stop, bool increaseSpeed, bool decreaseSpeed);
-
-	void shoot(float power = 1);
-	void stop();
+	bool isShooting;
 };
 
 #endif

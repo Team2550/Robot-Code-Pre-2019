@@ -25,6 +25,7 @@ private:
 	Shooter shooter;
 
 	void drive(float leftSpeed, float rightSpeed, bool boost);
+	void shoot(bool shoot, bool stop, bool increaseSpeed, bool decreaseSpeed);
 };
 
 #endif
