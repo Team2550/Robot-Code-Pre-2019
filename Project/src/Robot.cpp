@@ -60,25 +60,25 @@ void Robot::shoot(bool shoot, bool stop, bool increaseSpeed, bool decreaseSpeed)
 	static bool decreasedSpeed = false;
 
 	if(decreaseSpeed && !decreasedSpeed)
-		{
-			shooterSpeed -= 0.01;
-			decreasedSpeed = true;
-		}
-		else if(!decreaseSpeed)
-			decreasedSpeed = false;
+	{
+		shooterSpeed -= 0.01;
+		decreasedSpeed = true;
+	}
+	else if(!decreaseSpeed)
+		decreasedSpeed = false;
 
-		if(increaseSpeed && !increasedSpeed)
-		{
-			shooterSpeed += 0.01;
-			increasedSpeed = true;
-		}
-		else if(!increaseSpeed)
-			increasedSpeed = false;
+	if(increaseSpeed && !increasedSpeed)
+	{
+		shooterSpeed += 0.01;
+		increasedSpeed = true;
+	}
+	else if(!increaseSpeed)
+		increasedSpeed = false;
 
-		frc::SmartDashboard::PutNumber("shooterSpeed", shooterSpeed);
+	frc::SmartDashboard::PutNumber("shooterSpeed", shooterSpeed);
 
-		if(stop)
-			shooter.stop();
-		else if(shoot)
-			shooter.shoot(shooterSpeed);
+	if(stop)
+		shooter.stop();
+	else if(shoot)
+		shooter.shoot(shooterSpeed);
 }
