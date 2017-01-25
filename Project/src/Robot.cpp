@@ -1,4 +1,5 @@
 #include "Robot.h"
+#include "Utility.h"
 
 // driver: (int) xBox controller number
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
@@ -15,38 +16,40 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	driveBase.RobotInit();
 	shooter.RobotInit();
 }
 
-
 void Robot::AutonomousInit()
 {
-	driveBase.AutoInit();
 	shooter.AutoInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
-	driveBase.AutoPeriodic();
 	shooter.AutoPeriodic();
 }
 
 void Robot::TeleopInit()
 {
-	driveBase.TeleopInit();
 	shooter.TeleopInit();
 }
 
 void Robot::TeleopPeriodic()
 {
-	driveBase.TeleopPeriodic(-driveController.GetRawAxis(Controls::TankDrive::Left),
-	                         -driveController.GetRawAxis(Controls::TankDrive::Right),
-	                         driveController.GetRawButton(Controls::TankDrive::Boost));
+	drive(deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left)),
+	      deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right)),
+	      deadzone( driveController.GetRawButton(Controls::TankDrive::Boost)));
+
 	shooter.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Shoot),
 	                       perifController.GetRawButton(Controls::Peripherals::StopShoot),
 						   perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed),
 						   perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed));
+
 }
 
 START_ROBOT_CLASS(Robot)
+
+void Robot::drive(float leftSpeed, float rightSpeed, bool boost)
+{
+	driveBase.drive(leftSpeed, rightSpeed, boost);
+}

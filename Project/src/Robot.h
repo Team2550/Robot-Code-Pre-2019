@@ -9,13 +9,6 @@
 
 class Robot: public IterativeRobot
 {
-private:
-	Joystick driveController;
-	Joystick perifController;
-
-	DriveBase driveBase;
-	Shooter shooter;
-
 public:
 	Robot();
 	~Robot();
@@ -24,6 +17,14 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
+private:
+	Joystick driveController;
+	Joystick perifController;
+
+	DriveBase driveBase;
+	Shooter shooter;
+
+	void drive(float leftSpeed, float rightSpeed, bool boost);
 };
 
 #endif
