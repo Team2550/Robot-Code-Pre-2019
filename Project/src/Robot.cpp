@@ -40,13 +40,13 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	driveBase.TeleopPeriodic(-driveController.GetRawAxis(xbox::axis::leftY),
-			                 -driveController.GetRawAxis(xbox::axis::rightY),
-							 driveController.GetRawButton(xbox::btn::rb));
-	shooter.TeleopPeriodic(perifController.GetRawButton(xbox::btn::b),
-	                       perifController.GetRawButton(xbox::btn::a),
-						   perifController.GetRawButton(xbox::btn::y),
-						   perifController.GetRawButton(xbox::btn::x));
+	driveBase.TeleopPeriodic(-driveController.GetRawAxis(Controls::TankDrive::Left),
+	                         -driveController.GetRawAxis(Controls::TankDrive::Right),
+	                         driveController.GetRawButton(Controls::TankDrive::Boost));
+	shooter.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Shoot),
+	                       perifController.GetRawButton(Controls::Peripherals::StopShoot),
+						   perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed),
+						   perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed));
 }
 
 START_ROBOT_CLASS(Robot)
