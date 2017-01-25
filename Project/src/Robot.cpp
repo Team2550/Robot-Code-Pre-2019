@@ -36,9 +36,9 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	driveBase.TeleopPeriodic(-driveController.GetRawAxis(xbox::axis::leftY),
-			                 -driveController.GetRawAxis(xbox::axis::rightY),
-							 driveController.GetRawButton(xbox::btn::rb));
+	driveBase.TeleopPeriodic(-driveController.GetRawAxis(Controls::TankDrive::Left),
+	                         -driveController.GetRawAxis(Controls::TankDrive::Right),
+	                         driveController.GetRawButton(Controls::TankDrive::Boost));
 }
 
 START_ROBOT_CLASS(Robot)
