@@ -5,7 +5,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 driveBase(0.4, 0.8, 1, 0), shooter(0.8, 2), lift(3)
+                 driveBase(0.4, 0.8, 1, 0), shooter(0.8, 2), lifter(3)
 {
 
 }
@@ -46,7 +46,7 @@ void Robot::TeleopPeriodic()
 	      perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed),
 	      perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed));
 
-	lift.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Climb));
+	lift(perifController.GetRawButton(Controls::Peripherals::Climb));
 }
 
 START_ROBOT_CLASS(Robot)
@@ -84,4 +84,12 @@ void Robot::shoot(bool shoot, bool stop, bool increaseSpeed, bool decreaseSpeed)
 		shooter.stop();
 	else if(shoot)
 		shooter.shoot(shooterSpeed);
+}
+
+void Robot::lift(bool doLift)
+{
+	if(doLift)
+		lifter.lift();
+	else
+		lifter.stop();
 }

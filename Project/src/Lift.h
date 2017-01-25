@@ -1,20 +1,18 @@
-#ifndef LIFT_H
-#define LIFT_H
+#ifndef LIFTER_H
+#define LIFTER_H
 
 #include <WPILib.h>
 #include <math.h>
 #include "Utility.h"
 
-class Lift {
+class Lifter {
+public:
+	Lifter(int liftPort);
+
+	void lift();
+	void stop();
 private:
 	Spark liftMotor;
-public:
-	Lift(int liftPort);
-	void RobotInit();
-	void AutoInit();
-	void AutoPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic(bool doLift);
 };
 
 #endif

@@ -1,31 +1,16 @@
 #include "Lift.h"
 
-Lift::Lift(int liftPort) : liftMotor(liftPort)
+Lifter::Lifter(int liftPort) : liftMotor(liftPort)
 {
 
 }
 
-void Lift::RobotInit()
+void Lifter::lift()
 {
-
+	liftMotor.Set(1.0);
 }
 
-void Lift::AutoInit()
+void Lifter::stop()
 {
-
-}
-
-void Lift::AutoPeriodic()
-{
-
-}
-
-void Lift::TeleopInit()
-{
-
-}
-
-void Lift::TeleopPeriodic(bool doLift)
-{
-	liftMotor.Set(doLift ? 1.0 : 0.0);
+	liftMotor.Set(0);
 }

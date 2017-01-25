@@ -13,6 +13,7 @@ class Robot: public IterativeRobot
 public:
 	Robot();
 	~Robot();
+
 	void RobotInit();
 	void AutonomousInit();
 	void AutonomousPeriodic();
@@ -24,10 +25,11 @@ private:
 
 	DriveBase driveBase;
 	Shooter shooter;
-	Lift lift;
+	Lifter lifter;
 
 	void drive(float leftSpeed, float rightSpeed, bool boost);
 	void shoot(bool shoot, bool stop, bool increaseSpeed, bool decreaseSpeed);
+	void lift(bool doLift);
 };
 
 #endif
