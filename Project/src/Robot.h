@@ -15,10 +15,6 @@ private:
 	DriveBase driveBase;
 	Shooter shooter;
 
-	float shooterSpeed;
-	bool xIsPressed;
-	bool yIsPressed;
-
 public:
 	Robot();
 	~Robot();
