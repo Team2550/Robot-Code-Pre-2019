@@ -9,13 +9,25 @@ Arguments:
 Return:
 	none
 ================================================*/
-void deadzone(float& value, float tolerance)
+void Utility::deadzone(float& value, float tolerance)
 {
 	if (fabs(value) <= tolerance)
 		value = 0;
 }
 
-void setRumble(Joystick& controller, Joystick::RumbleType rumbleSide, float rumbleAmount)
+void Utility::setRumble(Joystick& controller, Utility::RumbleSide rumbleSide, float rumbleAmount)
 {
-	controller.SetRumble(rumbleSide, rumbleAmount);
+	switch (rumbleSide)
+	{
+	case left:
+		controller.SetRumble(Joystick::kLeftRumble, rumbleAmount);
+		break;
+	case right:
+		controller.SetRumble(Joystick::kRightRumble, rumbleAmount);
+		break;
+	case both:
+		controller.SetRumble(Joystick::kLeftRumble, rumbleAmount);
+		controller.SetRumble(Joystick::kRightRumble, rumbleAmount);
+		break;
+	}
 }

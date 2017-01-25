@@ -30,8 +30,8 @@ void DriveBase::TeleopInit()
 
 void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost)
 {
-	deadzone(leftSpeed);
-	deadzone(rightSpeed);
+	Utility::deadzone(leftSpeed);
+	Utility::deadzone(rightSpeed);
 
 	leftSpeed = leftSpeed * fabs(leftSpeed) * (boost ? maxBoostSpeed : maxSpeed);
 	rightSpeed = rightSpeed * fabs(rightSpeed) * (boost ? maxBoostSpeed : maxSpeed);
