@@ -12,6 +12,15 @@ const int  BUFSIZE      = 2048;
 const int  SERVICE_PORT = 8890;	/* hard-coded port number */
 
 class UDP_Receiver {
+public:
+	UDP_Receiver();
+	void RobotInit();
+	void AutoInit();
+	void AutoPeriodic();
+	void TeleopInit();
+	void TeleopPeriodic();
+
+	int* getUDPData();
 private:
 	int ourSocket;
 	struct sockaddr_in myAddress;
@@ -24,15 +33,6 @@ private:
 	int createUDPSocket();
 	void checkUDP();
 	void getNumsFromString(unsigned char str[], int length, int nums[]);
-public:
-	UDP_Receiver();
-	void RobotInit();
-	void AutoInit();
-	void AutoPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic();
-
-	int* getUDPData();
 };
 
 #endif

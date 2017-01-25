@@ -36,14 +36,6 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-/*
-	udpReceiver.TeleopPeriodic();
-	driveBase.TeleopPeriodic(-driveController.GetRawAxis(xbox::axis::leftY),
-			                 -driveController.GetRawAxis(xbox::axis::rightY),
-							 driveController.GetRawButton(xbox::btn::rb),
-	                         false, // change me to true to allow openCV to drive the robot
-							 udpReceiver.getUDPData());
-*/
 	udpReceiver.TeleopPeriodic();
 
 	if(autoAiming)
