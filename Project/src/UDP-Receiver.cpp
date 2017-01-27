@@ -19,12 +19,12 @@ void UDP_Receiver::AutoPeriodic()
 {
 	checkUDP();
 
-	std::cout << "As numbers:";
+	printf("As numbers:");
 
 	for (int i = 0; i < 4; i++)
-		std::cout << std::to_string(newestUDPData[i]);
+		printf(std::to_string(newestUDPData[i]).c_str());
 
-	std::cout << std::endl;
+	printf("\n");
 }
 
 void UDP_Receiver::TeleopInit()
@@ -36,12 +36,12 @@ void UDP_Receiver::TeleopPeriodic()
 {
 	checkUDP();
 
-	std::cout << "As numbers:";
+	printf("As numbers:");
 
 	for (int i = 0; i < 4; i++)
-		std::cout << std::to_string(newestUDPData[i]);
+		printf(std::to_string(newestUDPData[i]).c_str());
 
-	std::cout << std::endl;
+	printf("\n");
 }
 
 /*================================================
@@ -68,8 +68,7 @@ Return:
 int UDP_Receiver::createUDPSocket()
 {
 	if ((ourSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		std::cerr << "cannot create socket" << std::endl
-		          << strerror(errno) << std::endl;
+		perror("cannot create socket\n");
 		return 1;
 	}
 
@@ -81,7 +80,7 @@ int UDP_Receiver::createUDPSocket()
 	myAddress.sin_port = htons(SERVICE_PORT);
 
 	if (bind(ourSocket, (struct sockaddr *) &myAddress, sizeof(myAddress)) < 0) {
-		std::cerr << "bind failed" << strerror(errno) << std::endl;
+		perror("bind failed");
 		return 1;
 	}
 
@@ -98,18 +97,18 @@ Return:
 ================================================*/
 void UDP_Receiver::checkUDP()
 {
-	std::cout << "waiting on port " << SERVICE_PORT << std::endl;
+	printf("waiting on port %d\n", SERVICE_PORT);
 
-	bytesReceivedCount =
+	bytesRecievedCount =
 			recvfrom(ourSocket, buffer, BUFSIZE, 0, (struct sockaddr *)&remoteAddress, &addressLength);
 
-	std::cout << "received " << bytesReceivedCount << " bytes" << std::endl;
+	printf("received %d bytes\n", bytesRecievedCount);
 
-	if (bytesReceivedCount > 0) {
-		buffer[bytesReceivedCount] = 0;
-		std::cout << "received message: \"" << buffer << '\"' << std::endl;
+	if (bytesRecievedCount > 0) {
+		buffer[bytesRecievedCount] = 0;
+		printf("received message: \"%s\"\n", buffer);
 
-		getNumsFromString(buffer, bytesReceivedCount, newestUDPData);
+		getNumsFromString(buffer, bytesRecievedCount, newestUDPData);
 	}
 }
 

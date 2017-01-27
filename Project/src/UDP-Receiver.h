@@ -8,10 +8,22 @@
 #include <arpa/inet.h>
 #include <vector>
 
-const int  BUFSIZE      = 2048;
-const int  SERVICE_PORT = 8890;	/* hard-coded port number */
+#define BUFSIZE      2048
+#define SERVICE_PORT 8890	/* hard-coded port number */
 
 class UDP_Receiver {
+private:
+	int ourSocket;
+	struct sockaddr_in myAddress;
+	struct sockaddr_in remoteAddress;
+	socklen_t addressLength = sizeof(remoteAddress);
+	int bytesRecievedCount;
+	unsigned char buffer[BUFSIZE];
+	int newestUDPData[];
+
+	int createUDPSocket();
+	void checkUDP();
+	void getNumsFromString(unsigned char str[], int length, int nums[]);
 public:
 	UDP_Receiver();
 	void RobotInit();
@@ -21,18 +33,6 @@ public:
 	void TeleopPeriodic();
 
 	int* getUDPData();
-private:
-	int ourSocket;
-	struct sockaddr_in myAddress;
-	struct sockaddr_in remoteAddress;
-	socklen_t addressLength = sizeof(remoteAddress);
-	int bytesReceivedCount;
-	unsigned char buffer[BUFSIZE];
-	int newestUDPData[];
-
-	int createUDPSocket();
-	void checkUDP();
-	void getNumsFromString(unsigned char str[], int length, int nums[]);
 };
 
 #endif
