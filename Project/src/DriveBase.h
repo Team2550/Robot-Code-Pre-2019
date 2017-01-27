@@ -6,16 +6,18 @@
 #include "Utility.h"
 
 class DriveBase {
-public:
-	DriveBase(float _maxSpeed, float _maxBoostSpeed, int rightPort, int leftPort);
-	void drive(float leftSpeed, float rightSpeed, bool boost);
-	void driveForward(float speed);
-	void stop();
 private:
-	const float maxSpeed;
-	const float maxBoostSpeed;
+	float maxSpeed;
+	float maxBoostSpeed;
 	VictorSP leftMotor;
 	VictorSP rightMotor;
+public:
+	DriveBase(float _maxSpeed, float _maxBoostSpeed, int rightPort, int leftPort);
+	void RobotInit();
+	void AutoInit();
+	void AutoPeriodic();
+	void TeleopInit();
+	void TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost);
 };
 
 #endif

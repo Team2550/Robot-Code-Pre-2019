@@ -9,9 +9,8 @@ Arguments:
 Return:
 	none
 ================================================*/
-float deadzone(float value, float tolerance)
+void deadzone(float& value, float tolerance)
 {
 	if (fabs(value) <= tolerance)
-		return 0;
-	return value;
+		value = 0;
 }
