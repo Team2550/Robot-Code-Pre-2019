@@ -14,12 +14,12 @@ namespace Utility
 	Name: deadzone
 	Desc: Zeroes out values within a certain "deadzone"
 	Arguments:
-		value (I): value to deadzone
+		value (IO): value to deadzone
 		tolerance (I): deadzone
 	Return:
-		the input, adjusted for the deadzone
+		none
 	=================================================*/
-	float deadzone(float value, float tolerance = 0.2);
+	void deadzone(float& value, float tolerance = 0.2);
 
 	/*=================================================
 	Name: setRumble
