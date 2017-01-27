@@ -12,6 +12,6 @@ Arguments:
 Return:
 	none
 =================================================*/
-float deadzone(float value, float tolerance = 0.2);
+void deadzone(float& value, float tolerance = 0.2);
 
 #endif
