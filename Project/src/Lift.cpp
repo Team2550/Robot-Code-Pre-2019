@@ -1,6 +1,8 @@
 #include "Lift.h"
 
-Lift::Lift() : liftMotor(Ports::Lifter::Motor)
+Lift::Lift(Joystick& _driveController, Joystick& _perifController) :
+		   driveController(_driveController), perifController(_perifController),
+		   liftMotor(Ports::Lifter::Motor)
 {
 
 }
@@ -25,7 +27,9 @@ void Lift::TeleopInit()
 
 }
 
-void Lift::TeleopPeriodic(bool doLift)
+void Lift::TeleopPeriodic()
 {
+	bool doLift = perifController.GetRawButton(Controls::Peripherals::Climb);
+
 	liftMotor.Set(doLift ? 1.0 : 0.0);
 }
