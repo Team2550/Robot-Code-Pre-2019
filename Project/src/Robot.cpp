@@ -3,7 +3,7 @@
 // driver: (int) xBox controller number
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
-Robot::Robot() : driveController(0), perifController(1), driveBase(0.4, 0.8, 1, 0), shooter(0.5, 2)
+Robot::Robot() : driveController(0), perifController(1), driveBase(0.4, 0.8, 1, 0), shooter(0.82, 2)
 {
 
 }
