@@ -5,7 +5,7 @@
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(driveController, perifController, 0.4, 0.8),
-				 lift()
+				 lift(driveController, perifController)
 {
 
 }
@@ -43,7 +43,7 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
 	driveBase.TeleopPeriodic();
-	lift.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Climb));
+	lift.TeleopPeriodic();
 }
 
 START_ROBOT_CLASS(Robot)
