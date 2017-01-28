@@ -2,8 +2,8 @@
 #define ROBOT_H
 
 #include <WPILib.h>
-#include "Shooter.h"
 #include "DriveBase.h"
+#include "Lift.h"
 #include "xBox.h"
 #include "Controls.h"
 
@@ -14,7 +14,7 @@ private:
 	Joystick perifController;
 
 	DriveBase driveBase;
-	Shooter shooter;
+	Lift lift;
 
 public:
 	Robot();
