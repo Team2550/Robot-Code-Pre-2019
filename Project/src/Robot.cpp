@@ -6,7 +6,7 @@
 Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(driveController, perifController, 0.4, 0.8),
 				 shooter(driveController, perifController, 0.82),
-				 lift()
+				 lift(driveController, perifController)
 {
 
 }
@@ -49,7 +49,7 @@ void Robot::TeleopPeriodic()
 {
 	driveBase.TeleopPeriodic();
 	shooter.TeleopPeriodic();
-	lift.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Climb));
+	lift.TeleopPeriodic();
 }
 
 START_ROBOT_CLASS(Robot)
