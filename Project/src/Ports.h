@@ -16,7 +16,7 @@ namespace Ports
 
 	namespace Lifter
 	{
-		const int Motor = 4;
+		const int Motor = 2;
 	}
 }
 

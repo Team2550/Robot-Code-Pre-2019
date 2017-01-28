@@ -1,6 +1,9 @@
 #include "Shooter.h"
 
-Shooter::Shooter(float _shooterSpeed, int motorPort) : shooterMotor(motorPort)
+Shooter::Shooter(Joystick& _driveController, Joystick& _perifController,
+				 float _shooterSpeed) :
+				 driveController(_driveController), perifController(_perifController),
+				 shooterMotor(Ports::Shooter::Motor)
 {
 	shooterSpeed = _shooterSpeed;
 	isShooting = false;
@@ -28,8 +31,12 @@ void Shooter::TeleopInit()
 
 }
 
-void Shooter::TeleopPeriodic(bool _shoot, bool _stop, bool increaseSpeed, bool decreaseSpeed)
+void Shooter::TeleopPeriodic()
 {
+	bool _shoot = perifController.GetRawButton(Controls::Peripherals::Shoot);
+	bool increaseSpeed = perifController.GetRawButton(Controls::Peripherals::Shoot);
+	bool decreaseSpeed = perifController.GetRawButton(Controls::Peripherals::Shoot);
+
 	if(decreaseSpeed && !didDecreaseSpeed)
 	{
 		shooterSpeed -= 0.01;
@@ -48,10 +55,10 @@ void Shooter::TeleopPeriodic(bool _shoot, bool _stop, bool increaseSpeed, bool d
 
 	frc::SmartDashboard::PutNumber("shooterSpeed", shooterSpeed);
 
-	if(_stop)
-		stop();
-	else if(_shoot)
+	if(_shoot)
 		shoot(shooterSpeed);
+	else
+		stop();
 }
 
 void Shooter::shoot(float power)
