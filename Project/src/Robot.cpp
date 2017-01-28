@@ -5,7 +5,7 @@
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(driveController, perifController, 0.4, 0.8),
-				 shooter(0.82, 2),
+				 shooter(driveController, perifController, 0.82),
 				 lift()
 {
 
@@ -48,9 +48,7 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
 	driveBase.TeleopPeriodic();
-	shooter.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Shoot),
-						   perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed),
-						   perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed));
+	shooter.TeleopPeriodic();
 	lift.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Climb));
 }
 
