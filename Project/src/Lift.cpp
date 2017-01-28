@@ -1,6 +1,6 @@
 #include "Lift.h"
 
-Lift::Lift(int liftPort) : liftMotor(liftPort)
+Lift::Lift() : liftMotor(Ports::Lifter::Motor)
 {
 
 }
