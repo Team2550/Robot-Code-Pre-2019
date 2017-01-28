@@ -34,11 +34,8 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	driveBase.AutoPeriodic();
-<<<<<<< HEAD
-=======
 	shooter.AutoPeriodic();
 	lift.AutoPeriodic();
->>>>>>> 2017-Master
 }
 
 void Robot::TeleopInit()

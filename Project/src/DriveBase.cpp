@@ -36,24 +36,12 @@ void DriveBase::TeleopPeriodic()
     float rightSpeed = driveController.GetRawAxis(Controls::TankDrive::Right);
     bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
 
-    deadzone(leftSpeed);
-    deadzone(rightSpeed);
+    Utility::deadzone(leftSpeed);
+    Utility::deadzone(rightSpeed);
 
     leftSpeed = leftSpeed * fabs(leftSpeed) * (boost ? maxBoostSpeed : maxSpeed);
     rightSpeed = rightSpeed * fabs(rightSpeed) * (boost ? maxBoostSpeed : maxSpeed);
 
     leftMotor.Set(leftSpeed);
     rightMotor.Set(rightSpeed);
-}
-
-void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost)
-{
-	Utility::deadzone(leftSpeed);
-	Utility::deadzone(rightSpeed);
-
-	leftSpeed = leftSpeed * fabs(leftSpeed) * (boost ? maxBoostSpeed : maxSpeed);
-	rightSpeed = rightSpeed * fabs(rightSpeed) * (boost ? maxBoostSpeed : maxSpeed);
-
-	leftMotor.Set(leftSpeed);
-	rightMotor.Set(rightSpeed);
 }
