@@ -4,7 +4,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 driveBase(0.4, 0.8, 1, 0),
+				 driveBase(driveController, perifController, 0.4, 0.8),
 				 lift()
 {
 
@@ -42,9 +42,7 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	driveBase.TeleopPeriodic(-driveController.GetRawAxis(Controls::TankDrive::Left),
-	                         -driveController.GetRawAxis(Controls::TankDrive::Right),
-	                         driveController.GetRawButton(Controls::TankDrive::Boost));
+	driveBase.TeleopPeriodic();
 	lift.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Climb));
 }
 
