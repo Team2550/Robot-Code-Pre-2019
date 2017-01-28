@@ -5,7 +5,6 @@
 #include "DriveBase.h"
 #include "Lift.h"
 #include "xBox.h"
-#include "Controls.h"
 
 class Robot: public IterativeRobot
 {

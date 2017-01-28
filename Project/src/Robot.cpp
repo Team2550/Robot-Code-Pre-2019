@@ -4,7 +4,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 driveBase(0.4, 0.8, 1, 0),
+				 driveBase(driveController, perifController, 0.4, 0.8),
 				 shooter(0.82, 2),
 				 lift()
 {
@@ -27,11 +27,8 @@ void Robot::RobotInit()
 void Robot::AutonomousInit()
 {
 	driveBase.AutoInit();
-<<<<<<< HEAD
 	shooter.AutoInit();
-=======
 	lift.AutoInit();
->>>>>>> 2017-Ports
 }
 
 void Robot::AutonomousPeriodic()
@@ -50,9 +47,7 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	driveBase.TeleopPeriodic(-driveController.GetRawAxis(Controls::TankDrive::Left),
-	                         -driveController.GetRawAxis(Controls::TankDrive::Right),
-	                         driveController.GetRawButton(Controls::TankDrive::Boost));
+	driveBase.TeleopPeriodic();
 	shooter.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Shoot),
 						   perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed),
 						   perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed));
