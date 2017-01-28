@@ -13,6 +13,11 @@ namespace Ports
 	{
 		const int Motor = 3;
 	}
+
+	namespace Lifter
+	{
+		const int Motor = 2;
+	}
 }
 
 #endif
