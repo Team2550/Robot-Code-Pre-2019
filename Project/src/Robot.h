@@ -3,6 +3,7 @@
 
 #include <WPILib.h>
 #include "DriveBase.h"
+#include "Shooter.h"
 #include "Lift.h"
 #include "xBox.h"
 
@@ -13,6 +14,7 @@ private:
 	Joystick perifController;
 
 	DriveBase driveBase;
+	Shooter shooter;
 	Lift lift;
 
 public:
