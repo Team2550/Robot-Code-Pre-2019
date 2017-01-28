@@ -50,6 +50,15 @@ void Robot::TeleopPeriodic()
 	driveBase.TeleopPeriodic();
 	shooter.TeleopPeriodic();
 	lift.TeleopPeriodic();
+
+	if (driveController.GetRawButton(xbox::btn::a))
+	{
+		Utility::setRumble(driveController, Utility::RumbleSide::both, 0.75);
+	}
+	else
+	{
+		Utility::setRumble(driveController, Utility::RumbleSide::both, 0);
+	}
 }
 
 START_ROBOT_CLASS(Robot)
