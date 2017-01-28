@@ -4,6 +4,8 @@
 #include <WPILib.h>
 #include "UDP-Receiver.h"
 #include "DriveBase.h"
+#include "Shooter.h"
+#include "Lift.h"
 #include "xBox.h"
 
 class Robot: public IterativeRobot
@@ -14,6 +16,8 @@ private:
 
 	UDP_Receiver udpReceiver;
 	DriveBase driveBase;
+	Shooter shooter;
+	Lift lift;
 
 public:
 	Robot();
