@@ -1,10 +1,12 @@
 #include "DriveBase.h"
 
-DriveBase::DriveBase(float _maxSpeed, float _maxBoostSpeed, int leftPort, int rightPort) :
-                    maxSpeed(_maxSpeed), maxBoostSpeed(_maxBoostSpeed),
-			        leftMotor(leftPort), rightMotor(rightPort)
+DriveBase::DriveBase(Joystick& _driveController, Joystick& _perifController,
+                     float _maxSpeed, float _maxBoostSpeed) :
+                     driveController(_driveController), perifController(_perifController),
+                     maxSpeed(_maxSpeed), maxBoostSpeed(_maxBoostSpeed),
+                     leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
 {
-	rightMotor.SetInverted(true);
+    rightMotor.SetInverted(true);
 }
 
 void DriveBase::RobotInit()
@@ -24,18 +26,22 @@ void DriveBase::AutoPeriodic()
 
 void DriveBase::TeleopInit()
 {
-	leftMotor.Set(0);
-	rightMotor.Set(0);
+    leftMotor.Set(0);
+    rightMotor.Set(0);
 }
 
-void DriveBase::TeleopPeriodic(float leftSpeed, float rightSpeed, bool boost)
+void DriveBase::TeleopPeriodic()
 {
-	deadzone(leftSpeed);
-	deadzone(rightSpeed);
+    float leftSpeed = driveController.GetRawAxis(Controls::TankDrive::Left);
+    float rightSpeed = driveController.GetRawAxis(Controls::TankDrive::Right);
+    bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
 
-	leftSpeed = leftSpeed * fabs(leftSpeed) * (boost ? maxBoostSpeed : maxSpeed);
-	rightSpeed = rightSpeed * fabs(rightSpeed) * (boost ? maxBoostSpeed : maxSpeed);
+    deadzone(leftSpeed);
+    deadzone(rightSpeed);
 
-	leftMotor.Set(leftSpeed);
-	rightMotor.Set(rightSpeed);
+    leftSpeed = leftSpeed * fabs(leftSpeed) * (boost ? maxBoostSpeed : maxSpeed);
+    rightSpeed = rightSpeed * fabs(rightSpeed) * (boost ? maxBoostSpeed : maxSpeed);
+
+    leftMotor.Set(leftSpeed);
+    rightMotor.Set(rightSpeed);
 }
