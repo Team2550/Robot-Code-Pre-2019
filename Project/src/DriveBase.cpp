@@ -1,10 +1,10 @@
 #include "DriveBase.h"
 
 DriveBase::DriveBase(Joystick& _driveController, Joystick& _perifController,
-                     float _maxSpeed, float _maxBoostSpeed, int leftPort, int rightPort) :
+                     float _maxSpeed, float _maxBoostSpeed) :
                      driveController(_driveController), perifController(_perifController),
                      maxSpeed(_maxSpeed), maxBoostSpeed(_maxBoostSpeed),
-                     leftMotor(leftPort), rightMotor(rightPort)
+                     leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
 {
     rightMotor.SetInverted(true);
 }
@@ -44,16 +44,4 @@ void DriveBase::TeleopPeriodic()
 
     leftMotor.Set(leftSpeed);
     rightMotor.Set(rightSpeed);
-}
-
-void DriveBase::driveForward(float speed)
-{
-    leftMotor.Set(speed);
-    rightMotor.Set(speed);
-}
-
-void DriveBase::stop()
-{
-    leftMotor.Set(0);
-    rightMotor.Set(0);
 }

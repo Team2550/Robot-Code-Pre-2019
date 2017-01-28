@@ -4,6 +4,7 @@
 #include <WPILib.h>
 #include <math.h>
 #include "Utility.h"
+#include "Ports.h"
 #include "Controls.h"
 
 class DriveBase {
@@ -17,7 +18,7 @@ private:
     VictorSP rightMotor;
 public:
     DriveBase(Joystick& _driveController, Joystick& _perifController,
-              float _maxSpeed, float _maxBoostSpeed, int rightPort, int leftPort);
+              float _maxSpeed, float _maxBoostSpeed);
     void RobotInit();
     void AutoInit();
     void AutoPeriodic();

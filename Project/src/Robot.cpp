@@ -4,7 +4,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-				 driveBase(driveController, perifController, 0.4, 0.8, 1, 0)
+				 driveBase(driveController, perifController, 0.4, 0.8)
 {
 
 }
