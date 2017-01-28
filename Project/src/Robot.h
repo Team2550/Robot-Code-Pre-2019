@@ -3,6 +3,7 @@
 
 #include <WPILib.h>
 #include "DriveBase.h"
+#include "Shooter.h"
 #include "Lift.h"
 #include "xBox.h"
 
