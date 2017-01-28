@@ -16,7 +16,6 @@ namespace Controls
 	{
 		const int Climb = xbox::btn::lb;
 		const int Shoot = xbox::btn::b;
-		const int StopShoot = xbox::btn::a;
 		const int IncreaseShootSpeed = xbox::btn::y;
 		const int DecreaseShootSpeed = xbox::btn::x;
 	}

@@ -28,7 +28,7 @@ void Shooter::TeleopInit()
 
 }
 
-void Shooter::TeleopPeriodic(bool _shoot, bool _stop, bool increaseSpeed, bool decreaseSpeed)
+void Shooter::TeleopPeriodic(bool _shoot, bool increaseSpeed, bool decreaseSpeed)
 {
 	if(decreaseSpeed && !didDecreaseSpeed)
 	{
@@ -48,10 +48,10 @@ void Shooter::TeleopPeriodic(bool _shoot, bool _stop, bool increaseSpeed, bool d
 
 	frc::SmartDashboard::PutNumber("shooterSpeed", shooterSpeed);
 
-	if(_stop)
-		stop();
-	else if(_shoot)
+	if(_shoot)
 		shoot(shooterSpeed);
+	else
+		stop();
 }
 
 void Shooter::shoot(float power)

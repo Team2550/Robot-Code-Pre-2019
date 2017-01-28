@@ -44,7 +44,6 @@ void Robot::TeleopPeriodic()
 	                         -driveController.GetRawAxis(Controls::TankDrive::Right),
 	                         driveController.GetRawButton(Controls::TankDrive::Boost));
 	shooter.TeleopPeriodic(perifController.GetRawButton(Controls::Peripherals::Shoot),
-	                       perifController.GetRawButton(Controls::Peripherals::StopShoot),
 						   perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed),
 						   perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed));
 }

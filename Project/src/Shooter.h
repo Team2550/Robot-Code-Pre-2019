@@ -17,7 +17,7 @@ public:
 	void AutoInit();
 	void AutoPeriodic();
 	void TeleopInit();
-	void TeleopPeriodic(bool _shoot, bool _stop, bool increaseSpeed, bool decreaseSpeed);
+	void TeleopPeriodic(bool _shoot, bool increaseSpeed, bool decreaseSpeed);
 
 	void shoot(float power = 1);
 	void stop();
