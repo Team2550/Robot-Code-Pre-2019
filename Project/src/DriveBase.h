@@ -16,6 +16,9 @@ private:
     float maxBoostSpeed;
     VictorSP leftMotor;
     VictorSP rightMotor;
+
+    Timer timer;
+    bool goingForwards;
 public:
     DriveBase(Joystick& _driveController, Joystick& _perifController,
               float _maxSpeed, float _maxBoostSpeed);
