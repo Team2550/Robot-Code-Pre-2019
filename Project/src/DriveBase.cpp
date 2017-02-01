@@ -43,7 +43,8 @@ void DriveBase::TeleopPeriodic()
     leftSpeed = leftSpeed * fabs(leftSpeed) * (boost ? maxBoostSpeed : maxSpeed);
     rightSpeed = rightSpeed * fabs(rightSpeed) * (boost ? maxBoostSpeed : maxSpeed);
 
-    leftSpeed = leftSpeed > 0 ? leftSpeed * 1.04 : leftSpeed;
+    leftSpeed = leftSpeed > 0 ? leftSpeed * 1.05 : leftSpeed;
+    leftSpeed = leftSpeed < 0 ? leftSpeed * 0.99 : leftSpeed;
 
     leftMotor.Set(leftSpeed);
     rightMotor.Set(rightSpeed);
