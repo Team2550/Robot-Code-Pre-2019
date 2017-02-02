@@ -14,11 +14,12 @@ private:
 
     float maxSpeed;
     float maxBoostSpeed;
+    float maxTurtleSpeed;
     VictorSP leftMotor;
     VictorSP rightMotor;
 public:
     DriveBase(Joystick& _driveController, Joystick& _perifController,
-              float _maxSpeed, float _maxBoostSpeed);
+              float _maxSpeed, float _maxBoostSpeed, float _maxTurtleSpeed);
     void RobotInit();
     void AutoInit();
     void AutoPeriodic();

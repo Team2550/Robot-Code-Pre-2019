@@ -2,9 +2,9 @@
 #include "Utility.h"
 
 DriveBase::DriveBase(Joystick& _driveController, Joystick& _perifController,
-                     float _maxSpeed, float _maxBoostSpeed) :
+                     float _maxSpeed, float _maxBoostSpeed, float _maxTurtleSpeed) :
                      driveController(_driveController), perifController(_perifController),
-                     maxSpeed(_maxSpeed), maxBoostSpeed(_maxBoostSpeed),
+                     maxSpeed(_maxSpeed), maxBoostSpeed(_maxBoostSpeed),maxTurtleSpeed(_maxTurtleSpeed),
                      leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
 {
     rightMotor.SetInverted(true);
@@ -36,13 +36,32 @@ void DriveBase::TeleopPeriodic()
     float leftSpeed = -driveController.GetRawAxis(Controls::TankDrive::Left);
     float rightSpeed = -driveController.GetRawAxis(Controls::TankDrive::Right);
     bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
+    bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
 
     Utility::deadzone(leftSpeed);
     Utility::deadzone(rightSpeed);
 
-    leftSpeed = leftSpeed * fabs(leftSpeed) * (boost ? maxBoostSpeed : maxSpeed);
-    rightSpeed = rightSpeed * fabs(rightSpeed) * (boost ? maxBoostSpeed : maxSpeed);
+    // Basic exponential speed control
+    leftSpeed *= fabs(leftSpeed);
+    rightSpeed *= fabs(rightSpeed);
 
+    if(boost)
+    {
+    	leftSpeed *= maxBoostSpeed;
+    	rightSpeed *= maxBoostSpeed;
+    }
+    else if(turtle)
+    {
+    	leftSpeed *= maxTurtleSpeed;
+    	rightSpeed *= maxTurtleSpeed;
+    }
+    else
+    {
+    	leftSpeed *= maxSpeed;
+    	rightSpeed *= maxSpeed;
+    }
+
+    // Accounts for physical offsets on the drive base
     leftSpeed = leftSpeed > 0 ? leftSpeed * 1.05 : leftSpeed;
     leftSpeed = leftSpeed < 0 ? leftSpeed * 0.99 : leftSpeed;
 
