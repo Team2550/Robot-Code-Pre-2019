@@ -30,6 +30,12 @@ void Lift::TeleopInit()
 void Lift::TeleopPeriodic()
 {
 	bool doLift = perifController.GetRawButton(Controls::Peripherals::Climb);
+	bool doLiftDown = perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5;
 
-	liftMotor.Set(doLift ? 1.0 : 0.0);
+	if(doLift)
+		liftMotor.Set(1.0);
+	else if(doLiftDown)
+		liftMotor.Set(-1.0);
+	else
+		liftMotor.Set(0);
 }

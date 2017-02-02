@@ -11,12 +11,12 @@ namespace Ports
 
 	namespace Shooter
 	{
-		const int Motor = 3;
+		const int Motor = 2;
 	}
 
 	namespace Lifter
 	{
-		const int Motor = 2;
+		const int Motor = 3;
 	}
 }
 
