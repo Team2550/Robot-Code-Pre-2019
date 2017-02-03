@@ -34,8 +34,8 @@ void Shooter::TeleopInit()
 void Shooter::TeleopPeriodic()
 {
 	bool _shoot = perifController.GetRawButton(Controls::Peripherals::Shoot);
-	bool increaseSpeed = perifController.GetRawButton(Controls::Peripherals::Shoot);
-	bool decreaseSpeed = perifController.GetRawButton(Controls::Peripherals::Shoot);
+	bool increaseSpeed = perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed);
+	bool decreaseSpeed = perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed);
 
 	if(decreaseSpeed && !didDecreaseSpeed)
 	{
