@@ -6,7 +6,7 @@
 Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(driveController, perifController, 0.4, 0.8, 0.25),
 				 shooter(driveController, perifController, 0.82),
-				 lift(driveController, perifController)
+				 lift(Ports::Lifter::Motor)
 {
 
 }
@@ -20,7 +20,6 @@ void Robot::RobotInit()
 {
 	driveBase.RobotInit();
 	shooter.RobotInit();
-	lift.RobotInit();
 }
 
 
@@ -28,28 +27,30 @@ void Robot::AutonomousInit()
 {
 	driveBase.AutoInit();
 	shooter.AutoInit();
-	lift.AutoInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
 	driveBase.AutoPeriodic();
 	shooter.AutoPeriodic();
-	lift.AutoPeriodic();
 }
 
 void Robot::TeleopInit()
 {
 	driveBase.TeleopInit();
 	shooter.TeleopInit();
-	lift.TeleopInit();
 }
 
 void Robot::TeleopPeriodic()
 {
 	driveBase.TeleopPeriodic();
 	shooter.TeleopPeriodic();
-	lift.TeleopPeriodic();
+	if(perifController.GetRawButton(Controls::Peripherals::Climb))
+		lift.lift();
+	else if(perifController.GetRawButton(Controls::Peripherals::ClimbDown))
+		lift.lower();
+	else
+		lift.stop();
 }
 
 START_ROBOT_CLASS(Robot)
