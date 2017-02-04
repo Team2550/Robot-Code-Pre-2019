@@ -25,7 +25,7 @@ example, Testbed\-Master\)\.
 </ul>
 <br>
 #### Example Commit:
-<img src="https://lh3.googleusercontent.com/Atshm_Xe3gMHUZ-beJ8keW8k3LxtDUXJkHz4bB3JfzH1qqGvcLiAzHVf_dVobJRV983nq_WoXtr_auXkgJyOq1IFwTU4J6xZuAwwkzCmIMXwjY3Gri-AmToOGc4TmxDxCRAlPi-prDifJWPamRsV6fI7nlwqozc80QpufK5pKm4ns2kK26qlUK85rcntJg3G2wnZ8zzdS40aHL7ZrBfMNxgDAJGuJhxjYsM2kma5qKTsWDvL4dwxISRPwLglUIE1ka_IH8zPGrANzSzcBwaF0uYgoRiIWDpMkQeM2TvSXb2u3u5yKRLwIZzqfmirh9xjAnR2AurjIUjoEkDA8-IBxm2jRxG3_5Vmph6VXuQCXs2O7p3LxF40Pk_jcoRKS1IEvcqq8O5RLKRf7j7ipC1thUl0fFITStct5uV6a5GFnLh5e77l9bG0AlJ4I8cGmw5WgtbGgAAw9Lr3ONrl3Hrt91F8Wii8YQXGZP0Gpom0C8DRx0_1xrTI6SBACaAAs7gyeJ64sWlt6VExaUg4ARSC9yJpc122Q0bkJnmefFt8sUNqLoNzAmWkK4KbsrPWM4OVFQcW7C2Y4V-DoLg_agTFYZDSwfJ3d76amaCOYXISFZF3gbpt_7jC=w1050-h586-no" 
+<img src="http://i.imgur.com/PoLYEs9.png" 
 width="500" height="250">
 
 # Repo Structure:
