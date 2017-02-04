@@ -1,4 +1,5 @@
 #include "Utility.h"
+#include <WPILib.h>
 
 /*================================================
 Name: deadzone
@@ -9,10 +10,9 @@ Arguments:
 Return:
 	none
 ================================================*/
-void Utility::deadzone(float& value, float tolerance)
+float Utility::deadzone(float value, float tolerance)
 {
-	if (fabs(value) <= tolerance)
-		value = 0;
+	return fabs(value) <= tolerance ? 0 : value;
 }
 
 void Utility::setRumble(Joystick& controller, Utility::RumbleSide rumbleSide, float rumbleAmount)

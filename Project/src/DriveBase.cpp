@@ -1,46 +1,15 @@
 #include "DriveBase.h"
 #include "Utility.h"
 
-DriveBase::DriveBase(Joystick& _driveController, Joystick& _perifController,
-                     float _maxSpeed, float _maxBoostSpeed, float _maxTurtleSpeed) :
-                     driveController(_driveController), perifController(_perifController),
-                     maxSpeed(_maxSpeed), maxBoostSpeed(_maxBoostSpeed),maxTurtleSpeed(_maxTurtleSpeed),
-                     leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
+DriveBase::DriveBase(int leftPort, int rightPort, float _maxSpeed, float _maxBoostSpeed, float _maxTurtleSpeed) :
+                     leftMotor(leftPort), rightMotor(rightPort),
+                     maxSpeed(_maxSpeed), maxBoostSpeed(_maxBoostSpeed), maxTurtleSpeed(_maxTurtleSpeed)
 {
     rightMotor.SetInverted(true);
 }
 
-void DriveBase::RobotInit()
+void DriveBase::drive(float leftSpeed, float rightSpeed, bool boost, bool turtle)
 {
-
-}
-
-void DriveBase::AutoInit()
-{
-
-}
-
-void DriveBase::AutoPeriodic()
-{
-
-}
-
-void DriveBase::TeleopInit()
-{
-    leftMotor.Set(0);
-    rightMotor.Set(0);
-}
-
-void DriveBase::TeleopPeriodic()
-{
-    float leftSpeed = -driveController.GetRawAxis(Controls::TankDrive::Left);
-    float rightSpeed = -driveController.GetRawAxis(Controls::TankDrive::Right);
-    bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
-    bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
-
-    Utility::deadzone(leftSpeed);
-    Utility::deadzone(rightSpeed);
-
     // Basic exponential speed control
     leftSpeed *= fabs(leftSpeed);
     rightSpeed *= fabs(rightSpeed);
@@ -67,4 +36,28 @@ void DriveBase::TeleopPeriodic()
 
     leftMotor.Set(leftSpeed);
     rightMotor.Set(rightSpeed);
+}
+
+void DriveBase::driveForward()
+{
+	leftMotor.Set(maxSpeed);
+	rightMotor.Set(maxSpeed);
+}
+
+void DriveBase::turnLeft()
+{
+	leftMotor.Set(-maxTurtleSpeed);
+	rightMotor.Set(maxTurtleSpeed);
+}
+
+void DriveBase::turnRight()
+{
+	leftMotor.Set(maxTurtleSpeed);
+	rightMotor.Set(-maxTurtleSpeed);
+}
+
+void DriveBase::stop()
+{
+	leftMotor.Set(0);
+	rightMotor.Set(0);
 }
