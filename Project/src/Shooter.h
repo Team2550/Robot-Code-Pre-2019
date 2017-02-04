@@ -10,7 +10,7 @@ private:
     Joystick& driveController;
     Joystick& perifController;
 
-	Spark shooterMotor; // If anyone has an idea for a better name, go ahead and change it!
+	VictorSP shooterMotor; // If anyone has an idea for a better name, go ahead and change it!
 	bool isShooting;
 
 	float shooterSpeed;
