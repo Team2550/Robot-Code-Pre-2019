@@ -32,6 +32,8 @@ width="500" height="250">
 <p>Our repository is made up of a branching system.</p>
 <br>
 <p>Every branch with the word "Master" in the title is made up of code that is guaranteed to work 100% of the time.</p>
+<p>Code committed to Master branches will be tagged according to
+<a href="http://semver.org/">this guide</a>.
 <p>All unstable or development code is located in branches off the "Master" branches.</p>
 >see image below
 
