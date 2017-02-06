@@ -1,4 +1,6 @@
 #include "Robot.h"
+#include "Ports.h"
+#include "Controls.h"
 
 // driver: (int) xBox controller number
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
@@ -6,7 +8,7 @@
 Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(Ports::TankDrive::Left, Ports::TankDrive::Right, 0.4, 0.8, 0.25),
 				 shooter(Ports::Shooter::Motor, 0.82),
-				 lift(driveController, perifController)
+				 lift(Ports::Lifter::Motor)
 {
 
 }
@@ -18,22 +20,22 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	lift.RobotInit();
+
 }
 
 void Robot::AutonomousInit()
 {
-	lift.AutoInit();
+
 }
 
 void Robot::AutonomousPeriodic()
 {
-	lift.AutoPeriodic();
+
 }
 
 void Robot::TeleopInit()
 {
-	lift.TeleopInit();
+
 }
 
 void Robot::TeleopPeriodic()
@@ -48,7 +50,12 @@ void Robot::TeleopPeriodic()
 	else
 		shooter.stop();
 
-	lift.TeleopPeriodic();
+	if(perifController.GetRawButton(xbox::btn::lb))
+		lift.lift();
+	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
+		lift.lower();
+	else
+		lift.stop();
 }
 
 START_ROBOT_CLASS(Robot)
