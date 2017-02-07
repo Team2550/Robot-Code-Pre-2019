@@ -17,6 +17,7 @@ private:
 	Shooter shooter;
 	Lift lift;
 
+	Timer timer;
 public:
 	Robot();
 	~Robot();

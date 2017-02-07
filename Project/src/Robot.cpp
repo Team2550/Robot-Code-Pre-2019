@@ -25,12 +25,20 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
-
+	timer.Reset();
+	timer.Start();
 }
 
 void Robot::AutonomousPeriodic()
 {
-
+	if(timer.Get() <= 3.000)
+	{
+		driveBase.driveForward();
+	}
+	else
+	{
+		driveBase.stop();
+	}
 }
 
 void Robot::TeleopInit()
