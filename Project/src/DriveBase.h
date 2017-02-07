@@ -17,6 +17,7 @@ public:
 
     void drive(float leftSide, float rightSide, bool boost, bool turtle);
     void driveForward();
+    void driveBackwards();
     void turnLeft();
     void turnRight();
     void stop();
