@@ -33,7 +33,15 @@ void Robot::AutonomousPeriodic()
 {
 	if(timer.Get() <= 3.000)
 	{
+		driveBase.driveBackwards();
+	}
+	else if(timer.Get() >= 8.000 && timer.Get() <= 9.000)
+	{
 		driveBase.driveForward();
+	}
+	else if(timer.Get() > 9.000 && timer.Get() <= 11.000)
+	{
+
 	}
 	else
 	{
