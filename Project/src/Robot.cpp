@@ -8,7 +8,7 @@
 Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(),
 				 shooter(Ports::Shooter::Motor, 0.82),
-				 lift(Ports::Lifter::Motor)
+				 lift()
 {
 
 }
@@ -54,6 +54,7 @@ void Robot::TeleopPeriodic()
 	else
 		shooter.stop();
 
+	/* ========== Lift ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Climb))
 		lift.lift();
 	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)

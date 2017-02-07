@@ -3,13 +3,15 @@
 
 #include <WPILib.h>
 #include <math.h>
+#include "Ports.h"
 #include "Utility.h"
 
 class Lift {
 private:
     Spark liftMotor;
 public:
-	Lift(int liftPort);
+	Lift();
+
 	void lift();
 	void lower();
 	void stop();
