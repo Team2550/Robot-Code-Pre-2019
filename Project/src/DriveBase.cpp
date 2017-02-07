@@ -44,6 +44,12 @@ void DriveBase::driveForward()
 	rightMotor.Set(maxSpeed);
 }
 
+void DriveBase::driveBackwards()
+{
+	leftMotor.Set(-maxSpeed);
+	rightMotor.Set(-maxSpeed);
+}
+
 void DriveBase::turnLeft()
 {
 	leftMotor.Set(-maxTurtleSpeed);
