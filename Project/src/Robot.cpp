@@ -7,7 +7,7 @@
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(),
-				 shooter(Ports::Shooter::Motor, 0.82),
+				 shooter(),
 				 lift()
 {
 
@@ -49,6 +49,7 @@ void Robot::TeleopPeriodic()
 	driveBase.drive(leftSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)),
 					rightSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)));
 
+	/* ========== Shooter ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
 		shooter.shoot();
 	else
