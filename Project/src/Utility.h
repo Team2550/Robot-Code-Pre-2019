@@ -19,7 +19,7 @@ namespace Utility
 	Return:
 		none
 	=================================================*/
-	void deadzone(float& value, float tolerance = 0.2);
+	float deadzone(float value, float tolerance = 0.2);
 
 	/*=================================================
 	Name: setRumble

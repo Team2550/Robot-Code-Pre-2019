@@ -4,22 +4,17 @@
 #include <WPILib.h>
 #include <math.h>
 #include "Utility.h"
-#include "Ports.h"
-#include "Controls.h"
+#include "Constants.h"
 
 class Lift {
 private:
-    Joystick& driveController;
-    Joystick& perifController;
-
-	Spark liftMotor;
+    Spark liftMotor;
 public:
-	Lift(Joystick& _driveController, Joystick& _perifController);
-	void RobotInit();
-	void AutoInit();
-	void AutoPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic();
+	Lift();
+
+	void lift();
+	void lower();
+	void stop();
 };
 
 #endif
