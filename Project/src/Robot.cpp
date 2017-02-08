@@ -31,13 +31,14 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
+	/* ========== DriveBase ========== */
 	if(timer.Get() <= 3.000)
 	{
-		driveBase.driveBackwards();
+		driveBase.drive(-0.4);
 	}
 	else if(timer.Get() >= 8.000 && timer.Get() <= 9.000)
 	{
-		driveBase.driveForward();
+		driveBase.drive(0.4);
 	}
 	else if(timer.Get() > 9.000 && timer.Get() <= 11.000)
 	{
