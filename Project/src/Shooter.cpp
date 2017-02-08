@@ -1,12 +1,10 @@
 #include <WPILib.h>
 #include "Shooter.h"
 
-Shooter::Shooter(int shooterPort, float _shooterSpeed) :
-				 shooterMotor(shooterPort), shooterSpeed(_shooterSpeed)
+Shooter::Shooter() :
+				 shooterMotor(Ports::Shooter::Motor), shooterSpeed(0.82)
 {
-	isShooting = false;
-	didDecreaseSpeed = false;
-	didIncreaseSpeed = false;
+
 }
 
 void Shooter::shoot()

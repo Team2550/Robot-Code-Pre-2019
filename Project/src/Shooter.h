@@ -2,17 +2,15 @@
 #define SHOOTER_H
 
 #include <WPILib.h>
+#include "Constants.h"
 
 class Shooter {
 private:
-    VictorSP shooterMotor; // If anyone has an idea for a better name, go ahead and change it!
-	bool isShooting;
+    VictorSP shooterMotor;
 
-	float shooterSpeed;
-	bool didDecreaseSpeed;
-	bool didIncreaseSpeed;
+    float shooterSpeed;
 public:
-	Shooter(int shooterPort, float _shooterSpeed);
+	Shooter();
 
 	void shoot();
 	void stop();
