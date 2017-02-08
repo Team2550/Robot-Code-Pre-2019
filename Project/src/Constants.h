@@ -7,8 +7,8 @@ namespace Ports
 {
 	namespace TankDrive
 	{
-		const int Left = 0;
-		const int Right = 1;
+		const int Left = 1;
+		const int Right = 0;
 	}
 
 	namespace Shooter
@@ -29,11 +29,13 @@ namespace Controls
 		const int Left = xbox::axis::leftY;
 		const int Right = xbox::axis::rightY;
 		const int Boost = xbox::btn::rb;
+		const int Turtle = xbox::btn::lb;
 	}
 
 	namespace Peripherals
 	{
 		const int Climb = xbox::btn::lb;
+		const int ClimbDown = xbox::axis::LT;
 		const int Shoot = xbox::btn::b;
 		const int IncreaseShootSpeed = xbox::btn::y;
 		const int DecreaseShootSpeed = xbox::btn::x;
