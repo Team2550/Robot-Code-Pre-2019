@@ -3,8 +3,8 @@
 
 #include <WPILib.h>
 #include <math.h>
-#include "Ports.h"
 #include "Utility.h"
+#include "Constants.h"
 
 class Lift {
 private:
