@@ -1,6 +1,4 @@
 #include "Robot.h"
-#include "Ports.h"
-#include "Controls.h"
 
 // driver: (int) xBox controller number
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
