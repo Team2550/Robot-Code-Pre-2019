@@ -4,8 +4,7 @@
 #include <WPILib.h>
 #include <math.h>
 #include "Utility.h"
-#include "Ports.h"
-#include "Controls.h"
+#include "Constants.h"
 
 class Lift {
 private:

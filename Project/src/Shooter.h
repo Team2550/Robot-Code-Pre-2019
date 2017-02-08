@@ -2,8 +2,7 @@
 #define SHOOTER_H
 
 #include <WPILib.h>
-#include "Ports.h"
-#include "Controls.h"
+#include "Constants.h"
 
 class Shooter {
 private:
