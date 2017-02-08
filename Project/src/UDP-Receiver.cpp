@@ -5,45 +5,6 @@ UDP_Receiver::UDP_Receiver()
 	createUDPSocket();
 }
 
-void UDP_Receiver::RobotInit()
-{
-
-}
-
-void UDP_Receiver::AutoInit()
-{
-
-}
-
-void UDP_Receiver::AutoPeriodic()
-{
-	checkUDP();
-
-	printf("As numbers:");
-
-	for (int i = 0; i < 4; i++)
-		printf(std::to_string(newestUDPData[i]).c_str());
-
-	printf("\n");
-}
-
-void UDP_Receiver::TeleopInit()
-{
-
-}
-
-void UDP_Receiver::TeleopPeriodic()
-{
-	checkUDP();
-
-	printf("As numbers:");
-
-	for (int i = 0; i < 4; i++)
-		printf(std::to_string(newestUDPData[i]).c_str());
-
-	printf("\n");
-}
-
 /*================================================
 Name: getUDPData
 Desc: Returns the most recent UDP data

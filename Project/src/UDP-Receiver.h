@@ -22,16 +22,11 @@ private:
 	int newestUDPData[];
 
 	int createUDPSocket();
-	void checkUDP();
 	void getNumsFromString(unsigned char str[], int length, int nums[]);
 public:
 	UDP_Receiver();
-	void RobotInit();
-	void AutoInit();
-	void AutoPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic();
 
+	void checkUDP();
 	int* getUDPData();
 };
 
