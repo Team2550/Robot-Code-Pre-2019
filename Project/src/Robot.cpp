@@ -28,7 +28,15 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
+	/* ========== udpReceiver ========== */
+	udpReceiver.checkUDP();
 
+	printf("As numbers:");
+
+	for (int i = 0; i < 4; i++)
+		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+
+	printf("\n");
 }
 
 void Robot::TeleopInit()
@@ -39,6 +47,16 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+	/* ========== udpReceiver ========== */
+	udpReceiver.checkUDP();
+
+	printf("As numbers:");
+
+	for (int i = 0; i < 4; i++)
+		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+
+	printf("\n");
+
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
