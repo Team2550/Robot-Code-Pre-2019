@@ -10,6 +10,7 @@
 
 #define BUFSIZE      2048
 #define SERVICE_PORT 8890	/* hard-coded port number */
+#define MSG_NOBLOCK 0x01
 
 class UDP_Receiver {
 private:

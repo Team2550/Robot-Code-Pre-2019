@@ -61,7 +61,7 @@ void UDP_Receiver::checkUDP()
 	printf("waiting on port %d\n", SERVICE_PORT);
 
 	bytesRecievedCount =
-			recvfrom(ourSocket, buffer, BUFSIZE, 0, (struct sockaddr *)&remoteAddress, &addressLength);
+			recvfrom(ourSocket, buffer, BUFSIZE, MSG_NOBLOCK, (struct sockaddr *)&remoteAddress, &addressLength);
 
 	printf("received %d bytes\n", bytesRecievedCount);
 
