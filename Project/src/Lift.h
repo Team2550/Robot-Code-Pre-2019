@@ -9,6 +9,7 @@
 class Lift {
 private:
     Spark liftMotor;
+
 public:
 	Lift();
 
