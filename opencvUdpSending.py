@@ -8,9 +8,9 @@
 
 
 
-#import cv2
+import cv2
 
-#import numpy as np
+import numpy as np
 
 import os
 
@@ -22,47 +22,46 @@ from array import*
 
 ###################################################################################################
 
-UDP_IP = "10.25.50.55"    #declares udp ip and port
+#UDP_IP = "10.25.50.55"    #declares udp ip and port
+UDP_IP = "192.168.2.201"
 UDP_PORT = 8890
 
 def main():
-##
-##
-##
-##    capWebcam = cv2.VideoCapture(0)                     # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
-##
-##
-##
-##                                                        # show original resolution
-##
-##    print "default resolution = " + str(capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH)) + "x" + str(capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
-##
-##
-##
-##    capWebcam.set(cv2.CAP_PROP_FRAME_WIDTH, 320.0)              # change resolution to 320x240 for faster processing
-##
-##    capWebcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 240.0)
-##
-##
-##
-##                                                        # show updated resolution
-##
-##    print "updated resolution = " + str(capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH)) + "x" + str(capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
-##
-##
-##
-##    if capWebcam.isOpened() == False:                           # check if VideoCapture object was associated to webcam successfully
-##
-##        print "error: capWebcam not accessed successfully\n\n"          # if not, print error message to std out
-##
-##        os.system("pause")                                              # pause until user presses a key so user can see error message
-##
-##        return                                                          # and exit function (which exits program)
-##
-##    # end if
-##
-##
-##
+
+
+
+    capWebcam = cv2.VideoCapture(0)                     # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
+
+
+
+                                                        # show original resolution
+
+    print("default resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+
+
+    capWebcam.set(cv2.CAP_PROP_FRAME_WIDTH, 320.0)              # change resolution to 320x240 for faster processing
+
+    capWebcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 240.0)
+
+
+
+                                                        # show updated resolution
+
+    print("updated resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+
+
+    if capWebcam.isOpened() == False:                           # check if VideoCapture object was associated to webcam successfully
+
+        print("error: capWebcam not accessed successfully\n\n")          # if not, print error message to std out
+
+        capWebcam.release()
+        
+        return                                                          # and exit function (which exits program)
+
+
+
 ##    while cv2.waitKey(1) != 27 and capWebcam.isOpened():                # until the Esc key is pressed or webcam connection is lost
 ##
 ##        blnFrameReadSuccessfully, imgOriginal = capWebcam.read()            # read next frame
@@ -120,33 +119,35 @@ def main():
 ##                x, y, radius = circle                                                                       # break out x, y, and radius
 ##
 ##                print "ball position x = " + str(x) + ", y = " + str(y) + ", radius = " + str(radius)       # print ball position and radius
-##
+
     test_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    #arr = array('i',[1,3,2])
-    arr = "1 2 3" #places x and y into a string
+    arr = array('i',[1,3,2])
+    data = ' '.join(str(x) for x in arr.tolist())
 
     running = True
     while running:
         try:
-            test_socket.connect((UDP_IP, UDP_PORT)) #connects to socket
-            test_socket.sendto(bytes(arr), (UDP_IP, UDP_PORT)) #sends array to socket
+            #test_socket.connect((UDP_IP, UDP_PORT)) #connects to socket
+            test_socket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
             print("sent")
 
         except Exception:
             running = False
             test_socket.close()
+            capWebcam.release()
             raise
+        
         running=False
         #test_socket.close()
 
-                # end for
+                #end for
 
-            # end if
-
-
+            #end if
 
 
 
+    capWebcam.release()
+    
     return
 
 
