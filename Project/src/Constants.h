@@ -52,6 +52,12 @@ namespace Speeds
 	}
 
 	const float Shooter = 0.82;
+
+	namespace Lift
+	{
+		const float Lift = 1;
+		const float Lower = -5;
+	}
 }
 
 #endif

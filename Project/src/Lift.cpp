@@ -7,12 +7,12 @@ Lift::Lift() : liftMotor(Ports::Lifter::Motor)
 
 void Lift::lift()
 {
-	liftMotor.Set(1);
+	liftMotor.Set(Speeds::Lift::Lift);
 }
 
 void Lift::lower()
 {
-	liftMotor.Set(-5);
+	liftMotor.Set(Speeds::Lift::Lower);
 }
 
 void Lift::stop()
