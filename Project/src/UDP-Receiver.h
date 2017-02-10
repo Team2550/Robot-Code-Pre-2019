@@ -19,7 +19,7 @@ private:
 	socklen_t addressLength = sizeof(remoteAddress);
 	int bytesRecievedCount;
 	unsigned char buffer[BUFSIZE];
-	int newestUDPData[];
+	int newestUDPData[4] = {-1, -1, -1, -1};
 
 	int createUDPSocket();
 	void getNumsFromString(unsigned char str[], int length, int nums[]);
