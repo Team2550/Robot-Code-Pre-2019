@@ -2,14 +2,14 @@
 #include "Shooter.h"
 
 Shooter::Shooter() :
-				 shooterMotor(Ports::Shooter::Motor), shooterSpeed(0.82)
+				 shooterMotor(Ports::Shooter::Motor)
 {
 
 }
 
 void Shooter::shoot()
 {
-	shooterMotor.Set(shooterSpeed);
+	shooterMotor.Set(Speeds::Shooter);
 }
 
 void Shooter::stop()

@@ -50,6 +50,8 @@ namespace Speeds
 		const float Boost = 0.8;
 		const float Turtle = 0.25;
 	}
+
+	const float Shooter = 0.82;
 }
 
 #endif
