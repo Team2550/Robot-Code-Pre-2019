@@ -97,28 +97,23 @@ void UDP_Receiver::getNumsFromString(unsigned char str[], int length, int nums[]
 	int end = 0;
 	int i = 0;
 
-	std::vector<char> currentNum;
+	char currentNum[BUFSIZE] = {};
 
 	while(start < length)
 	{
-		currentNum.clear();
-
-		end = start;
-
-		while( str[end] != ' ' && end >= length )
+		while( str[end] != ' ' && end < length )
 			end++;
 
-		int j;
-		for (j = 0; start < end; start++, j++)
+		int j = 0;
+		for (; start < end; start++, j++)
 		{
-			currentNum.push_back(str[start]);
+			currentNum[j] = str[start];
 		}
 
-		currentNum.push_back(0);
+		currentNum[j] = '\0';
 
-		char* currentNumArray = &currentNum[0];
-		nums[i] = atoi(currentNumArray);
+		nums[i] = atoi(currentNum);
 
-		start = end + 1;
+		start = ++end;
 	}
 }
