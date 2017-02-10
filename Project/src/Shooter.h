@@ -8,7 +8,6 @@ class Shooter {
 private:
     VictorSP shooterMotor;
 
-    float shooterSpeed;
 public:
 	Shooter();
 
