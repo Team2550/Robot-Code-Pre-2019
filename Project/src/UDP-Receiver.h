@@ -10,7 +10,6 @@
 
 #define BUFSIZE      2048
 #define SERVICE_PORT 8890	/* hard-coded port number */
-#define MSG_NOBLOCK 0x01
 
 class UDP_Receiver {
 private:
@@ -20,7 +19,7 @@ private:
 	socklen_t addressLength = sizeof(remoteAddress);
 	int bytesRecievedCount;
 	unsigned char buffer[BUFSIZE];
-	int newestUDPData[];
+	int newestUDPData[4] = {-1, -1, -1, -1};
 
 	int createUDPSocket();
 	void getNumsFromString(unsigned char str[], int length, int nums[]);
