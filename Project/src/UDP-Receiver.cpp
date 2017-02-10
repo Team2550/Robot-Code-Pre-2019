@@ -29,7 +29,7 @@ Return:
 int UDP_Receiver::createUDPSocket()
 {
 	if ((ourSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		perror("cannot create socket\n");
+		perror("Cannot create socket\n");
 		return 1;
 	}
 
@@ -58,14 +58,22 @@ Return:
 ================================================*/
 void UDP_Receiver::checkUDP()
 {
-	printf("waiting on port %d\n", SERVICE_PORT);
+	printf("Waiting on port %d\n", SERVICE_PORT);
 
-	bytesRecievedCount =
-			recvfrom(ourSocket, buffer, BUFSIZE, 0, (struct sockaddr *)&remoteAddress, &addressLength);
+	int bytesRecievedCount = 0;
 
-	printf("received %d bytes\n", bytesRecievedCount);
+	try
+	{
+		bytesRecievedCount = recvfrom(ourSocket, buffer, BUFSIZE, MSG_DONTWAIT, (struct sockaddr *)&remoteAddress, &addressLength);
+	}
+	catch (const int e)
+	{
+		bytesRecievedCount = 0;
+	}
 
 	if (bytesRecievedCount > 0) {
+		printf("received %d bytes\n", bytesRecievedCount);
+
 		buffer[bytesRecievedCount] = 0;
 		printf("received message: \"%s\"\n", buffer);
 

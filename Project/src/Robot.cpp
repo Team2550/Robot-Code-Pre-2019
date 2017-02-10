@@ -31,10 +31,13 @@ void Robot::AutonomousPeriodic()
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
-	printf("As numbers:");
+	printf("As numbers: ");
 
 	for (int i = 0; i < 4; i++)
+	{
 		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+		printf(", ");
+	}
 
 	printf("\n");
 }
@@ -53,7 +56,10 @@ void Robot::TeleopPeriodic()
 	printf("As numbers:");
 
 	for (int i = 0; i < 4; i++)
+	{
+		printf(i > 0 ? ", " : " ");
 		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+	}
 
 	printf("\n");
 
@@ -79,6 +85,9 @@ void Robot::TeleopPeriodic()
 		lift.lower();
 	else
 		lift.stop();
+
+	/* ==================== */
+	printf("\n");
 }
 
 START_ROBOT_CLASS(Robot)
