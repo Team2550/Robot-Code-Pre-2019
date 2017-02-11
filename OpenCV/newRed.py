@@ -24,22 +24,28 @@ def processCamera(capWebcam):
 
     try:
         imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
+        
+        lowerGreen = np.array([75,200,200])
+        upperGreen = np.array([85,255,255])
 
-        imgThreshLow = cv2.inRange(imgHSV, np.array([0, 135, 135]), np.array([18, 255, 255]))
-        imgThreshHigh = cv2.inRange(imgHSV, np.array([165, 135, 135]), np.array([179, 255, 255]))
+        mask = cv2.inRange(hsv, lower_green, upper_green)
 
-        imgThresh = cv2.add(imgThreshLow, imgThreshHigh)
-        imgThresh = cv2.GaussianBlur(imgThresh, (3, 3), 2)
-        imgThresh = cv2.dilate(imgThresh, np.ones((5,5), np.uint8))
-        imgThresh = cv2.erode(imgThresh, np.ones((5,5), np.uint8))
+        res = cv2.bitwise_and(frame,frame, mask= mask)
+        
+        cv2.imwrite("maskedImage.png", res);
+        
+        #imgThresh = cv2.add(imgThreshLow, imgThreshHigh)
+        #imgThresh = cv2.GaussianBlur(imgThresh, (3, 3), 2)
+        #imgThresh = cv2.dilate(imgThresh, np.ones((5,5), np.uint8))
+        #imgThresh = cv2.erode(imgThresh, np.ones((5,5), np.uint8))
 
-        intRows, intColumns = imgThresh.shape
+        #intRows, intColumns = imgThresh.shape
 
-        circles = cv2.HoughCircles(imgThresh, cv2.HOUGH_GRADIENT, 5, intRows / 4)      # fill variable circles with all circles in the processed image
+        ##circles = cv2.HoughCircles(imgThresh, cv2.HOUGH_GRADIENT, 5, intRows / 4)      # fill variable circles with all circles in the processed image
 
-        if circles is not None: # this line is necessary to keep program from crashing on next line if no circles were found
-            for circle in circles[0]:
-                return circle
+        #if circles is not None: # this line is necessary to keep program from crashing on next line if no circles were found
+        #    for circle in circles[0]:
+        #        return circle
             
         return -1, -1, -1
         
@@ -92,6 +98,8 @@ def main():
             capWebcam.release()
             
             raise
+            
+        running = False
 
     capWebcam.release()
     
@@ -102,4 +110,3 @@ def main():
 if __name__ == "__main__":
 
     main()
-
