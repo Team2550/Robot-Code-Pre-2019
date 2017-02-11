@@ -3,6 +3,8 @@
 UDP_Receiver::UDP_Receiver()
 {
 	createUDPSocket();
+
+	udpAgeTimer.Start();
 }
 
 /*================================================
@@ -13,9 +15,22 @@ Arguments:
 Return:
 	Array of ints from UDP
 ================================================*/
-int* UDP_Receiver::getUDPData()
+float* UDP_Receiver::getUDPData()
 {
 	return newestUDPData;
+}
+
+/*================================================
+Name: getUDPDataAge
+Desc: Returns the age of the UDP data
+Arguments:
+	none
+Return:
+	Seconds since data was last received
+================================================*/
+double UDP_Receiver::getUDPDataAge()
+{
+	return udpAgeTimer.Get();
 }
 
 /*================================================
@@ -58,8 +73,6 @@ Return:
 ================================================*/
 void UDP_Receiver::checkUDP()
 {
-	printf("Waiting on port %d\n", SERVICE_PORT);
-
 	int bytesRecievedCount = 0;
 
 	try
@@ -72,12 +85,19 @@ void UDP_Receiver::checkUDP()
 	}
 
 	if (bytesRecievedCount > 0) {
-		printf("received %d bytes\n", bytesRecievedCount);
+		printf("Received %d bytes\n", bytesRecievedCount);
 
 		buffer[bytesRecievedCount] = 0;
-		printf("received message: \"%s\"\n", buffer);
+		printf("Received message: \"%s\"\n", buffer);
 
-		getNumsFromString(buffer, bytesRecievedCount, newestUDPData);
+		float newUDPData[3] = {};
+		getNumsFromString(buffer, bytesRecievedCount, newUDPData);
+
+		if (newUDPData[0] != -1)
+		{
+			memcpy(newestUDPData, newUDPData, sizeof(newUDPData));
+			udpAgeTimer.Reset();
+		}
 	}
 }
 
@@ -91,34 +111,29 @@ Arguments:
 Return:
 	none
 ================================================*/
-void UDP_Receiver::getNumsFromString(unsigned char str[], int length, int nums[])
+void UDP_Receiver::getNumsFromString(unsigned char str[], int length, float nums[])
 {
 	int start = 0;
 	int end = 0;
 	int i = 0;
 
-	std::vector<char> currentNum;
+	char currentNum[BUFSIZE] = {};
 
-	while(start < length)
+	while(i < length && start < BUFSIZE)
 	{
-		currentNum.clear();
-
-		end = start;
-
-		while( str[end] != ' ' && end >= length )
+		while(str[end] != ' ' && end < BUFSIZE)
 			end++;
 
-		int j;
-		for (j = 0; start < end; start++, j++)
+		int j = 0;
+		for (; start < end; start++, j++)
 		{
-			currentNum.push_back(str[start]);
+			currentNum[j] = str[start];
 		}
 
-		currentNum.push_back(0);
+		currentNum[j] = '\0';
 
-		char* currentNumArray = &currentNum[0];
-		nums[i] = atoi(currentNumArray);
+		nums[i++] = atof(currentNum);
 
-		start = end + 1;
+		start = ++end;
 	}
 }
