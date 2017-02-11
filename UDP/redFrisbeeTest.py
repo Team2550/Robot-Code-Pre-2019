@@ -65,7 +65,7 @@ def main():
     while (running and cv2.waitKey(1) != 27 and capWebcam.isOpened()):
         x, y, radius = processCamera(capWebcam)
 
-        arr = array('i', [x, y, radius])
+        arr = array('i', [int(x), int(y), int(radius)])
         
         try:
             data = ' '.join(str(x) for x in arr.tolist())
