@@ -53,7 +53,7 @@ void Robot::TeleopPeriodic()
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
-	if (udpReceiver.getUDPDataAge() < 500)
+	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
 		printf("New UDP data:");
 
@@ -93,7 +93,6 @@ void Robot::TeleopPeriodic()
 		lift.stop();
 
 	/* ==================== */
-	printf("\n");
 }
 
 START_ROBOT_CLASS(Robot)

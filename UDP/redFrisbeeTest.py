@@ -6,6 +6,8 @@ import socket
 
 ###################################################################################################
 
+CAMERA_IP = "http://axis-camera.local/mjpg/video.mjpg"
+
 UDP_IP = socket.gethostbyname("roboRIO-2550-FRC.local")    #declares udp ip and port
 UDP_PORT = 8890
 
@@ -44,7 +46,7 @@ def processCamera(capWebcam):
         return -1, -1, -1
 
 def main():
-    capWebcam = cv2.VideoCapture(0) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
+    capWebcam = cv2.VideoCapture(CAMERA_IP) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
 
     # show original resolution
 
