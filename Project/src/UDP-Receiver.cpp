@@ -15,7 +15,7 @@ Arguments:
 Return:
 	Array of ints from UDP
 ================================================*/
-int* UDP_Receiver::getUDPData()
+float* UDP_Receiver::getUDPData()
 {
 	return newestUDPData;
 }
@@ -26,9 +26,9 @@ Desc: Returns the age of the UDP data
 Arguments:
 	none
 Return:
-	Milliseconds since data was last received
+	Seconds since data was last received
 ================================================*/
-unsigned long UDP_Receiver::getUDPDataAge()
+double UDP_Receiver::getUDPDataAge()
 {
 	return udpAgeTimer.Get();
 }
@@ -73,8 +73,6 @@ Return:
 ================================================*/
 void UDP_Receiver::checkUDP()
 {
-	printf("Waiting on port %d\n", SERVICE_PORT);
-
 	int bytesRecievedCount = 0;
 
 	try
@@ -87,15 +85,19 @@ void UDP_Receiver::checkUDP()
 	}
 
 	if (bytesRecievedCount > 0) {
-		printf("received %d bytes\n", bytesRecievedCount);
+		printf("Received %d bytes\n", bytesRecievedCount);
 
 		buffer[bytesRecievedCount] = 0;
-		printf("received message: \"%s\"\n", buffer);
+		printf("Received message: \"%s\"\n", buffer);
 
-		getNumsFromString(buffer, bytesRecievedCount, newestUDPData);
+		float newUDPData[3] = {};
+		getNumsFromString(buffer, bytesRecievedCount, newUDPData);
 
-		if (newestUDPData[0] > -1)
+		if (newUDPData[0] != -1)
+		{
+			memcpy(newestUDPData, newUDPData, sizeof(newUDPData));
 			udpAgeTimer.Reset();
+		}
 	}
 }
 
@@ -109,7 +111,7 @@ Arguments:
 Return:
 	none
 ================================================*/
-void UDP_Receiver::getNumsFromString(unsigned char str[], int length, int nums[])
+void UDP_Receiver::getNumsFromString(unsigned char str[], int length, float nums[])
 {
 	int start = 0;
 	int end = 0;
@@ -130,7 +132,7 @@ void UDP_Receiver::getNumsFromString(unsigned char str[], int length, int nums[]
 
 		currentNum[j] = '\0';
 
-		nums[i++] = atoi(currentNum);
+		nums[i++] = atof(currentNum);
 
 		start = ++end;
 	}

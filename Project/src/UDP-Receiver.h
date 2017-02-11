@@ -20,18 +20,18 @@ private:
 	socklen_t addressLength = sizeof(remoteAddress);
 	int bytesRecievedCount;
 	unsigned char buffer[BUFSIZE];
-	int newestUDPData[4] = {-1, -1, -1};
+	float newestUDPData[4] = {-1, -1, -1};
 
 	Timer udpAgeTimer;
 
 	int createUDPSocket();
-	void getNumsFromString(unsigned char str[], int length, int nums[]);
+	void getNumsFromString(unsigned char str[], int length, float nums[]);
 public:
 	UDP_Receiver();
 
 	void checkUDP();
-	int* getUDPData();
-	unsigned long getUDPDataAge();
+	float* getUDPData();
+	double getUDPDataAge();
 };
 
 #endif
