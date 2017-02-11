@@ -32,10 +32,13 @@ void Robot::AutonomousPeriodic()
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
-	printf("As numbers:");
+	printf("As numbers: ");
 
 	for (int i = 0; i < 4; i++)
+	{
 		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+		printf(", ");
+	}
 
 	printf("\n");
 
@@ -72,7 +75,10 @@ void Robot::TeleopPeriodic()
 	printf("As numbers:");
 
 	for (int i = 0; i < 4; i++)
+	{
+		printf(i > 0 ? ", " : " ");
 		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+	}
 
 	printf("\n");
 
@@ -81,8 +87,9 @@ void Robot::TeleopPeriodic()
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
 	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
 	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
-	driveBase.drive(leftSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)),
-					rightSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)));
+	float speed = turtle ? Speeds::TankDrive::Turtle : (boost ? Speeds::TankDrive::Boost : Speeds::TankDrive::Normal);
+	driveBase.drive(leftSpeed *speed,
+					rightSpeed * speed);
 
 	/* ========== Shooter ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
@@ -97,6 +104,9 @@ void Robot::TeleopPeriodic()
 		lift.lower();
 	else
 		lift.stop();
+
+	/* ==================== */
+	printf("\n");
 }
 
 START_ROBOT_CLASS(Robot)
