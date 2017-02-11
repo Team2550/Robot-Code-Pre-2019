@@ -3,6 +3,8 @@
 UDP_Receiver::UDP_Receiver()
 {
 	createUDPSocket();
+
+	udpAgeTimer.Start();
 }
 
 /*================================================
@@ -16,6 +18,19 @@ Return:
 int* UDP_Receiver::getUDPData()
 {
 	return newestUDPData;
+}
+
+/*================================================
+Name: getUDPDataAge
+Desc: Returns the age of the UDP data
+Arguments:
+	none
+Return:
+	Milliseconds since data was last received
+================================================*/
+unsigned long UDP_Receiver::getUDPDataAge()
+{
+	return udpAgeTimer.Get();
 }
 
 /*================================================
@@ -78,6 +93,9 @@ void UDP_Receiver::checkUDP()
 		printf("received message: \"%s\"\n", buffer);
 
 		getNumsFromString(buffer, bytesRecievedCount, newestUDPData);
+
+		if (newestUDPData[0] > -1)
+			udpAgeTimer.Reset();
 	}
 }
 
@@ -99,9 +117,9 @@ void UDP_Receiver::getNumsFromString(unsigned char str[], int length, int nums[]
 
 	char currentNum[BUFSIZE] = {};
 
-	while(start < length)
+	while(i < length && start < BUFSIZE)
 	{
-		while( str[end] != ' ' && end < length )
+		while(str[end] != ' ' && end < BUFSIZE)
 			end++;
 
 		int j = 0;
@@ -112,7 +130,7 @@ void UDP_Receiver::getNumsFromString(unsigned char str[], int length, int nums[]
 
 		currentNum[j] = '\0';
 
-		nums[i] = atoi(currentNum);
+		nums[i++] = atoi(currentNum);
 
 		start = ++end;
 	}

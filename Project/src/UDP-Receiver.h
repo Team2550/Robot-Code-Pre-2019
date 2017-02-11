@@ -1,6 +1,7 @@
 #ifndef UDP_H
 #define UDP_H
 
+#include <WPILib.h>
 #include <iostream>
 #include <string.h>
 #include <netdb.h>
@@ -19,7 +20,9 @@ private:
 	socklen_t addressLength = sizeof(remoteAddress);
 	int bytesRecievedCount;
 	unsigned char buffer[BUFSIZE];
-	int newestUDPData[4] = {-1, -1, -1, -1};
+	int newestUDPData[4] = {-1, -1, -1};
+
+	Timer udpAgeTimer;
 
 	int createUDPSocket();
 	void getNumsFromString(unsigned char str[], int length, int nums[]);
@@ -28,6 +31,7 @@ public:
 
 	void checkUDP();
 	int* getUDPData();
+	unsigned long getUDPDataAge();
 };
 
 #endif
