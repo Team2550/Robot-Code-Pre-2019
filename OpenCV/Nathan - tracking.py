@@ -37,6 +37,7 @@ def processCamera(capWebcam):
     upperBound = np.array([255, 50, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
+    cv2.imshow("Mask", mask)
 
     #res = cv2.bitwise_and(imgOriginal, imgOriginal, mask = mask)
     
@@ -46,15 +47,15 @@ def processCamera(capWebcam):
     #cv2.destroyAllWindows()
     #cv2.imwrite("maskedImage.png", res);
 
-    blurred = cv2.GaussianBlur(mask, (5, 5), 0)
-    thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
+    #blurred = cv2.GaussianBlur(mask, (5, 5), 0)
+    #thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
     
     #cv2.imshow("Image", thresh)
     #cv2.waitKey(0)
     #cv2.destroyAllWindows()    
 
     # find contours in the thresholded image
-    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
+    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
 	cv2.CHAIN_APPROX_SIMPLE)[1]
 
     for c in cnts:
@@ -64,13 +65,30 @@ def processCamera(capWebcam):
 
         if len(approx) == 4:
             (x, y, w, h) = cv2.boundingRect(approx)
-            size = w * h
+
+            sideLengths = [0, 0, 0, 0]
+            for i in range(4):
+                xDist = approx[i][0][0] - approx[(i+1)%4][0][0]
+                yDist = approx[i][0][1] - approx[(i+1)%4][0][1]
+                sideLengths[i] = (xDist*xDist + yDist*yDist)**(0.5)
+
+            width = (sideLengths[0] + sideLengths[2])/2.0
+            height = (sideLengths[1] + sideLengths[3])/2.0
+            widthSideDiff = abs(sideLengths[0] - sideLengths[2]) / width # Difference in width-wise side lengths in percent
+            heightSideDiff = abs(sideLengths[1] - sideLengths[3]) / height # Difference in hight-wise side lengths in percent
+            shortSide = min(width, height)
+            longSide = max(width, height)
             
-            #ar = w / float(h)
+            size = width * height
+            ar = shortSide / longSide
             
-            if size > 1000:#ar >= 0.95 and ar <= 1.05:
-                print("Found rectangle, size", size, ":", x, y, w, h)
+            if size > 250 and ar >= 0.5 and ar <= 0.75 and widthSideDiff < 0.5 and heightSideDiff < 0.5:
+                print("Found rectangle,", size, ":", ar, ":", x, y, width, height, '\n', "Short:", int(shortSide), "Long:", int(longSide))
+                
                 cv2.drawContours(imgOriginal, [c], 0, (0, 255, 0), 4)
+                cv2.drawContours(imgOriginal, [approx], 0, (255, 0, 0), 1)
+            else:
+                cv2.drawContours(imgOriginal, [c], 0, (0, 0, 255), 1)
  
     # show the output image
     cv2.imshow("Image", imgOriginal)
@@ -103,8 +121,8 @@ def main():
 
     print("Default resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    capWebcam.set(cv2.CAP_PROP_FRAME_WIDTH, 320.0) # change resolution to 320x240 for faster processing
-    capWebcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 240.0)
+    capWebcam.set(cv2.CAP_PROP_FRAME_WIDTH, 640.0) # change resolution to 320x240 for faster processing
+    capWebcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480.0)
 
     # show updated resolution
     print("Updated resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
