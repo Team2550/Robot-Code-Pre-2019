@@ -4,7 +4,7 @@
 Shooter::Shooter() :
 				 shooterMotor(Ports::Shooter::Motor)
 {
-
+	shooterMotor.SetInverted(true);
 }
 
 void Shooter::shoot()
