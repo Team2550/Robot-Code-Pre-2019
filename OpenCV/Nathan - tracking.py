@@ -6,45 +6,21 @@ import socket
 
 ###################################################################################################
 
-#CAMERA_IP = socket.gethostbyname("axis-camera.local")
-#CAMERA_URL = "http://" + CAMERA_IP + "/mjpg/video.mjpg"
+CAMERA_URL = 0
+
+try:
+    CAMERA_IP = socket.gethostbyname("axis-camera.local")
+    CAMERA_URL = "http://" + CAMERA_IP + "/mjpg/video.mjpg"
+    print("Found camera at", CAMERA_IP)
+except Exception:
+    CAMERA_URL = 0
+    print("No IP camera found. Defaulting to USB camera.")
 
 #UDP_IP = socket.gethostbyname("roboRIO-2550-FRC.local")    #declares udp ip and port
-UDP_IP = socket.gethostbyname("NW-GAMING")
+UDP_IP = socket.gethostbyname("NW-GAMING") # Treats my computer as RoboRIO, I plan to create a C++ script to capture data.
 UDP_PORT = 8890
 
 print("Found roboRIO at", UDP_IP)
-
-def detectShapes(image):
-    blurred = cv2.GaussianBlur(image, (5, 5), 0)
-    thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
-    RGB_image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-    
-    cv2.imshow("Image", thresh)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()    
-
-    # find contours in the thresholded image
-    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-	cv2.CHAIN_APPROX_SIMPLE)[1]
-
-    for c in cnts:
-        # detect shape
-        peri = cv2.arcLength(c, True)
-        approx = cv2.approxPolyDP(c, 0.04 * peri, True)
-
-        if len(approx) == 4:
-            (x, y, w, h) = cv2.boundingRect(approx)
-            
-            print("Found rectangle, size", w * h, ":", x, y, w, h)
-            #ar = w / float(h)
-            
-            #if ar >= 0.95 and ar <= 1.05:
-            cv2.drawContours(RGB_image, [c], 0, (0, 255, 0), 4)
- 
-    # show the output image
-    cv2.imshow("Image", RGB_image)
-    #cv2.waitKey(0)    
 
 def processCamera(capWebcam):
     blnFrameReadSuccessfully, imgOriginal = capWebcam.read()            # read next frame
@@ -57,7 +33,7 @@ def processCamera(capWebcam):
     #try:
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
-    lowerBound = np.array([0, 0, 200])
+    lowerBound = np.array([0, 0, 240])
     upperBound = np.array([255, 50, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
@@ -70,7 +46,35 @@ def processCamera(capWebcam):
     #cv2.destroyAllWindows()
     #cv2.imwrite("maskedImage.png", res);
 
-    detectShapes(mask)
+    blurred = cv2.GaussianBlur(mask, (5, 5), 0)
+    thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
+    
+    #cv2.imshow("Image", thresh)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()    
+
+    # find contours in the thresholded image
+    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
+	cv2.CHAIN_APPROX_SIMPLE)[1]
+
+    for c in cnts:
+        # detect shape
+        peri = cv2.arcLength(c, True)
+        approx = cv2.approxPolyDP(c, 0.04 * peri, True)
+
+        if len(approx) == 4:
+            (x, y, w, h) = cv2.boundingRect(approx)
+            size = w * h
+            
+            #ar = w / float(h)
+            
+            if size > 1000:#ar >= 0.95 and ar <= 1.05:
+                print("Found rectangle, size", size, ":", x, y, w, h)
+                cv2.drawContours(imgOriginal, [c], 0, (0, 255, 0), 4)
+ 
+    # show the output image
+    cv2.imshow("Image", imgOriginal)
+    #cv2.waitKey(0) 
     
     #imgThresh = cv2.add(imgThreshLow, imgThreshHigh)
     #imgThresh = cv2.GaussianBlur(imgThresh, (3, 3), 2)
@@ -93,8 +97,7 @@ def processCamera(capWebcam):
     #    return -1, -1, -1
 
 def main():
-    #capWebcam = cv2.VideoCapture(CAMERA_URL) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
-    capWebcam = cv2.VideoCapture(0)
+    capWebcam = cv2.VideoCapture(CAMERA_URL) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
 
     # show original resolution
 
@@ -121,16 +124,16 @@ def main():
         try:            
             circle = processCamera(capWebcam)
 
-            if (circle is not None):
-                x, y, radius = circle
-
-                if (x != -1 or y != -1 or radius != -1):
-                    print("Found circle:", x, y, radius)
-                    
-                    arr = [x, y, radius]
-                    data = ' '.join(str(x) for x in arr)
-                    test_socket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
-                    print("Sent!")
+##            if (circle is not None):
+##                x, y, radius = circle
+##
+##                if (x != -1 or y != -1 or radius != -1):
+##                    print("Found circle:", x, y, radius)
+##                    
+##                    arr = [x, y, radius]
+##                    data = ' '.join(str(x) for x in arr)
+##                    test_socket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
+##                    print("Sent!")
 
         except Exception:
             running = False
@@ -140,7 +143,7 @@ def main():
             
             raise
             
-        running = False
+        #running = False
 
     capWebcam.release()
     
