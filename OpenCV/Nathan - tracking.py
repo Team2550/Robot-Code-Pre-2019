@@ -2,9 +2,22 @@ import cv2
 import numpy as np
 import os
 import socket
+import math
 #from array import*
 
 ###################################################################################################
+
+TARGET_RECT_SIZE_INCHES = (2, 3.5)
+TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
+
+IMAGE_SIZE = (640, 480)
+IMAGE_DIAGONAL = (IMAGE_SIZE[0]**2 + IMAGE_SIZE[1]**2)**(0.5)
+
+CAMERA_FOV = 66
+
+###################################################################################################
+
+COTANGENT_FOV = 1 / math.tan(math.radians(CAMERA_FOV / 2.0))
 
 CAMERA_URL = 0
 
@@ -21,6 +34,9 @@ UDP_IP = socket.gethostbyname("NW-GAMING") # Treats my computer as RoboRIO, I pl
 UDP_PORT = 8890
 
 print("Found roboRIO at", UDP_IP)
+
+def dist(x1, y1, x2, y2):
+    return ((x1 - x2)*(x1 - x2)+(y1 - y2)*(y1 - y2))**(0.5)
 
 def processCamera(capWebcam):
     blnFrameReadSuccessfully, imgOriginal = capWebcam.read()            # read next frame
@@ -68,14 +84,15 @@ def processCamera(capWebcam):
 
             sideLengths = [0, 0, 0, 0]
             for i in range(4):
-                xDist = approx[i][0][0] - approx[(i+1)%4][0][0]
-                yDist = approx[i][0][1] - approx[(i+1)%4][0][1]
-                sideLengths[i] = (xDist*xDist + yDist*yDist)**(0.5)
+                sideLengths[i] = dist(approx[i][0][0], approx[i][0][1],
+                                      approx[(i+1)%4][0][0], approx[(i+1)%4][0][1])
 
             width = (sideLengths[0] + sideLengths[2])/2.0
             height = (sideLengths[1] + sideLengths[3])/2.0
+
             widthSideDiff = abs(sideLengths[0] - sideLengths[2]) / width # Difference in width-wise side lengths in percent
             heightSideDiff = abs(sideLengths[1] - sideLengths[3]) / height # Difference in hight-wise side lengths in percent
+
             shortSide = min(width, height)
             longSide = max(width, height)
             
@@ -83,7 +100,15 @@ def processCamera(capWebcam):
             ar = shortSide / longSide
             
             if size > 250 and ar >= 0.5 and ar <= 0.75 and widthSideDiff < 0.5 and heightSideDiff < 0.5:
-                print("Found rectangle,", size, ":", ar, ":", x, y, width, height, '\n', "Short:", int(shortSide), "Long:", int(longSide))
+                diagonal = (dist(approx[0][0][0],approx[0][0][1],
+                                 approx[2][0][0],approx[2][0][1]) +
+                            dist(approx[1][0][0],approx[1][0][1],
+                                 approx[3][0][0],approx[3][0][1])) / 2
+
+                percentOfView = diagonal / IMAGE_DIAGONAL
+                objectDist = (TARGET_RECT_DIAGONAL_INCHES / percentOfView) * 0.5 * COTANGENT_FOV
+                
+                print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
                 
                 cv2.drawContours(imgOriginal, [c], 0, (0, 255, 0), 4)
                 cv2.drawContours(imgOriginal, [approx], 0, (255, 0, 0), 1)
@@ -121,8 +146,8 @@ def main():
 
     print("Default resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    capWebcam.set(cv2.CAP_PROP_FRAME_WIDTH, 640.0) # change resolution to 320x240 for faster processing
-    capWebcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480.0)
+    capWebcam.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_SIZE[0]) # change resolution to 320x240 for faster processing
+    capWebcam.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_SIZE[1])
 
     # show updated resolution
     print("Updated resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
