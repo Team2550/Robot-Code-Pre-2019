@@ -80,7 +80,7 @@ void Robot::TeleopPeriodic()
 
 	/* ========== Lift ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Climb))
-		lift.lift();
+		lift.raise();
 	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
 		lift.lower();
 	else
