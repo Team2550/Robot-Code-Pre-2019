@@ -79,12 +79,15 @@ void Robot::TeleopPeriodic()
 		shooter.stop();
 
 	/* ========== Lift ========== */
-	if(perifController.GetRawButton(Controls::Peripherals::Climb))
-		lift.raise();
-	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
-		lift.lower();
-	else
-		lift.stop();
+	if(perifController.GetRawButton(Controls::Peripheral::toggleLift))
+		this->raiseOrLowerLift = !raiseOrLowerLift;
+	else if(perifController.GetRawAxis(Controls::Peripherals::activateLift) > 0.5)
+	{
+		if(raiseOrLowerLift)
+			lift.raise();
+		else
+			lift.lower();
+	}
 
 	/* ==================== */
 	printf("\n");

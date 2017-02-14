@@ -19,6 +19,7 @@ private:
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
+	bool raiseOrLowerLift;
 
 public:
 	Robot();
