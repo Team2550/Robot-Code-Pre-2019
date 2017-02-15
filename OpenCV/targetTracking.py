@@ -17,7 +17,6 @@ ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5
 IMAGE_SIZE = (320, 240)
 IMAGE_DIAGONAL = (IMAGE_SIZE[0]**2 + IMAGE_SIZE[1]**2)**(0.5)
 
-CAMERA_FOV = 55 # FOV of axis camera, needs to change for USB camera
 
 ###################################################################################################
 
