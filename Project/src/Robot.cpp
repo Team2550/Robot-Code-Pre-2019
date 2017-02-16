@@ -1,3 +1,4 @@
+#include "Timer.h"
 #include "Robot.h"
 
 // driver: (int) xBox controller number
@@ -6,14 +7,17 @@
 Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(),
 				 shooter(),
-				 lift()
-{
+				 lift(),
+				 btnHoldTimer()
 
+{
+	btnHoldTimer.Start();
+	btnHold = false;
 }
 
 Robot::~Robot()
 {
-
+	btnHoldTimer.Stop();
 }
 
 void Robot::RobotInit()
@@ -78,13 +82,37 @@ void Robot::TeleopPeriodic()
 	else
 		shooter.stop();
 
-	/* ========== Lift ========== */
-	if(perifController.GetRawButton(Controls::Peripherals::Climb))
+	/* ========== Lift/In-Feed ========== */
+	if(perifController.GetRawButton(Controls::Peripherals::ClimbOnOff))
+	{
+		//Don't proceed until the btn has been released
+		//Prevents code from setting the btnHold twice if the user releases the btn slowly
+		while(perifController.GetRawButton(Controls::Peripherals::ClimbOnOff))
+		{
+			//If the user still holds the btn  after one sec, break to let the program continue
+			if(btnHoldTimer.HasPeriodPassed(1) == true)
+			{
+				break;
+			}
+		}
+
+		if(btnHold == false)
+		{
+			btnHold = true;
+		}
+		else
+		{
+			btnHold = false;
+		}
+	}
+
+	if(btnHold == true)
 		lift.lift();
-	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
-		lift.lower();
+	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbTrig) > 0.5)
+		lift.lift();
 	else
 		lift.stop();
+
 
 	/* ==================== */
 	printf("\n");
