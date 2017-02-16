@@ -14,9 +14,10 @@ TARGET_ASPECT_MARGIN_OF_ERROR = 0.15 # Percentage that any rectangles seen can d
 
 ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5
 
-IMAGE_SIZE = (320, 240)
+IMAGE_SIZE = (IMAGE_WIDTH, IMAGE_HEIGHT) = (320, 240)
 IMAGE_DIAGONAL = (IMAGE_SIZE[0]**2 + IMAGE_SIZE[1]**2)**(0.5)
 
+CAMERA_FOV = 55 # FOV of axis camera, needs to change for USB camera 
 
 ###################################################################################################
 
@@ -32,10 +33,16 @@ except Exception:
     CAMERA_URL = 0
     print("No IP camera found. Defaulting to USB camera.")
 
-UDP_IP = socket.gethostbyname("roboRIO-2550-FRC.local")    #declares udp ip and port
-UDP_PORT = 8890
+UDP_IP = "10.25.50.20"
 
-print("Found roboRIO at", UDP_IP)
+try:
+    UDP_IP = socket.gethostbyname("roboRIO-2550-FRC.local")    #declares udp ip and port
+    print("Found roboRIO at", UDP_IP)
+except Exception:
+    UDP_IP = "10.25.50.20"
+    print("RoboRIO not found. Defaulting to static IP.")
+    
+UDP_PORT = 8890
 
 def dist(x1, y1, x2, y2):
     return ((x1 - x2)*(x1 - x2)+(y1 - y2)*(y1 - y2))**(0.5)
@@ -91,8 +98,18 @@ def processCamera(capWebcam):
                             dist(approx[1][0][0],approx[1][0][1],
                                  approx[3][0][0],approx[3][0][1])) / 2
 
+                avgCoordinates = (avgX, avgY) = ((approx[0][0][0]+approx[1][0][0]+approx[2][0][0]+approx[3][0][0])/4,
+                                                 (approx[0][0][1]+approx[1][0][1]+approx[2][0][1]+approx[3][0][1])/4)
+
                 percentOfView = diagonal / IMAGE_DIAGONAL
-                objectDist = (TARGET_RECT_DIAGONAL_INCHES / percentOfView) * 0.5 * COTANGENT_FOV
+                sizeOfObjectPlaneInches = TARGET_RECT_DIAGONAL_INCHES / percentOfView
+                widthOfObjectPlaneInches = math.sqrt((sizeOfObjectPlaneInches**2)/(1+(IMAGE_HEIGHT/IMAGE_WIDTH)**2))
+                heightOfObjectPlaneInches = math.sqrt((sizeOfObjectPlaneInches**2)/(1+(IMAGE_WIDTH/IMAGE_HEIGHT)**2))
+                
+                objectDist = sizeOfObjectPlaneInches * 0.5 * COTANGENT_FOV
+
+                xAngle = math.degrees(math.atan2(((avgX / IMAGE_WIDTH - (1/2)) * widthOfObjectPlaneInches), objectDist))
+                yAngle = math.degrees(math.atan2(((avgY / IMAGE_HEIGHT - (1/2)) * heightOfObjectPlaneInches), objectDist))
                 
                 #print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
 
