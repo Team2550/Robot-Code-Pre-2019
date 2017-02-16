@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <vector>
+#include "Constants.h"
 
 #define BUFSIZE      2048
 #define SERVICE_PORT 8890	/* hard-coded port number */
@@ -20,7 +21,9 @@ private:
 	socklen_t addressLength = sizeof(remoteAddress);
 	int bytesRecievedCount;
 	unsigned char buffer[BUFSIZE];
-	float newestUDPData[4] = {-1, -1, -1};
+
+	bool isRealData = false;
+	float newestUDPData[UDP::DataCount] = {-1, -1, -1, -1, -1};
 
 	Timer udpAgeTimer;
 
@@ -32,6 +35,7 @@ public:
 	void checkUDP();
 	float* getUDPData();
 	double getUDPDataAge();
+	bool getUDPDataIsReal();
 };
 
 #endif

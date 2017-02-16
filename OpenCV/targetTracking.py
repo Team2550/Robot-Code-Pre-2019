@@ -4,12 +4,12 @@ import os
 import socket
 import math
 
-###################################################################################################
+#################################################################################################################
 
 TARGET_RECT_SIZE_INCHES = (2, 5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
 
-TARGET_ASPECT_RATIO = min(TARGET_RECT_SIZE_INCHES) / max(TARGET_RECT_SIZE_INCHES)
+TARGET_ASPECT_RATIO = min(TARGET_RECT_SIZE_INCHES) / max(TARGET_RECT_SIZE_INCHES) # Always less than one
 TARGET_ASPECT_MARGIN_OF_ERROR = 0.15 # Percentage that any rectangles seen can defer from the known aspect ratio
 
 ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5
@@ -17,9 +17,9 @@ ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5
 IMAGE_SIZE = (IMAGE_WIDTH, IMAGE_HEIGHT) = (320, 240)
 IMAGE_DIAGONAL = (IMAGE_SIZE[0]**2 + IMAGE_SIZE[1]**2)**(0.5)
 
-CAMERA_FOV = 55 # FOV of axis camera, needs to change for USB camera 
+CAMERA_FOV = 59 # FOV of axis camera, needs to change for USB camera 
 
-###################################################################################################
+#################################################################################################################
 
 COTANGENT_FOV = 1 / math.tan(math.radians(CAMERA_FOV / 2.0))
 
@@ -47,13 +47,13 @@ UDP_PORT = 8890
 def dist(x1, y1, x2, y2):
     return ((x1 - x2)*(x1 - x2)+(y1 - y2)*(y1 - y2))**(0.5)
 
-def processCamera(capWebcam):
-    blnFrameReadSuccessfully, imgOriginal = capWebcam.read()            # read next frame
+def processCamera(camCapture):
+    blnFrameReadSuccessfully, imgOriginal = camCapture.read()            # read next frame
 
     if (not blnFrameReadSuccessfully) or (imgOriginal is None):             # if frame was not read successfully
         print("Error: frame not read from webcam\n")                     # print error message to std out
 
-        return -1, -1, -1
+        return None
 
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
@@ -102,36 +102,38 @@ def processCamera(capWebcam):
                                                  (approx[0][0][1]+approx[1][0][1]+approx[2][0][1]+approx[3][0][1])/4)
 
                 percentOfView = diagonal / IMAGE_DIAGONAL
-                sizeOfObjectPlaneInches = TARGET_RECT_DIAGONAL_INCHES / percentOfView
-                widthOfObjectPlaneInches = math.sqrt((sizeOfObjectPlaneInches**2)/(1+(IMAGE_HEIGHT/IMAGE_WIDTH)**2))
-                heightOfObjectPlaneInches = math.sqrt((sizeOfObjectPlaneInches**2)/(1+(IMAGE_WIDTH/IMAGE_HEIGHT)**2))
+                diagonalOfObjectPlaneInches = TARGET_RECT_DIAGONAL_INCHES / percentOfView
+                widthOfObjectPlaneInches = (IMAGE_WIDTH / IMAGE_DIAGONAL) * diagonalOfObjectPlaneInches
+                heightOfObjectPlaneInches = (IMAGE_HEIGHT / IMAGE_DIAGONAL) * diagonalOfObjectPlaneInches
                 
-                objectDist = sizeOfObjectPlaneInches * 0.5 * COTANGENT_FOV
-
-                xAngle = math.degrees(math.atan2(((avgX / IMAGE_WIDTH - (1/2)) * widthOfObjectPlaneInches), objectDist))
-                yAngle = math.degrees(math.atan2(((avgY / IMAGE_HEIGHT - (1/2)) * heightOfObjectPlaneInches), objectDist))
+                objectDist = diagonalOfObjectPlaneInches * 0.5 * COTANGENT_FOV
+                objectXOffset = ((avgX / IMAGE_WIDTH) - (1/2)) * widthOfObjectPlaneInches
+                objectYOffset = ((avgY / IMAGE_HEIGHT) - (1/2)) * heightOfObjectPlaneInches
+                
+                xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
+                yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
                 
                 #print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
 
-                return objectDist, 2.0, 3.0 # Test values
+                return objectDist, objectXOffset, objectYOffset, xAngle, yAngle # Test values
         
-    return -1, -1, -1
+    return None
 
 def main():
-    capWebcam = cv2.VideoCapture(CAMERA_URL) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
+    camCapture = cv2.VideoCapture(CAMERA_URL) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
 
     # show original resolution
-    print("Default resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print("Default resolution = ", camCapture.get(cv2.CAP_PROP_FRAME_WIDTH), "x", camCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    capWebcam.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_SIZE[0]) # change resolution to 320x240 for faster processing
-    capWebcam.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_SIZE[1])
+    camCapture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_SIZE[0]) # change resolution to 320x240 for faster processing
+    camCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_SIZE[1])
 
     # show updated resolution
-    print("Updated resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print("Updated resolution = ", camCapture.get(cv2.CAP_PROP_FRAME_WIDTH), "x", camCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
     
-    if capWebcam.isOpened() == False:                           # check if VideoCapture object was associated to webcam successfully
-        print("Error: capWebcam not accessed successfully\n\n")          # if not, print error message to std out
-        capWebcam.release()
+    if camCapture.isOpened() == False:                           # check if VideoCapture object was associated to webcam successfully
+        print("Error: Camera not accessed successfully\n\n")          # if not, print error message to std out
+        camCapture.release()
         
         return                                                          # and exit function (which exits program)
         
@@ -140,23 +142,25 @@ def main():
     running = True
 
     try:
-        while (running and cv2.waitKey(1) != 27 and capWebcam.isOpened()):
+        while (running and cv2.waitKey(1) != 27 and camCapture.isOpened()):
             try:            
-                dist, horizAngle, vertAngle = processCamera(capWebcam)
+                data = processCamera(camCapture)
 
-                if (dist != -1 or horizAngle != -1 or vertAngle != -1):
-                    print("Found target:", dist, horizAngle, vertAngle)
+                if (data is not None):
+                    dist, xOffset, yOffset, horizAngle, vertAngle = data
                     
-                    arr = [dist, horizAngle, vertAngle]
+                    print("Found target (dist, xOffset, yOffset, horizAngle, vertAngle):", dist, xOffset, yOffset, horizAngle, vertAngle)
+                    
+                    arr = [dist, xOffset, yOffset, horizAngle, vertAngle]
                     data = ' '.join(str(x) for x in arr)
                     test_socket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
-                    print("Sent to RoboRIO!")
+                    print("Sent data to RoboRIO!")
 
             except Exception:
                 running = False
 
                 test_socket.close()
-                capWebcam.release()
+                camCapture.release()
                 
                 raise
             
@@ -164,7 +168,7 @@ def main():
         print("\nTerminating script...")
         
         test_socket.close()
-        capWebcam.release()
+        camCapture.release()
     
     return
 

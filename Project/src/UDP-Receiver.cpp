@@ -34,6 +34,19 @@ double UDP_Receiver::getUDPDataAge()
 }
 
 /*================================================
+Name: getUDPDataIsReal
+Desc: Returns whether or not the current data is real or a placeholder
+Arguments:
+	none
+Return:
+	True if real, false if placeholder
+================================================*/
+bool UDP_Receiver::getUDPDataIsReal()
+{
+	return isRealData;
+}
+
+/*================================================
 Name: createUDPSocket
 Desc: Creates UDP socket
 Arguments:
@@ -97,6 +110,7 @@ void UDP_Receiver::checkUDP()
 		{
 			memcpy(newestUDPData, newUDPData, sizeof(newUDPData));
 			udpAgeTimer.Reset();
+			isRealData = true;
 		}
 	}
 }

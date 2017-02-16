@@ -58,7 +58,7 @@ void Robot::TeleopPeriodic()
 		printf("New UDP data:");
 
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < UDP::DataCount; i++)
 		{
 			printf(i > 0 ? ", " : " ");
 			printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
