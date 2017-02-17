@@ -18,7 +18,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-
+	timeSinceStart.Start();
 }
 
 void Robot::AutonomousInit()
@@ -74,20 +74,23 @@ void Robot::TeleopPeriodic()
 
 	/* ========== Shooter ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
+	{
 		shooter.shoot();
+		shooter.blend(fmod(timeSinceStart.Get(), 2) > 1.0);
+	}
 	else
+	{
 		shooter.stop();
+		shooter.stopBlend();
+	}
 
 	/* ========== Lift ========== */
-	if(perifController.GetRawButton(Controls::Peripheral::toggleLift))
-		this->raiseOrLowerLift = !raiseOrLowerLift;
-	else if(perifController.GetRawAxis(Controls::Peripherals::activateLift) > 0.5)
-	{
-		if(raiseOrLowerLift)
-			lift.raise();
-		else
-			lift.lower();
-	}
+	if(perifController.GetRawButton(Controls::Peripherals::Climb))
+		lift.raise();
+	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
+		lift.raise();
+	else
+		lift.stop();
 
 	/* ==================== */
 	printf("\n");

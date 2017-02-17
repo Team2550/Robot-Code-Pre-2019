@@ -14,6 +14,7 @@ namespace Ports
 	namespace Shooter
 	{
 		const int Motor = 3;
+		const int BlenderMotor = 4;
 	}
 
 	namespace Lifter
@@ -51,7 +52,11 @@ namespace Speeds
 		const float Turtle = 0.25;
 	}
 
-	const float Shooter = 0.82;
+	namespace Shooter
+	{
+		const float ShooterSpeed = 0.82;
+		const float BlenderSpeed = 1.0;
+	}
 }
 
 #endif
