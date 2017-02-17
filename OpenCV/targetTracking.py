@@ -25,6 +25,7 @@ COTANGENT_FOV = 1 / math.tan(math.radians(CAMERA_FOV / 2.0))
 
 CAMERA_URL = 0
 
+print("Searching for camera...")
 try:
     CAMERA_IP = socket.gethostbyname("axis-camera.local")
     CAMERA_URL = "http://" + CAMERA_IP + "/mjpg/video.mjpg"
@@ -35,6 +36,7 @@ except Exception:
 
 UDP_IP = "10.25.50.20"
 
+print("Searching for roboRIO...")
 try:
     UDP_IP = socket.gethostbyname("roboRIO-2550-FRC.local")    #declares udp ip and port
     print("Found roboRIO at", UDP_IP)
