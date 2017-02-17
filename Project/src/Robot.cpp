@@ -18,7 +18,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-
+	timeSinceStart.Start();
 }
 
 void Robot::AutonomousInit()
@@ -76,7 +76,7 @@ void Robot::TeleopPeriodic()
 	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
 	{
 		shooter.shoot();
-		shooter.blend();
+		shooter.blend(fmod(timeSinceStart.Get(), 2) > 1.0);
 	}
 	else
 	{
@@ -88,7 +88,7 @@ void Robot::TeleopPeriodic()
 	if(perifController.GetRawButton(Controls::Peripherals::Climb))
 		lift.raise();
 	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
-		lift.lower();
+		lift.raise();
 	else
 		lift.stop();
 
