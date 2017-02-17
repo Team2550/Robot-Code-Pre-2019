@@ -74,9 +74,15 @@ void Robot::TeleopPeriodic()
 
 	/* ========== Shooter ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
+	{
 		shooter.shoot();
+		shooter.blend();
+	}
 	else
+	{
 		shooter.stop();
+		shooter.stopBlend();
+	}
 
 	/* ========== Lift ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Climb))
