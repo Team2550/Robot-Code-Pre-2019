@@ -3,24 +3,29 @@ import numpy as np
 import os
 import socket
 import math
-#from array import*
 
-###################################################################################################
+#################################################################################################################
 
 TARGET_RECT_SIZE_INCHES = (2, 3.5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
 
-IMAGE_SIZE = (640, 480)
+TARGET_ASPECT_RATIO = min(TARGET_RECT_SIZE_INCHES) / max(TARGET_RECT_SIZE_INCHES) # Always less than one
+TARGET_ASPECT_MARGIN_OF_ERROR = 0.15 # Percentage that any rectangles seen can defer from the known aspect ratio
+
+ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.3
+
+IMAGE_SIZE = (IMAGE_WIDTH, IMAGE_HEIGHT) = (320, 240)
 IMAGE_DIAGONAL = (IMAGE_SIZE[0]**2 + IMAGE_SIZE[1]**2)**(0.5)
 
-CAMERA_FOV = 66
+CAMERA_FOV = 66 # FOV of axis camera, needs to change for USB camera 
 
-###################################################################################################
+#################################################################################################################
 
 COTANGENT_FOV = 1 / math.tan(math.radians(CAMERA_FOV / 2.0))
 
 CAMERA_URL = 0
 
+print("Searching for camera...")
 try:
     CAMERA_IP = socket.gethostbyname("axis-camera.local")
     CAMERA_URL = "http://" + CAMERA_IP + "/mjpg/video.mjpg"
@@ -29,59 +34,49 @@ except Exception:
     CAMERA_URL = 0
     print("No IP camera found. Defaulting to USB camera.")
 
-#UDP_IP = socket.gethostbyname("roboRIO-2550-FRC.local")    #declares udp ip and port
-UDP_IP = socket.gethostbyname("NW-GAMING") # Treats my computer as RoboRIO, I plan to create a C++ script to capture data.
-UDP_PORT = 8890
+UDP_IP = "10.25.50.20"
 
-print("Found roboRIO at", UDP_IP)
+print("Searching for roboRIO...")
+try:
+    UDP_IP = socket.gethostbyname("NW-GAMING")    #declares udp ip and port
+    print("Found roboRIO at", UDP_IP)
+except Exception:
+    UDP_IP = "127.0.0.1"
+    print("RoboRIO not found. Defaulting to static IP.")
+    
+UDP_PORT = 8890
 
 def dist(x1, y1, x2, y2):
     return ((x1 - x2)*(x1 - x2)+(y1 - y2)*(y1 - y2))**(0.5)
 
-def processCamera(capWebcam):
-    blnFrameReadSuccessfully, imgOriginal = capWebcam.read()            # read next frame
+def processCamera(camCapture):
+    blnFrameReadSuccessfully, imgOriginal = camCapture.read()            # read next frame
 
     if (not blnFrameReadSuccessfully) or (imgOriginal is None):             # if frame was not read successfully
         print("Error: frame not read from webcam\n")                     # print error message to std out
 
-        return -1, -1, -1
+        return None
 
-    #try:
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
-    lowerBound = np.array([0, 0, 240])
-    upperBound = np.array([255, 50, 255])
+    lowerBound = np.array([0, 0, 245])
+    upperBound = np.array([255, 30, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
-    cv2.imshow("Mask", mask)
 
-    #res = cv2.bitwise_and(imgOriginal, imgOriginal, mask = mask)
-    
-    #cv2.imshow("Original Image", imgOriginal);
-    #cv2.imshow("Masked Image", mask);
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
-    #cv2.imwrite("maskedImage.png", res);
-
-    #blurred = cv2.GaussianBlur(mask, (5, 5), 0)
-    #thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
-    
-    #cv2.imshow("Image", thresh)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()    
+    outline = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
 
     # find contours in the thresholded image
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
-	cv2.CHAIN_APPROX_SIMPLE)[1]
+                            cv2.CHAIN_APPROX_SIMPLE)[1]
 
     for c in cnts:
-        # detect shape
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.04 * peri, True)
 
         if len(approx) == 4:
-            (x, y, w, h) = cv2.boundingRect(approx)
-
+            cv2.drawContours(outline, [approx], -1, (255,0,0), 1)
+            
             sideLengths = [0, 0, 0, 0]
             for i in range(4):
                 sideLengths[i] = dist(approx[i][0][0], approx[i][0][1],
@@ -97,104 +92,101 @@ def processCamera(capWebcam):
             longSide = max(width, height)
             
             size = width * height
-            ar = shortSide / longSide
+            ar = shortSide / longSide # Aspect ratio: will always be less than one
             
-            if size > 250 and ar >= 0.5 and ar <= 0.75 and widthSideDiff < 0.5 and heightSideDiff < 0.5:
+            if (size > 250 and ar >= TARGET_ASPECT_RATIO * (1 - TARGET_ASPECT_MARGIN_OF_ERROR) and
+                               ar <= TARGET_ASPECT_RATIO * (1 + TARGET_ASPECT_MARGIN_OF_ERROR) and
+                               widthSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE and
+                               heightSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE):
+                                  
                 diagonal = (dist(approx[0][0][0],approx[0][0][1],
                                  approx[2][0][0],approx[2][0][1]) +
                             dist(approx[1][0][0],approx[1][0][1],
                                  approx[3][0][0],approx[3][0][1])) / 2
 
+                avgCoordinates = (avgX, avgY) = ((approx[0][0][0]+approx[1][0][0]+approx[2][0][0]+approx[3][0][0])/4,
+                                                 (approx[0][0][1]+approx[1][0][1]+approx[2][0][1]+approx[3][0][1])/4)
+
+                cv2.drawContours(outline, [c], -1, (0,255,0), 2)
+                cv2.drawContours(outline, [approx], -1, (255,0,0), 1)
+                cv2.circle(outline, (int(avgX), int(avgY)), 4, (0,0,255), -1)
+                
                 percentOfView = diagonal / IMAGE_DIAGONAL
-                objectDist = (TARGET_RECT_DIAGONAL_INCHES / percentOfView) * 0.5 * COTANGENT_FOV
+                diagonalOfObjectPlaneInches = TARGET_RECT_DIAGONAL_INCHES / percentOfView
+                widthOfObjectPlaneInches = (IMAGE_WIDTH / IMAGE_DIAGONAL) * diagonalOfObjectPlaneInches
+                heightOfObjectPlaneInches = (IMAGE_HEIGHT / IMAGE_DIAGONAL) * diagonalOfObjectPlaneInches
                 
-                print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
+                objectDist = diagonalOfObjectPlaneInches * 0.5 * COTANGENT_FOV
+                objectXOffset = ((avgX / IMAGE_WIDTH) - (1/2)) * widthOfObjectPlaneInches
+                objectYOffset = ((avgY / IMAGE_HEIGHT) - (1/2)) * heightOfObjectPlaneInches
                 
-                cv2.drawContours(imgOriginal, [c], 0, (0, 255, 0), 4)
-                cv2.drawContours(imgOriginal, [approx], 0, (255, 0, 0), 1)
-            else:
-                cv2.drawContours(imgOriginal, [c], 0, (0, 0, 255), 1)
- 
-    # show the output image
-    cv2.imshow("Image", imgOriginal)
-    #cv2.waitKey(0) 
+                xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
+                yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
+                
+                #print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
+
+                cv2.imshow('Mask',outline)
+
+                return objectDist, objectXOffset, objectYOffset, xAngle, yAngle # Test values
+
+    cv2.imshow('Mask',outline)
     
-    #imgThresh = cv2.add(imgThreshLow, imgThreshHigh)
-    #imgThresh = cv2.GaussianBlur(imgThresh, (3, 3), 2)
-    #imgThresh = cv2.dilate(imgThresh, np.ones((5,5), np.uint8))
-    #imgThresh = cv2.erode(imgThresh, np.ones((5,5), np.uint8))
-
-    #intRows, intColumns = imgThresh.shape
-
-    ##circles = cv2.HoughCircles(imgThresh, cv2.HOUGH_GRADIENT, 5, intRows / 4)      # fill variable circles with all circles in the processed image
-
-    #if circles is not None: # this line is necessary to keep program from crashing on next line if no circles were found
-    #    for circle in circles[0]:
-    #        return circle
-        
-    return -1, -1, -1
-        
-    #except Exception:
-    #    print("Error in image processing!")
-        
-    #    return -1, -1, -1
+    return None
 
 def main():
-    capWebcam = cv2.VideoCapture(CAMERA_URL) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
+    camCapture = cv2.VideoCapture(CAMERA_URL) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
 
     # show original resolution
+    print("Default resolution =", camCapture.get(cv2.CAP_PROP_FRAME_WIDTH), "x", camCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    print("Default resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-    capWebcam.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_SIZE[0]) # change resolution to 320x240 for faster processing
-    capWebcam.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_SIZE[1])
+    camCapture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_SIZE[0]) # change resolution to 320x240 for faster processing
+    camCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_SIZE[1])
 
     # show updated resolution
-    print("Updated resolution = ", capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH), "x", capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print("Updated resolution =", camCapture.get(cv2.CAP_PROP_FRAME_WIDTH), "x", camCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
     
-    if capWebcam.isOpened() == False:                           # check if VideoCapture object was associated to webcam successfully
-        print("Error: capWebcam not accessed successfully\n\n")          # if not, print error message to std out
-
-        capWebcam.release()
+    if camCapture.isOpened() == False:                           # check if VideoCapture object was associated to webcam successfully
+        print("Error: Camera not accessed successfully\n\n")          # if not, print error message to std out
+        camCapture.release()
         
         return                                                          # and exit function (which exits program)
         
     test_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     running = True
-    
-    while (running and cv2.waitKey(1) != 27 and capWebcam.isOpened()):
-        try:            
-            circle = processCamera(capWebcam)
 
-##            if (circle is not None):
-##                x, y, radius = circle
-##
-##                if (x != -1 or y != -1 or radius != -1):
-##                    print("Found circle:", x, y, radius)
-##                    
-##                    arr = [x, y, radius]
-##                    data = ' '.join(str(x) for x in arr)
-##                    test_socket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
-##                    print("Sent!")
+    try:
+        while (running and cv2.waitKey(1) != 27 and camCapture.isOpened()):
+            try:            
+                data = processCamera(camCapture)
 
-        except Exception:
-            running = False
+                if (data is not None):
+                    dist, xOffset, yOffset, horizAngle, vertAngle = data
+                    
+                    print("Found target (dist, xOffset, yOffset, horizAngle, vertAngle):", dist, xOffset, yOffset, horizAngle, vertAngle)
+                    
+                    arr = [dist, xOffset, yOffset, horizAngle, vertAngle]
+                    data = ' '.join(str(x) for x in arr)
+                    test_socket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
+                    print("Sent data to RoboRIO!")
 
-            test_socket.close()
-            capWebcam.release()
+            except Exception:
+                running = False
+
+                test_socket.close()
+                camCapture.release()
+                
+                raise
             
-            raise
-            
-        #running = False
-
-    capWebcam.release()
+    except KeyboardInterrupt: # Catch exit by Ctrl-C
+        print("\nTerminating script...")
+        
+        test_socket.close()
+        camCapture.release()
     
     return
 
 ###################################################################################################
 
 if __name__ == "__main__":
-
     main()
-    cv2.destroyAllWindows()

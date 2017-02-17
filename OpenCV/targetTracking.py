@@ -125,13 +125,13 @@ def main():
     camCapture = cv2.VideoCapture(CAMERA_URL) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
 
     # show original resolution
-    print("Default resolution = ", camCapture.get(cv2.CAP_PROP_FRAME_WIDTH), "x", camCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print("Default resolution =", camCapture.get(cv2.CAP_PROP_FRAME_WIDTH), "x", camCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     camCapture.set(cv2.CAP_PROP_FRAME_WIDTH, IMAGE_SIZE[0]) # change resolution to 320x240 for faster processing
     camCapture.set(cv2.CAP_PROP_FRAME_HEIGHT, IMAGE_SIZE[1])
 
     # show updated resolution
-    print("Updated resolution = ", camCapture.get(cv2.CAP_PROP_FRAME_WIDTH), "x", camCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print("Updated resolution =", camCapture.get(cv2.CAP_PROP_FRAME_WIDTH), "x", camCapture.get(cv2.CAP_PROP_FRAME_HEIGHT))
     
     if camCapture.isOpened() == False:                           # check if VideoCapture object was associated to webcam successfully
         print("Error: Camera not accessed successfully\n\n")          # if not, print error message to std out
