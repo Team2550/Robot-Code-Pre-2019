@@ -133,6 +133,8 @@ void Robot::TeleopPeriodic()
 	else
 		decreaseShooterSpeedDown = false;
 
+	std::cout << "Current draw on first shooter motor: " << pdp.GetCurrent(3) << std::endl;
+
 	/* ========== Lift ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Climb))
 		lift.raise();

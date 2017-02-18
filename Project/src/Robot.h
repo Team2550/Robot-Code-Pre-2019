@@ -16,6 +16,7 @@ private:
 	Joystick perifController;
 	Timer timeSinceStart;
 
+	PowerDistributionPanel pdp;
 	UDP_Receiver udpReceiver;
 	DriveBase driveBase;
 	Shooter shooter;
