@@ -52,4 +52,9 @@ namespace Speeds
 	}
 }
 
+namespace UDP
+{
+	const int DataCount = 5;
+}
+
 #endif

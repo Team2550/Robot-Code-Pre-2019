@@ -57,15 +57,22 @@ void Robot::TeleopPeriodic()
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
-	printf("As numbers:");
-
-	for (int i = 0; i < 4; i++)
+	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
-		printf(i > 0 ? ", " : " ");
-		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
-	}
+		printf("New UDP data:");
 
-	printf("\n");
+
+		for (int i = 0; i < UDP::DataCount; i++)
+		{
+			printf(i > 0 ? ", " : " ");
+			printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+		}
+
+		printf(", Age: ");
+		printf(std::to_string(udpReceiver.getUDPDataAge()).c_str());
+
+		printf("\n");
+	}
 
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
@@ -115,7 +122,6 @@ void Robot::TeleopPeriodic()
 
 
 	/* ==================== */
-	printf("\n");
 }
 
 START_ROBOT_CLASS(Robot)
