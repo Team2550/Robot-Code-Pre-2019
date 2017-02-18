@@ -20,8 +20,8 @@ private:
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
-	Timer btnHoldTimer;
-	bool btnHold;
+	bool climbToggleHold;
+	bool climbToggle;
 
 	Timer timer;
 public:
