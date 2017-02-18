@@ -48,7 +48,7 @@ namespace Speeds
 	namespace TankDrive
 	{
 		const float Normal = 0.4;
-		const float Boost = 0.8;
+		const float Boost = 0.9;
 		const float Turtle = 0.25;
 	}
 }
