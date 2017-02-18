@@ -27,8 +27,8 @@ CAMERA_URL = 0
 
 print("Searching for camera...")
 try:
-    CAMERA_IP = socket.gethostbyname("axis-camera.local")
-    CAMERA_URL = "http://" + CAMERA_IP + "/mjpg/video.mjpg"
+    CAMERA_IP = "127.0.0.1:8080"
+    CAMERA_URL = "http://" + CAMERA_IP + "/?action=stream"
     print("Found camera at", CAMERA_IP)
 except Exception:
     CAMERA_URL = 0
