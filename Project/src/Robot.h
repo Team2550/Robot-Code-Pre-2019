@@ -14,12 +14,17 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
+	Timer timeSinceStart;
 
 	UDP_Receiver udpReceiver;
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
 
+	Timer blenderTimer;
+
+	bool decreaseShooterSpeedDown;
+	bool increaseShooterSpeedDown;
 public:
 	Robot();
 	~Robot();

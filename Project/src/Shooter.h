@@ -7,12 +7,20 @@
 class Shooter {
 private:
     VictorSP shooterMotor;
+    VictorSP blenderMotor;
 
+    float shooterSpeedOffset;
 public:
 	Shooter();
 
 	void shoot();
 	void stop();
+	void blend(bool reverse = false);
+	void stopBlend();
+
+	void setSpeedOffset(float speedOffset);
+	void addSpeedOffset(float speedOffset);
+	float getSpeedOffset();
 };
 
 #endif

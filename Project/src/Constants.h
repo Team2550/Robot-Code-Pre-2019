@@ -14,6 +14,7 @@ namespace Ports
 	namespace Shooter
 	{
 		const int Motor = 3;
+		const int BlenderMotor = 4;
 	}
 
 	namespace Lifter
@@ -37,6 +38,7 @@ namespace Controls
 		const int Climb = xbox::btn::lb;
 		const int ClimbDown = xbox::axis::LT;
 		const int Shoot = xbox::btn::b;
+		const int ReverseBlender = xbox::btn::rb;
 		const int IncreaseShootSpeed = xbox::btn::y;
 		const int DecreaseShootSpeed = xbox::btn::x;
 	}
@@ -51,12 +53,16 @@ namespace Speeds
 		const float Turtle = 0.25;
 	}
 
-	const float Shooter = 0.82;
-
 	namespace Lift
 	{
 		const float Lift = 1;
 		const float Lower = -5;
+	}
+
+	namespace Shooter
+	{
+		const float ShooterSpeed = 0.67;
+		const float BlenderSpeed = 0.75;
 	}
 }
 

@@ -8,7 +8,8 @@ Robot::Robot() : driveController(0), perifController(1),
 				 shooter(),
 				 lift()
 {
-
+	decreaseShooterSpeedDown = false;
+	increaseShooterSpeedDown = false;
 }
 
 Robot::~Robot()
@@ -18,7 +19,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-
+	timeSinceStart.Start();
 }
 
 void Robot::AutonomousInit()
@@ -46,6 +47,10 @@ void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
 	driveBase.stop();
+
+	/* ========== Shooter ========== */
+	blenderTimer.Stop();
+	blenderTimer.Reset();
 }
 
 void Robot::TeleopPeriodic()
@@ -56,7 +61,6 @@ void Robot::TeleopPeriodic()
 	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
 		printf("New UDP data:");
-
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -80,16 +84,60 @@ void Robot::TeleopPeriodic()
 					rightSpeed * speed);
 
 	/* ========== Shooter ========== */
-	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
+	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
+	{
 		shooter.shoot();
+
+		blenderTimer.Start();
+		//shooter.blend(fmod(timeSinceStart.Get(), 4) < 2.0);
+		if(blenderTimer.Get() >= 4.0)
+			shooter.blend(!perifController.GetRawButton(Controls::Peripherals::ReverseBlender));
+	}
 	else
+	{
 		shooter.stop();
+		shooter.stopBlend();
+		blenderTimer.Stop();
+		blenderTimer.Reset();
+	}
+
+	if (perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed))
+	{
+		if (!increaseShooterSpeedDown)
+		{
+			shooter.addSpeedOffset(0.01);
+			printf("New shooter speed: ");
+			printf(std::to_string(Speeds::Shooter::ShooterSpeed +
+								  shooter.getSpeedOffset()).c_str());
+			printf("\n");
+
+			increaseShooterSpeedDown = true;
+		}
+	}
+	else
+		increaseShooterSpeedDown = false;
+
+	if (perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed))
+	{
+		if (!decreaseShooterSpeedDown)
+		{
+			shooter.addSpeedOffset(-0.01);
+			printf("New shooter speed: ");
+			printf(std::to_string(Speeds::Shooter::ShooterSpeed +
+								  shooter.getSpeedOffset()).c_str());
+			printf("\n");
+
+			decreaseShooterSpeedDown = true;
+		}
+	}
+	else
+		decreaseShooterSpeedDown = false;
 
 	/* ========== Lift ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Climb))
-		lift.lift();
+		lift.raise();
 	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
-		lift.lower();
+		lift.raise();
 	else
 		lift.stop();
 

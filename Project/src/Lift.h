@@ -13,7 +13,7 @@ private:
 public:
 	Lift();
 
-	void lift();
+	void raise();
 	void lower();
 	void stop();
 };
