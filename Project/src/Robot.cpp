@@ -8,7 +8,8 @@ Robot::Robot() : driveController(0), perifController(1),
 				 shooter(),
 				 lift()
 {
-
+	decreaseShooterSpeedDown = false;
+	increaseShooterSpeedDown = false;
 }
 
 Robot::~Robot()
@@ -73,7 +74,7 @@ void Robot::TeleopPeriodic()
 					rightSpeed * speed);
 
 	/* ========== Shooter ========== */
-	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
+	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
 	{
 		shooter.shoot();
 		shooter.blend(fmod(timeSinceStart.Get(), 2) > 1.0);
@@ -84,6 +85,38 @@ void Robot::TeleopPeriodic()
 		shooter.stopBlend();
 	}
 
+	if (perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed))
+	{
+		if (!increaseShooterSpeedDown)
+		{
+			shooter.addSpeedOffset(0.02);
+			printf("New shooter speed: ");
+			printf(std::to_string(Speeds::Shooter::ShooterSpeed +
+								  shooter.getSpeedOffset()).c_str());
+			printf("\n");
+
+			increaseShooterSpeedDown = true;
+		}
+	}
+	else
+		increaseShooterSpeedDown = false;
+
+	if (perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed))
+	{
+		if (!decreaseShooterSpeedDown)
+		{
+			shooter.addSpeedOffset(-0.02);
+			printf("New shooter speed: ");
+			printf(std::to_string(Speeds::Shooter::ShooterSpeed +
+								  shooter.getSpeedOffset()).c_str());
+			printf("\n");
+
+			decreaseShooterSpeedDown = true;
+		}
+	}
+	else
+		decreaseShooterSpeedDown = false;
+
 	/* ========== Lift ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Climb))
 		lift.raise();
@@ -93,7 +126,6 @@ void Robot::TeleopPeriodic()
 		lift.stop();
 
 	/* ==================== */
-	printf("\n");
 }
 
 START_ROBOT_CLASS(Robot)

@@ -54,7 +54,7 @@ namespace Speeds
 
 	namespace Shooter
 	{
-		const float ShooterSpeed = 0.82;
+		const float ShooterSpeed = 0.77;
 		const float BlenderSpeed = 1.0;
 	}
 }

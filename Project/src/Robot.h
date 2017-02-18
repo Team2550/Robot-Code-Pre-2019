@@ -21,6 +21,8 @@ private:
 	Shooter shooter;
 	Lift lift;
 
+	bool decreaseShooterSpeedDown;
+	bool increaseShooterSpeedDown;
 public:
 	Robot();
 	~Robot();
