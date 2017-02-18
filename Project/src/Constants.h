@@ -34,8 +34,9 @@ namespace Controls
 
 	namespace Peripherals
 	{
-		const int ClimbOnOff = xbox::btn::lb;
-		const int ClimbTrig = xbox::axis::LT;
+		const int Climb = xbox::axis::LT;
+		const int ClimbToggle = xbox::btn::lb;
+
 		const int Shoot = xbox::btn::b;
 		const int IncreaseShootSpeed = xbox::btn::y;
 		const int DecreaseShootSpeed = xbox::btn::x;
