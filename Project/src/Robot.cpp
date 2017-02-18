@@ -52,7 +52,7 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
 	/* ========== udpReceiver ========== */
-	udpReceiver.checkUDP();
+	/*udpReceiver.checkUDP();
 
 	printf("As numbers:");
 
@@ -62,7 +62,7 @@ void Robot::TeleopPeriodic()
 		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
 	}
 
-	printf("\n");
+	printf("\n");*/
 
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
