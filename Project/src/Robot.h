@@ -23,7 +23,7 @@ private:
 	bool climbToggleHold;
 	bool climbToggle;
 
-	Timer timer;
+	Timer autoTimer;
 public:
 	Robot();
 	~Robot();
@@ -32,6 +32,8 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
+
+	void autoAim();
 };
 
 #endif

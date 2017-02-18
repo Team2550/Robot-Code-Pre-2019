@@ -26,8 +26,8 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
-	timer.Reset();
-	timer.Start();
+	autoTimer.Reset();
+	autoTimer.Start();
 }
 
 void Robot::AutonomousPeriodic()
@@ -46,15 +46,15 @@ void Robot::AutonomousPeriodic()
 	printf("\n");
 
 	/* ========== DriveBase ========== */
-	if(timer.Get() <= 3.000)
+	if(autoTimer.Get() <= 3.000)
 	{
 		driveBase.drive(-0.4);
 	}
-	else if(timer.Get() >= 8.000 && timer.Get() <= 9.000)
+	else if(autoTimer.Get() >= 8.000 && autoTimer.Get() <= 9.000)
 	{
 		driveBase.drive(0.4);
 	}
-	else if(timer.Get() > 9.000 && timer.Get() <= 11.000)
+	else if(autoTimer.Get() > 9.000 && autoTimer.Get() <= 11.000)
 	{
 		driveBase.drive(0.15, 1);
 	}
@@ -62,6 +62,15 @@ void Robot::AutonomousPeriodic()
 	{
 		driveBase.stop();
 	}
+
+	/** RECOMMENDED PSUEDO CODE
+	 *
+	 * (Segment timed periods using if structure used above)
+	 *
+	 * Move forward for x seconds
+	 * Then...
+	 * Run autoAim until end of autonomous
+	 */
 }
 
 void Robot::TeleopInit()
@@ -124,7 +133,28 @@ void Robot::TeleopPeriodic()
 	else
 		lift.stop();
 
-	/* ==================== */
+	/* ========== Auto Aim ========== */
+	/** RECOMMENDED PSUEDO CODE
+	 *
+	 * (Segment timed periods using if structure used above)
+	 *
+	 * If control is pressed, run autoAim
+	 */
+}
+
+void Robot::autoAim()
+{
+	/** RECOMMENDED PSUEDO CODE
+	 *
+	 * (Segment timed periods using if structure used above)
+	 *
+	 * Get UDP data and store it in an array
+	 * Rotate clockwise or counterclockwise (based on field configuration) until target is found
+	 * 		and the offset value is near zero
+	 * Go backwards until distance is small
+	 *
+	 * // Needs to compensate for tilted target, but this information must be added to UDP
+	 */
 }
 
 START_ROBOT_CLASS(Robot)
