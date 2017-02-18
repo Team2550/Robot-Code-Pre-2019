@@ -20,6 +20,7 @@ private:
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
+	bool raiseOrLowerLift;
 
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
