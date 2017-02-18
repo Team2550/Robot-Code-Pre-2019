@@ -20,6 +20,9 @@ private:
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
+
+	Timer blenderTimer;
+
 	bool raiseOrLowerLift;
 
 	bool decreaseShooterSpeedDown;

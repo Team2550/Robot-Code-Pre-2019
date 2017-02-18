@@ -47,6 +47,10 @@ void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
 	driveBase.stop();
+
+	/* ========== Shooter ========== */
+	blenderTimer.Stop();
+	blenderTimer.Reset();
 }
 
 void Robot::TeleopPeriodic()
@@ -77,13 +81,18 @@ void Robot::TeleopPeriodic()
 	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
 	{
 		shooter.shoot();
+
+		blenderTimer.Start();
 		//shooter.blend(fmod(timeSinceStart.Get(), 4) < 2.0);
-		shooter.blend(!perifController.GetRawButton(Controls::Peripherals::ReverseBlender));
+		if(blenderTimer.Get() >= 4.0)
+			shooter.blend(!perifController.GetRawButton(Controls::Peripherals::ReverseBlender));
 	}
 	else
 	{
 		shooter.stop();
 		shooter.stopBlend();
+		blenderTimer.Stop();
+		blenderTimer.Reset();
 	}
 
 	if (perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed))
