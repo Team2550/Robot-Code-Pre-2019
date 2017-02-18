@@ -15,9 +15,9 @@ Arguments:
 Return:
 	Array of ints from UDP
 ================================================*/
-float* UDP_Receiver::getUDPData()
+void UDP_Receiver::getUDPData(float data[])
 {
-	return newestUDPData;
+	memcpy(data, newestUDPData, sizeof(newestUDPData));
 }
 
 /*================================================
