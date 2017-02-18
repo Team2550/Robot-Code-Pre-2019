@@ -7,6 +7,7 @@ Shooter::Shooter() :
 
 {
 	shooterMotor.SetInverted(true);
+	blenderMotor.SetInverted(true);
 }
 
 void Shooter::shoot()

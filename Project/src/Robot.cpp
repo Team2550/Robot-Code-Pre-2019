@@ -76,7 +76,8 @@ void Robot::TeleopPeriodic()
 	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
 	{
 		shooter.shoot();
-		shooter.blend(fmod(timeSinceStart.Get(), 2) > 1.0);
+		//shooter.blend(fmod(timeSinceStart.Get(), 4) < 2.0);
+		shooter.blend(!perifController.GetRawButton(Controls::Peripherals::ReverseBlender));
 	}
 	else
 	{
