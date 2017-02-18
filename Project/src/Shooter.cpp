@@ -8,6 +8,8 @@ Shooter::Shooter() :
 {
 	shooterMotor.SetInverted(true);
 	shooterSpeedOffset = 0;
+
+	blenderMotor.SetInverted(true);
 }
 
 void Shooter::shoot()
