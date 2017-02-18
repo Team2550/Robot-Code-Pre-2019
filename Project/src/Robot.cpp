@@ -8,7 +8,8 @@ Robot::Robot() : driveController(0), perifController(1),
 				 shooter(),
 				 lift()
 {
-
+	liftToggle = false;
+	liftToggleIsPressed = false;
 }
 
 Robot::~Robot()
@@ -79,7 +80,15 @@ void Robot::TeleopPeriodic()
 		shooter.stop();
 
 	/* ========== Lift ========== */
-	if(perifController.GetRawButton(Controls::Peripherals::Climb))
+	if(!liftToggleIsPressed && perifController.GetRawButton(Controls::Peripherals::Climb))
+	{
+		liftToggleIsPressed = true;
+		liftToggle = !liftToggle;
+	}
+	else if(!perifController.GetRawButton(Controls::Peripherals::Climb))
+		liftToggleIsPressed = false;
+
+	if(liftToggle)
 		lift.lift();
 	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
 		lift.lower();

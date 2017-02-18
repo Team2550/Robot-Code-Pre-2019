@@ -20,6 +20,9 @@ private:
 	Shooter shooter;
 	Lift lift;
 
+	bool liftToggle;
+	bool liftToggleIsPressed;
+
 public:
 	Robot();
 	~Robot();
