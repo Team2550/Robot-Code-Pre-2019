@@ -35,12 +35,14 @@ void Shooter::stopBlend()
 
 void Shooter::setSpeedOffset(float speedOffset)
 {
-	shooterSpeedOffset = fmax(0, fmin(1, speedOffset));
+	float s = Speeds::Shooter::ShooterSpeed;
+	shooterSpeedOffset = fmax(0, fmin(1, s + speedOffset)) - s;
 }
 
 void Shooter::addSpeedOffset(float speedOffset)
 {
-	shooterSpeedOffset = fmax(0, fmin(1, shooterSpeedOffset + speedOffset));
+	float s = Speeds::Shooter::ShooterSpeed;
+	shooterSpeedOffset = fmax(0, fmin(1, s + shooterSpeedOffset + speedOffset)) - s;
 }
 
 float Shooter::getSpeedOffset()
