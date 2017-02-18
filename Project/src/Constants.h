@@ -30,6 +30,7 @@ namespace Controls
 		const int Right = xbox::axis::rightY;
 		const int Boost = xbox::btn::rb;
 		const int Turtle = xbox::btn::lb;
+		const int AutoAim = xbox::btn::a;
 	}
 
 	namespace Peripherals

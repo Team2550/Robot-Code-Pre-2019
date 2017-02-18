@@ -57,21 +57,13 @@ void Robot::AutonomousPeriodic()
 	printf("\n");
 
 	/* ========== DriveBase ========== */
-	if(autoTimer.Get() <= 3.000)
+	if(autoTimer.Get() <= 3) // Placeholder time
 	{
-		driveBase.drive(-0.4);
-	}
-	else if(autoTimer.Get() >= 8.000 && autoTimer.Get() <= 9.000)
-	{
-		driveBase.drive(0.4);
-	}
-	else if(autoTimer.Get() > 9.000 && autoTimer.Get() <= 11.000)
-	{
-		driveBase.drive(0.15, 1);
+		driveBase.drive(0.8);
 	}
 	else
 	{
-		driveBase.stop();
+		autoAim();
 	}
 
 	/** RECOMMENDED PSUEDO CODE
@@ -153,21 +145,33 @@ void Robot::TeleopPeriodic()
 	 *
 	 * If control is pressed, run autoAim
 	 */
+	if (driveController.GetRawButton(Controls::TankDrive::AutoAim))
+	{
+		autoAim();
+	}
 }
 
 void Robot::autoAim()
 {
-	/** RECOMMENDED PSUEDO CODE
-	 *
-	 * (Segment timed periods using if structure used above)
-	 *
-	 * Get UDP data and store it in an array
-	 * Rotate clockwise or counterclockwise (based on field configuration) until target is found
-	 * 		and the offset value is near zero
-	 * Go backwards until distance is small
-	 *
-	 * // Needs to compensate for tilted target, but this information must be added to UDP
-	 */
+	// Get data
+	float data[UDP::DataCount];
+	udpReceiver.getUDPData(data);
+
+	bool isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
+
+	if (!isDataGood) // If data isn't good, rotate blindly
+		driveBase.drive(-0.5, 0.5);
+	else if (data[UDP::Index::HorizAngle] > 5) // Target is to the right, rotate clockwise
+		driveBase.drive(0.3, -0.3);
+	else if (data[UDP::Index::HorizAngle] < -5) // Target is to the left, rotate counter-clockwise
+		driveBase.drive(-0.3, 0.3);
+	else // Target is near center
+	{
+		if (data[UDP::Index::Distance] > 5) // Target is far, approach
+			driveBase.drive(0.3);
+		else // Arrived
+			driveBase.stop();
+	}
 }
 
 START_ROBOT_CLASS(Robot)
