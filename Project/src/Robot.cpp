@@ -31,15 +31,24 @@ void Robot::AutonomousPeriodic()
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
-	printf("As numbers: ");
-
-	for (int i = 0; i < 4; i++)
+	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
-		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
-		printf(", ");
-	}
+		printf("New UDP data:");
 
-	printf("\n");
+		float data[UDP::DataCount];
+		udpReceiver.getUDPData(data);
+
+		for (int i = 0; i < UDP::DataCount; i++)
+		{
+			printf(i > 0 ? ", " : " ");
+			printf(std::to_string(data[i]).c_str());
+		}
+
+		printf(", Age: ");
+		printf(std::to_string(udpReceiver.getUDPDataAge()).c_str());
+
+		printf("\n");
+	}
 }
 
 void Robot::TeleopInit()
@@ -57,11 +66,13 @@ void Robot::TeleopPeriodic()
 	{
 		printf("New UDP data:");
 
+		float data[UDP::DataCount];
+		udpReceiver.getUDPData(data);
 
 		for (int i = 0; i < UDP::DataCount; i++)
 		{
 			printf(i > 0 ? ", " : " ");
-			printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+			printf(std::to_string(data[i]).c_str());
 		}
 
 		printf(", Age: ");
