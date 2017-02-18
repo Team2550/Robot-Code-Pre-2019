@@ -27,8 +27,8 @@ CAMERA_URL = 0
 
 print("Searching for camera...")
 try:
-    CAMERA_IP = "127.0.0.1:8080"
-    CAMERA_URL = "http://" + CAMERA_IP + "/?action=stream"
+    CAMERA_IP = socket.gethostbyname("raspberrypi")
+    CAMERA_URL = "http://" + CAMERA_IP + ":8080/?action=stream&amp;type=.mjpg"
     print("Found camera at", CAMERA_IP)
 except Exception:
     CAMERA_URL = 0
@@ -139,7 +139,10 @@ def main():
         
         return                                                          # and exit function (which exits program)
         
-    test_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sendingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+    receivingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    receivingSocket.bind(("localhost", UDP_PORT))
 
     running = True
 
@@ -155,13 +158,14 @@ def main():
                     
                     arr = [dist, xOffset, yOffset, horizAngle, vertAngle]
                     data = ' '.join(str(x) for x in arr)
-                    test_socket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
+                    sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
                     print("Sent data to RoboRIO!")
 
             except Exception:
                 running = False
 
-                test_socket.close()
+                sendingSocket.close()
+                receivingSocket.close()
                 camCapture.release()
                 
                 raise
@@ -169,7 +173,8 @@ def main():
     except KeyboardInterrupt: # Catch exit by Ctrl-C
         print("\nTerminating script...")
         
-        test_socket.close()
+        sendingSocket.close()
+        receivingSocket.close()
         camCapture.release()
     
     return
