@@ -14,7 +14,9 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	Timer timeSinceStart;
+	//Timer timeSinceStart;
+
+	Timer blenderTimer;
 
 	UDP_Receiver udpReceiver;
 	DriveBase driveBase;

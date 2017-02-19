@@ -19,7 +19,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	timeSinceStart.Start();
+	//timeSinceStart.Start();
 }
 
 void Robot::AutonomousInit()
@@ -77,8 +77,12 @@ void Robot::TeleopPeriodic()
 	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
 	{
 		shooter.shoot();
+
+	    blenderTimer.Start();
 		//shooter.blend(fmod(timeSinceStart.Get(), 4) < 2.0);
-		shooter.blend();
+		if(blenderTimer.Get() >= 4.0){
+			shooter.blend();
+		}
 		//if (perifController.GetRawButton::Controls::Peripherals::ReverseBlender){
 			//shooter.blend(false);
 		//}
@@ -87,6 +91,9 @@ void Robot::TeleopPeriodic()
 	{
 		shooter.stop();
 		shooter.stopBlend();
+		blenderTimer.Stop();
+		blenderTimer.Reset();
+
 	}
 
 	if (perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed))
