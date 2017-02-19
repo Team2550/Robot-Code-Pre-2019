@@ -100,18 +100,26 @@ void UDP_Receiver::checkUDP()
 	if (bytesRecievedCount > 0) {
 		printf("Received %d bytes\n", bytesRecievedCount);
 
-		buffer[bytesRecievedCount] = 0;
+		buffer[bytesRecievedCount] = '\0';
+		std::string dataAsString(buffer, buffer + sizeof(buffer) / sizeof(buffer[0]));
 		printf("Received message: \"%s\"\n", buffer);
 
-		float newUDPData[3] = {};
-		getNumsFromString(buffer, bytesRecievedCount, newUDPData);
+		std::vector<std::string> dataPoints = Utility::splitString(dataAsString, ',');
 
-		if (newUDPData[0] != -1)
+		std::vector<std::vector<float>> data;
+
+		for (unsigned int i = 0; i < dataPoints.size(); i++)
+			data.push_back(Utility::strVectorToFloatVector(Utility::splitString(dataPoints[i], ' ')));
+
+		for (int i = 0; i < UDP::DataCount; i++)
 		{
-			memcpy(newestUDPData, newUDPData, sizeof(newUDPData));
-			udpAgeTimer.Reset();
-			isRealData = true;
+			newestUDPData[i] = 0;
+			for (unsigned int j = 0; j < data.size(); j++)
+				newestUDPData[i] += data[j][i] / data.size();
 		}
+
+		udpAgeTimer.Reset();
+		isRealData = true;
 	}
 }
 
@@ -125,16 +133,18 @@ Arguments:
 Return:
 	none
 ================================================*/
-void UDP_Receiver::getNumsFromString(unsigned char str[], int length, float nums[])
+/*void UDP_Receiver::getNumsFromString(std::string str, float nums[])
 {
 	int start = 0;
 	int end = 0;
 	int i = 0;
 
-	char currentNum[BUFSIZE] = {};
+	std::string currentNum;
 
-	while(i < length && start < BUFSIZE)
+	while(i < str.length())
 	{
+		currentNum = "";
+
 		while(str[end] != ' ' && end < BUFSIZE)
 			end++;
 
@@ -150,4 +160,4 @@ void UDP_Receiver::getNumsFromString(unsigned char str[], int length, float nums
 
 		start = ++end;
 	}
-}
+}*/
