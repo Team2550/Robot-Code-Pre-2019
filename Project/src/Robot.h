@@ -15,17 +15,26 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
+	//Timer timeSinceStart;
+
+	Timer blenderTimer;
 
 	UDP_Receiver udpReceiver;
 	UDP_Sender udpSender;
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
+	bool raiseOrLowerLift;
 
+<<<<<<< HEAD
 	Timer matchTimer;
 
 	bool sentEndMessage;
 
+=======
+	bool decreaseShooterSpeedDown;
+	bool increaseShooterSpeedDown;
+>>>>>>> 2017-Drive
 public:
 	Robot();
 	~Robot();
