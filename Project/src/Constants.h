@@ -63,7 +63,7 @@ namespace UDP
 
 namespace Other
 {
-	const float MatchLength = 10;
+	const float MatchLength = 0;
 }
 
 #endif

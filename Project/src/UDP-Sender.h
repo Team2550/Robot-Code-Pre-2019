@@ -14,7 +14,7 @@
 class UDP_Sender {
 private:
 	int ourSocket;
-	struct sockaddr_in servaddr;
+	struct sockaddr_in myaddr;
 
 	const char* destination;
 	unsigned short destPort;
@@ -23,7 +23,7 @@ private:
 public:
 	UDP_Sender(std::string dest, unsigned short port);
 
-	void sendUDPData(char data[]);
+	void sendUDPData(std::string data);
 };
 
 #endif

@@ -9,35 +9,39 @@ UDP_Sender::UDP_Sender(std::string dest, unsigned short port)
 
 int UDP_Sender::createUDPSocket()
 {
-	if ((ourSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-	{
-		perror("Cannot create socket\n");
-		return 1;
-	}
+	memset(&myaddr, 0, sizeof(myaddr));
+	myaddr.sin_family = AF_INET;
+	myaddr.sin_port = htons(destPort);
 
-	struct hostent *hp;
-
-	memset((char *)&servaddr, 0, sizeof(servaddr));
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(destPort);
-
-	hp = gethostbyname(destination);
+	struct hostent* hp = gethostbyname(destination);
 	if (!hp)
 	{
 		fprintf(stderr, "Could not obtain address of %s\n", destination);
 		return 1;
 	}
 
-	memcpy((void *)&servaddr.sin_addr, hp->h_addr_list[0], hp->h_length);
+	if ((ourSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+	{
+		perror("Failed to create socket");
+		return 1;
+	}
+
+	if (bind(ourSocket, (struct sockaddr *) &myaddr, sizeof(myaddr)) < 0)
+	{
+		perror("Bind failed");
+		return 1;
+	}
+
+	memcpy((void *)&myaddr.sin_addr, hp->h_addr_list[0], hp->h_length);
 
 	return 0;
 }
 
-void UDP_Sender::sendUDPData(char data[])
+void UDP_Sender::sendUDPData(std::string data)
 {
-	if (sendto(ourSocket, data, strlen(data), 0, (struct sockaddr *)&servaddr, sizeof(servaddr)) > 0)
+	if (sendto(ourSocket, data.c_str(), data.size(), 0, (struct sockaddr *)&myaddr, sizeof(myaddr)) != (int)data.size())
 	{
-		perror("Send failed\n");
+		perror("Send failed: mismatch in number of bytes sent\n");
 		return;
 	}
 }

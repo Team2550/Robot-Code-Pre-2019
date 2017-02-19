@@ -66,7 +66,7 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
 	/* ========== udpReceiver ========== */
-	udpReceiver.checkUDP();
+	/*udpReceiver.checkUDP();
 
 	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
@@ -85,7 +85,7 @@ void Robot::TeleopPeriodic()
 		printf(std::to_string(udpReceiver.getUDPDataAge()).c_str());
 
 		printf("\n");
-	}
+	}*/
 
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
@@ -114,6 +114,7 @@ void Robot::TeleopPeriodic()
 	{
 		udpSender.sendUDPData("end");
 		sentEndMessage = true;
+		printf("Sent message!");
 	}
 }
 
