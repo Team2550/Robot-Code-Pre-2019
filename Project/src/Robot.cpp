@@ -4,11 +4,13 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
+                 udpReceiver(),
+				 udpSender("2550-programming0.local", 8890), // "raspberrypi.local"
 				 driveBase(),
 				 shooter(),
 				 lift()
 {
-
+	sentEndMessage = false;
 }
 
 Robot::~Robot()
@@ -23,7 +25,8 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
-
+	matchTimer.Start();
+	matchTimer.Reset();
 }
 
 void Robot::AutonomousPeriodic()
@@ -53,6 +56,9 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
+	matchTimer.Start();
+	matchTimer.Reset();
+
 	/* ========== DriveBase ========== */
 	driveBase.stop();
 }
@@ -103,7 +109,12 @@ void Robot::TeleopPeriodic()
 	else
 		lift.stop();
 
-	/* ==================== */
+	/* ========== udpReceiver ========== */
+	if (matchTimer.Get() > Other::MatchLength && !sentEndMessage)
+	{
+		udpSender.sendUDPData("end");
+		sentEndMessage = true;
+	}
 }
 
 START_ROBOT_CLASS(Robot)

@@ -56,13 +56,13 @@ Return:
 ================================================*/
 int UDP_Receiver::createUDPSocket()
 {
-	if ((ourSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	if ((ourSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+	{
 		perror("Cannot create socket\n");
 		return 1;
 	}
 
 	/* bind the socket to any valid IP address and a specific port */
-
 	memset((char *) &myAddress, 0, sizeof(myAddress));
 	myAddress.sin_family = AF_INET;
 	myAddress.sin_addr.s_addr = htonl(INADDR_ANY);

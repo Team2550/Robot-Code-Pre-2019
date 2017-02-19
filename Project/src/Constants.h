@@ -61,4 +61,9 @@ namespace UDP
 	}
 }
 
+namespace Other
+{
+	const float MatchLength = 10;
+}
+
 #endif

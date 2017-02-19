@@ -20,7 +20,8 @@ def main():
     sendingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     
     receivingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    receivingSocket.bind(("localhost", UDP_PORT))
+    receivingSocket.bind(("127.0.0.1", UDP_PORT))
+    receivingSocket.setblocking(0)
 
     running = True
 
@@ -29,7 +30,7 @@ def main():
             try:            
                 data = [(1, 2, 3, 4, 5), (3, 4, 5, 6, 7), (5, 6, 7, 8, 9)]
 
-                if (data is not None):
+                '''if (data is not None):
                     print("Found", len(data), "targets")
 
                     for d in data:
@@ -40,16 +41,25 @@ def main():
                     sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
                     print("Sent data to RoboRIO!")
                 else:
-                    print("No target found.")
+                    print("No target found.")'''
+ 
+                try:
+                    dataFromRobot, addr = receivingSocket.recvfrom(1024)
+
+                    print("Received message:", dataFromRobot)
+                except socket.error:
+                    '''Do nothing'''
 
             except Exception:
+                print("Error")
+                
                 running = False
 
                 sendingSocket.close()
                 receivingSocket.close()
                 
                 raise
-            
+
     except KeyboardInterrupt: # Catch exit by Ctrl-C
         print("\nTerminating script...")
         

@@ -5,6 +5,7 @@
 #include "xBox.h"
 #include "Constants.h"
 #include "UDP-Receiver.h"
+#include "UDP-Sender.h"
 #include "DriveBase.h"
 #include "Shooter.h"
 #include "Lift.h"
@@ -16,9 +17,14 @@ private:
 	Joystick perifController;
 
 	UDP_Receiver udpReceiver;
+	UDP_Sender udpSender;
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
+
+	Timer matchTimer;
+
+	bool sentEndMessage;
 
 public:
 	Robot();
