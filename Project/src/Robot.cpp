@@ -5,6 +5,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
+                 udpReceiver(),
 				 driveBase(),
 				 shooter(),
 				 lift()
@@ -19,6 +20,34 @@ Robot::Robot() : driveController(0), perifController(1),
 Robot::~Robot()
 {
 
+}
+
+void Robot::autoAim()
+{
+	 // Get data
+	  float data[UDP::DataCount];
+	  udpReceiver.getUDPData(data);
+
+	  bool isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
+
+	  while(!isDataGood)
+	  {
+		  isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
+
+	  if (!isDataGood) // If data isn't good, rotate blindly
+	    driveBase.drive(-0.5, 0.5);
+	  else if (data[UDP::Index::HorizAngle] > 5) // Target is to the right, rotate clockwise
+	    driveBase.drive(0.3, -0.3);
+	  else if (data[UDP::Index::HorizAngle] < -5) // Target is to the left, rotate counter-clockwise
+	    driveBase.drive(-0.3, 0.3);
+	  else // Target is near center
+	  {
+	    if (data[UDP::Index::Distance] > 5) // Target is far, approach
+	      driveBase.drive(0.3);
+	    else // Arrived
+	      driveBase.stop();
+	  }
+	 }
 }
 
 void Robot::RobotInit()
@@ -77,6 +106,7 @@ void Robot::AutonomousPeriodic()
 	 * Run autoAim until end of autonomous
 	 */
 }
+
 
 void Robot::TeleopInit()
 {
@@ -198,29 +228,6 @@ void Robot::TeleopPeriodic()
 	if (driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
 		autoAim();
-	}
-}
-
-void Robot::autoAim()
-{
-	// Get data
-	float data[UDP::DataCount];
-	udpReceiver.getUDPData(data);
-
-	bool isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
-
-	if (!isDataGood) // If data isn't good, rotate blindly
-		driveBase.drive(-0.5, 0.5);
-	else if (data[UDP::Index::HorizAngle] > 5) // Target is to the right, rotate clockwise
-		driveBase.drive(0.3, -0.3);
-	else if (data[UDP::Index::HorizAngle] < -5) // Target is to the left, rotate counter-clockwise
-		driveBase.drive(-0.3, 0.3);
-	else // Target is near center
-	{
-		if (data[UDP::Index::Distance] > 5) // Target is far, approach
-			driveBase.drive(0.3);
-		else // Arrived
-			driveBase.stop();
 	}
 }
 

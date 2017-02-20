@@ -1,5 +1,5 @@
-#ifndef UDP_H
-#define UDP_H
+#ifndef UDP_R_H
+#define UDP_R_H
 
 #include <WPILib.h>
 #include <iostream>
@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <vector>
+#include "Utility.h"
 #include "Constants.h"
 
 #define BUFSIZE      2048
@@ -28,7 +29,7 @@ private:
 	Timer udpAgeTimer;
 
 	int createUDPSocket();
-	void getNumsFromString(unsigned char str[], int length, float nums[]);
+	//void getNumsFromString(unsigned char str[], int length, float nums[]);
 public:
 	UDP_Receiver();
 

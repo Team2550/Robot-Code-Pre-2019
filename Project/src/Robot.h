@@ -27,7 +27,6 @@ private:
 
 	bool climbToggleHold;
 	bool climbToggle;
-
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
 
