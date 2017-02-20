@@ -7,6 +7,7 @@ Shooter::Shooter() :
 
 {
 	shooterMotor.SetInverted(true);
+	timeSinceAdjustment.Start();
 	shooterSpeedOffset = 0;
 
 	blenderMotor.SetInverted(true);
@@ -14,7 +15,10 @@ Shooter::Shooter() :
 
 void Shooter::shoot(float motorCurrent)
 {
-	if(motorCurrent < Speeds::Shooter::CurrentThreshold)
+	if(timeSinceAdjustment.Get() >= 0.75)
+			timeSinceAdjustment.Reset();
+
+	if(motorCurrent < Speeds::Shooter::CurrentThreshold || timeSinceAdjustment.Get() >= 0.15)
 		shooterMotor.Set(Speeds::Shooter::Shooter + shooterSpeedOffset);
 	else
 		shooterMotor.Set(Speeds::Shooter::MaxShooter);

@@ -9,6 +9,8 @@ private:
     VictorSP shooterMotor;
     VictorSP blenderMotor;
 
+    Timer timeSinceAdjustment;
+
     float shooterSpeedOffset;
 public:
 	Shooter();
