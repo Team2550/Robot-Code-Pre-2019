@@ -107,7 +107,7 @@ void Robot::TeleopPeriodic()
 		{
 			shooter.addSpeedOffset(0.01);
 			printf("New shooter speed: ");
-			printf(std::to_string(Speeds::Shooter::ShooterSpeed +
+			printf(std::to_string(Speeds::Shooter::Shooter +
 								  shooter.getSpeedOffset()).c_str());
 			printf("\n");
 
@@ -123,7 +123,7 @@ void Robot::TeleopPeriodic()
 		{
 			shooter.addSpeedOffset(-0.01);
 			printf("New shooter speed: ");
-			printf(std::to_string(Speeds::Shooter::ShooterSpeed +
+			printf(std::to_string(Speeds::Shooter::Shooter +
 								  shooter.getSpeedOffset()).c_str());
 			printf("\n");
 
