@@ -31,6 +31,7 @@ namespace Controls
 		const int Right = xbox::axis::rightY;
 		const int Boost = xbox::btn::rb;
 		const int Turtle = xbox::btn::lb;
+		const int AutoAim = xbox::btn::a;
 	}
 
 	namespace Peripherals
@@ -70,6 +71,15 @@ namespace Speeds
 namespace UDP
 {
 	const int DataCount = 5;
+
+	namespace Index
+	{
+		const int Distance = 0;
+		const int XOffset = 1;
+		const int YOffset = 2;
+		const int HorizAngle = 3;
+		const int VertAngle = 4;
+	}
 }
 
 #endif
