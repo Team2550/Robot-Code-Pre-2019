@@ -14,7 +14,7 @@ public:
 	Lift();
 
 	void raise();
-	void lower();
+	void lower(); //DEPRACATED; lowering is now physically impossible
 	void stop();
 };
 
