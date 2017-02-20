@@ -3,7 +3,7 @@
 
 DriveBase::DriveBase() : leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
 {
-    rightMotor.SetInverted(true);
+    leftMotor.SetInverted(true);
 }
 
 void DriveBase::drive(float speed)
