@@ -1,3 +1,4 @@
+#include "Timer.h"
 #include "Robot.h"
 
 // driver: (int) xBox controller number
@@ -10,6 +11,9 @@ Robot::Robot() : driveController(0), perifController(1),
 {
 	decreaseShooterSpeedDown = false;
 	increaseShooterSpeedDown = false;
+
+	climbToggleHold = false;
+	climbToggle = false;
 }
 
 Robot::~Robot()
@@ -54,15 +58,21 @@ void Robot::TeleopPeriodic()
 	/* ========== udpReceiver ========== */
 	/*udpReceiver.checkUDP();
 
-	printf("As numbers:");
-
-	for (int i = 0; i < 4; i++)
+	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
-		printf(i > 0 ? ", " : " ");
-		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
-	}
+		printf("New UDP data:");
 
-	printf("\n");*/
+		for (int i = 0; i < UDP::DataCount; i++)
+		{
+			printf(i > 0 ? ", " : " ");
+			printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+		}
+
+		printf(", Age: ");
+		printf(std::to_string(udpReceiver.getUDPDataAge()).c_str());
+
+		printf("\n");
+	}*/
 
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
@@ -128,10 +138,19 @@ void Robot::TeleopPeriodic()
 	else
 		decreaseShooterSpeedDown = false;
 
-	/* ========== Lift ========== */
-	if(perifController.GetRawButton(Controls::Peripherals::Climb))
-		lift.raise();
-	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
+	/* ========== Lift/In-Feed ========== */
+	if (perifController.GetRawButton(Controls::Peripherals::ClimbToggle))
+	{
+		if(climbToggleHold == false)
+		{
+			climbToggle = !climbToggle;
+			climbToggleHold = true;
+		}
+	}
+	else
+		climbToggleHold = false;
+
+	if(climbToggle || perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.5)
 		lift.raise();
 	else
 		lift.stop();

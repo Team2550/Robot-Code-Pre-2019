@@ -5,6 +5,7 @@
 #include "xBox.h"
 #include "Constants.h"
 #include "UDP-Receiver.h"
+#include "Timer.h"
 #include "DriveBase.h"
 #include "Shooter.h"
 #include "Lift.h"
@@ -22,7 +23,9 @@ private:
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
-	bool raiseOrLowerLift;
+
+	bool climbToggleHold;
+	bool climbToggle;
 
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;

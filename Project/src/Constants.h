@@ -35,8 +35,9 @@ namespace Controls
 
 	namespace Peripherals
 	{
-		const int Climb = xbox::btn::lb;
-		const int ClimbDown = xbox::axis::LT;
+		const int Climb = xbox::axis::LT;
+		const int ClimbToggle = xbox::btn::lb;
+
 		const int Shoot = xbox::btn::b;
 		const int ReverseBlender = xbox::btn::rb;
 		const int IncreaseShootSpeed = xbox::btn::y;
@@ -58,6 +59,11 @@ namespace Speeds
 		const float ShooterSpeed = 0.65;
 		const float BlenderSpeed = 1.0;
 	}
+}
+
+namespace UDP
+{
+	const int DataCount = 5;
 }
 
 #endif
