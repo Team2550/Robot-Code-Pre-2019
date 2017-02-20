@@ -35,8 +35,9 @@ namespace Controls
 
 	namespace Peripherals
 	{
-		const int Climb = xbox::btn::lb;
-		const int ClimbDown = xbox::axis::LT;
+		const int Climb = xbox::axis::LT;
+		const int ClimbToggle = xbox::btn::lb;
+
 		const int Shoot = xbox::btn::b;
 		const int ReverseBlender = xbox::btn::rb;
 		const int IncreaseShootSpeed = xbox::btn::y;
@@ -48,8 +49,8 @@ namespace Speeds
 {
 	namespace TankDrive
 	{
-		const float Normal = 0.4;
-		const float Boost = 0.8;
+		const float Normal = 0.5;
+		const float Boost = 1;
 		const float Turtle = 0.25;
 	}
 
@@ -64,6 +65,11 @@ namespace Speeds
 		const float Shooter = 0.67;
 		const float Blender = 0.75;
 	}
+}
+
+namespace UDP
+{
+	const int DataCount = 5;
 }
 
 #endif

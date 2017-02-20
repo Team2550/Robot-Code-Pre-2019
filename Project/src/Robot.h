@@ -5,6 +5,7 @@
 #include "xBox.h"
 #include "Constants.h"
 #include "UDP-Receiver.h"
+#include "Timer.h"
 #include "DriveBase.h"
 #include "Shooter.h"
 #include "Lift.h"
@@ -14,7 +15,9 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	Timer timeSinceStart;
+	//Timer timeSinceStart;
+
+	Timer blenderTimer;
 
 	PowerDistributionPanel pdp;
 	UDP_Receiver udpReceiver;
@@ -22,7 +25,8 @@ private:
 	Shooter shooter;
 	Lift lift;
 
-	Timer blenderTimer;
+	bool climbToggleHold;
+	bool climbToggle;
 
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
