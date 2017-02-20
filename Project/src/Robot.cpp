@@ -52,7 +52,7 @@ void Robot::autoAim()
 
 void Robot::RobotInit()
 {
-	//timeSinceStart.Start();
+
 }
 
 void Robot::AutonomousInit()
