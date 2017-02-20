@@ -88,7 +88,7 @@ void Robot::TeleopPeriodic()
 					rightSpeed * speed);
 
 	/* ========== Shooter ========== */
-	std::cout << "Current draw on first shooter motor: " << pdp.GetCurrent(3) << std::endl;
+	SmartDashboard::PutNumber("shooterCurrent", pdp.GetCurrent(Ports::PDP::Shooter));
 
 	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
 	{

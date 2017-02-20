@@ -21,6 +21,11 @@ namespace Ports
 	{
 		const int Motor = 2;
 	}
+
+	namespace PDP
+	{
+		const int Shooter = 2;
+	}
 }
 
 namespace Controls
