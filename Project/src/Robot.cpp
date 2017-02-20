@@ -26,28 +26,40 @@ void Robot::autoAim()
 {
 	 // Get data
 	  float data[UDP::DataCount];
-	  udpReceiver.getUDPData(data);
+	 udpReceiver.getUDPData(data);
 
-	  bool isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
+	 // bool isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
 
-	  while(!isDataGood)
+	  while(!(udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal())) //!isDataGood)
 	  {
-		  isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
-
-	  if (!isDataGood) // If data isn't good, rotate blindly
-	    driveBase.drive(-0.5, 0.5);
-	  else if (data[UDP::Index::HorizAngle] > 5) // Target is to the right, rotate clockwise
-	    driveBase.drive(0.3, -0.3);
-	  else if (data[UDP::Index::HorizAngle] < -5) // Target is to the left, rotate counter-clockwise
-	    driveBase.drive(-0.3, 0.3);
-	  else // Target is near center
-	  {
-	    if (data[UDP::Index::Distance] > 5) // Target is far, approach
-	      driveBase.drive(0.3);
-	    else // Arrived
-	      driveBase.stop();
+		  //if (!isDataGood) // If data isn't good, rotate blindly
+			 // driveBase.drive(-0.3, 0.3); //turn left
+		  if (data[UDP::Index::HorizAngle] > 5) // Target is to the right, rotate clockwise
+		  {
+			  driveBase.drive(0.3, -0.3); //turn right
+		  }
+		  else if (data[UDP::Index::HorizAngle] < -5) // Target is to the left, rotate counter-clockwise
+		  {
+			  driveBase.drive(-0.3, 0.3); //turn left
+		  }
+		  else
+		  {
+			  driveBase.stop();
+		  }
+		  	 //isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
 	  }
-	 }
+
+	  while(data[UDP::Index::Distance] > 5)
+	  {
+		  driveBase.drive(0.3);
+		  printf("Dist: ");
+		  printf(std::to_string(data[UDP::Index::Distance]).c_str());
+
+		  if(data[UDP::Index::Distance] <= 5)
+		  {
+			driveBase.stop();
+		  }
+	  }
 }
 
 void Robot::RobotInit()
@@ -94,7 +106,7 @@ void Robot::AutonomousPeriodic()
 	}
 	else
 	{
-		autoAim();
+		//autoAim();
 	}
 
 	/** RECOMMENDED PSUEDO CODE
@@ -120,26 +132,28 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+	try
+	{
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
 	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
-		printf("New UDP data:");
+		//printf("New UDP data:");
 
 		float data[UDP::DataCount];
 		udpReceiver.getUDPData(data);
 
 		for (int i = 0; i < UDP::DataCount; i++)
 		{
-			printf(i > 0 ? ", " : " ");
-			printf(std::to_string(data[i]).c_str());
+			//printf(i > 0 ? ", " : " ");
+			//printf(std::to_string(data[i]).c_str());
 		}
 
-		printf(", Age: ");
+		/*printf(", Age: ");
 		printf(std::to_string(udpReceiver.getUDPDataAge()).c_str());
 
-		printf("\n");
+		printf("\n");*/
 	}
 
 	/* ========== DriveBase ========== */
@@ -225,9 +239,18 @@ void Robot::TeleopPeriodic()
 	 *
 	 * If control is pressed, run autoAim
 	 */
-	if (driveController.GetRawButton(Controls::TankDrive::AutoAim))
+	if (driveController.GetRawButton(Controls::TankDrive::AutoAim)) //&& driveController.GetRawButton(Controls::Peripherals::AutoAim)))
 	{
 		autoAim();
+	}
+	}
+	catch(const std::invalid_argument &ia)
+	{
+		std::cerr << "ERROR: " << ia.what() << std::endl;
+	}
+	catch(...)
+	{
+		std::cerr << "ERROR: Unknown exception" << std::endl;
 	}
 }
 

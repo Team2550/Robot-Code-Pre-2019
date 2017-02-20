@@ -39,8 +39,26 @@ std::vector<float> Utility::strVectorToFloatVector(std::vector<std::string> strs
 {
 	std::vector<float> nums;
 
-	for (unsigned int i = 0; i < strs.size(); i++)
-		nums.push_back(stof(strs[i]));
+	try
+	{
+		for (unsigned int i = 0; i < strs.size(); i++)
+		{
+			std::cerr << "String: " << strs[i] << std::endl;
+			if(strs[i] == "")
+			{
+				std::cerr << "String is NULL: " << strs[i] << std::endl;
+				break;
+			}
+			else
+			{
+				nums.push_back(stof(strs[i]));
+			}
+		}
+	}
+	catch(const std::invalid_argument &ia)
+	{
+		std::cerr << "ERROR: " << ia.what() << std::endl;
+	}
 
 	return nums;
 }
