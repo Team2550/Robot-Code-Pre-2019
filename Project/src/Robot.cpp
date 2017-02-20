@@ -1,3 +1,4 @@
+#include "Timer.h"
 #include "Robot.h"
 
 // driver: (int) xBox controller number
@@ -10,6 +11,9 @@ Robot::Robot() : driveController(0), perifController(1),
 {
 	decreaseShooterSpeedDown = false;
 	increaseShooterSpeedDown = false;
+
+	climbToggleHold = false;
+	climbToggle = false;
 }
 
 Robot::~Robot()
@@ -19,7 +23,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	timeSinceStart.Start();
+	//timeSinceStart.Start();
 }
 
 void Robot::AutonomousInit()
@@ -62,7 +66,7 @@ void Robot::TeleopPeriodic()
 	{
 		printf("New UDP data:");
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < UDP::DataCount; i++)
 		{
 			printf(i > 0 ? ", " : " ");
 			printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
@@ -133,10 +137,19 @@ void Robot::TeleopPeriodic()
 	else
 		decreaseShooterSpeedDown = false;
 
-	/* ========== Lift ========== */
-	if(perifController.GetRawButton(Controls::Peripherals::Climb))
-		lift.raise();
-	else if(perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5)
+	/* ========== Lift/In-Feed ========== */
+	if (perifController.GetRawButton(Controls::Peripherals::ClimbToggle))
+	{
+		if(climbToggleHold == false)
+		{
+			climbToggle = !climbToggle;
+			climbToggleHold = true;
+		}
+	}
+	else
+		climbToggleHold = false;
+
+	if(climbToggle || perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.5)
 		lift.raise();
 	else
 		lift.stop();
