@@ -7,15 +7,43 @@ Robot::Robot() : driveController(0), perifController(1),
                  udpReceiver(),
 				 udpSender("2550-programming0.local", 8890), // "raspberrypi.local"
 				 driveBase(),
-				 shooter(),
-				 lift()
+				 shooter()
+				 //lift()
 {
-	sentEndMessage = false;
+	//sentEndMessage = false;
 }
 
 Robot::~Robot()
 {
 
+}
+
+void Robot::autoAim()
+{
+	 // Get data
+	  float data[UDP::DataCount];
+	  udpReceiver.getUDPData(data);
+
+	  bool isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
+
+	  while(!isDataGood)
+	  {
+		  isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
+
+	  if (!isDataGood) // If data isn't good, rotate blindly
+	    driveBase.drive(-0.5, 0.5);
+	  else if (data[UDP::Index::HorizAngle] > 5) // Target is to the right, rotate clockwise
+	    driveBase.drive(0.3, -0.3);
+	  else if (data[UDP::Index::HorizAngle] < -5) // Target is to the left, rotate counter-clockwise
+	    driveBase.drive(-0.3, 0.3);
+	  else // Target is near center
+	  {
+	    if (data[UDP::Index::Distance] > 5) // Target is far, approach
+	      driveBase.drive(0.3);
+	    else // Arrived
+	      driveBase.stop();
+	  }
+	 }
 }
 
 void Robot::RobotInit()
@@ -53,6 +81,7 @@ void Robot::AutonomousPeriodic()
 		printf("\n");
 	}
 }
+
 
 void Robot::TeleopInit()
 {
@@ -150,6 +179,11 @@ void Robot::TeleopPeriodic()
 	}
 	else
 		decreaseShooterSpeedDown = false;
+
+	if (perifController.GetRawButton(Controls::Peripherals::autoAim))
+		{
+			autoAim();
+		}
 
 	/* ========== Lift ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Climb))

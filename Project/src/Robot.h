@@ -26,15 +26,14 @@ private:
 	Lift lift;
 	bool raiseOrLowerLift;
 
-<<<<<<< HEAD
+
 	Timer matchTimer;
 
 	bool sentEndMessage;
 
-=======
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
->>>>>>> 2017-Drive
+
 public:
 	Robot();
 	~Robot();
@@ -43,6 +42,7 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
+	void autoAim();
 };
 
 #endif
