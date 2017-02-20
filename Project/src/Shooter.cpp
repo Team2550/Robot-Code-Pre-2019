@@ -12,9 +12,12 @@ Shooter::Shooter() :
 	blenderMotor.SetInverted(true);
 }
 
-void Shooter::shoot()
+void Shooter::shoot(float motorCurrent)
 {
-	shooterMotor.Set(Speeds::Shooter::Shooter + shooterSpeedOffset);
+	if(motorCurrent < Speeds::Shooter::CurrentThreshold)
+		shooterMotor.Set(Speeds::Shooter::Shooter + shooterSpeedOffset);
+	else
+		shooterMotor.Set(Speeds::Shooter::MaxShooter);
 }
 
 void Shooter::stop()

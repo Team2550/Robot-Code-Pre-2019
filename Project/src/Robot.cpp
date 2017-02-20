@@ -92,7 +92,7 @@ void Robot::TeleopPeriodic()
 
 	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
 	{
-		shooter.shoot();
+		shooter.shoot(pdp.GetCurrent(Ports::PDP::Shooter));
 
 		blenderTimer.Start();
 		//shooter.blend(fmod(timeSinceStart.Get(), 4) < 2.0);

@@ -68,6 +68,8 @@ namespace Speeds
 	namespace Shooter
 	{
 		const float Shooter = 0.67;
+		const float MaxShooter = 1;
+		const float CurrentThreshold = 3;
 		const float Blender = 0.75;
 	}
 }
