@@ -99,9 +99,10 @@ void UDP_Receiver::checkUDP()
 
 	if (bytesRecievedCount > 0) {
 		buffer[bytesRecievedCount] = '\0';
-		std::string dataAsString(buffer, buffer + sizeof(buffer) / sizeof(buffer[0]));
+		std::string bufferString = buffer;
+		printf(("Got data: " + bufferString).c_str());
 
-		std::vector<std::string> dataPoints = Utility::splitString(dataAsString, ',');
+		std::vector<std::string> dataPoints = Utility::splitString(bufferString, ',');
 
 		std::vector<std::vector<float>> data;
 
