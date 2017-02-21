@@ -24,9 +24,9 @@ std::vector<std::string> Utility::splitString(std::string str, char delimiter)
 	{
 		substr = "";
 
-		for (; str[i] != delimiter && i < str.length(); i++)
+		while (str[i] != delimiter && i < str.length())
 		{
-			substr += str[i];
+			substr += str[i++];
 		}
 
 		substrings.push_back(substr);
@@ -38,9 +38,16 @@ std::vector<std::string> Utility::splitString(std::string str, char delimiter)
 std::vector<float> Utility::strVectorToFloatVector(std::vector<std::string> strs)
 {
 	std::vector<float> nums;
+	float num;
 
 	for (unsigned int i = 0; i < strs.size(); i++)
-		nums.push_back(stof(strs[i]));
+		try
+		{
+			num = stof(strs[i]);
+			nums.push_back(num);
+		}
+		catch (const int e)
+		{}
 
 	return nums;
 }

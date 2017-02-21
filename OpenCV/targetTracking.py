@@ -173,7 +173,7 @@ def main():
                         dist, xOffset, yOffset, horizAngle, vertAngle = d
                         print("Found target (dist, xOffset, yOffset, horizAngle, vertAngle):", dist, xOffset, yOffset, horizAngle, vertAngle)
                     
-                    data = ','.join(' '.join(str(y) for y in x) for x in data)
+                    data = ','.join(' '.join("{0:.5f}".format(y) for y in x) for x in data)
                     sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
                     print("Sent data to RoboRIO!")
                 else:
