@@ -18,6 +18,7 @@ private:
 	//Timer timeSinceStart;
 
 	Timer blenderTimer;
+	Timer autoTimer;
 
 	PowerDistributionPanel pdp;
 	UDP_Receiver udpReceiver;
@@ -30,6 +31,7 @@ private:
 
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
+
 public:
 	Robot();
 	~Robot();
@@ -38,6 +40,7 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
+	void distTest();
 };
 
 #endif

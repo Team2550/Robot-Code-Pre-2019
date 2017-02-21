@@ -74,6 +74,14 @@ namespace Speeds
 	}
 }
 
+namespace Autonomous
+{
+	const int airshipVerticalTime = 3;
+	const int airshipHorizTime = 3;
+	const int oneEigtheeTime = 3;
+}
+
+
 namespace UDP
 {
 	const int DataCount = 5;

@@ -33,16 +33,22 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	/* ========== udpReceiver ========== */
-	udpReceiver.checkUDP();
+	/* ========== blind autonomous ========== */
 
-	printf("As numbers: ");
+	int verticalStretchA = Autonomous::airshipVerticalTime * .8;
+	int verticalStretchB = Autonomous::airshipVerticalTime - verticalStretchA;
+	int horizStretchA = Autonomous::airshipHorizTime * .15625;
+	int ninteeTime = Autonomous::oneEigtheeTime / 2;
+	autoTimer.Start();
+	if(autoTimer.Get() >= verticalStretchA){
+		driveBase.drive(1,1);
+		driveBase.stop();
+	    }
+	autoTimer.Reset();
 
-	for (int i = 0; i < 4; i++)
-	{
-		printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
-		printf(", ");
-	}
+
+
+
 
 	printf("\n");
 }
@@ -60,23 +66,23 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
 	/* ========== udpReceiver ========== */
-	udpReceiver.checkUDP();
-
-	if (udpReceiver.getUDPDataAge() < 1.0)
-	{
-		printf("New UDP data:");
-
-		for (int i = 0; i < UDP::DataCount; i++)
-		{
-			printf(i > 0 ? ", " : " ");
-			printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
-		}
-
-		printf(", Age: ");
-		printf(std::to_string(udpReceiver.getUDPDataAge()).c_str());
-
-		printf("\n");
-	}
+//	udpReceiver.checkUDP();
+//
+//	if (udpReceiver.getUDPDataAge() < 1.0)
+//	{
+//		printf("New UDP data:");
+//
+//		for (int i = 0; i < UDP::DataCount; i++)
+//		{
+//			printf(i > 0 ? ", " : " ");
+//			printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
+//		}
+//
+//		printf(", Age: ");
+//		printf(std::to_string(udpReceiver.getUDPDataAge()).c_str());
+//
+//		printf("\n");
+//	}
 
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
