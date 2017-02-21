@@ -14,6 +14,9 @@ Robot::Robot() : driveController(0), perifController(1),
 
 	climbToggleHold = false;
 	climbToggle = false;
+
+	normalDrive = DriveType::Normal;
+	backwardsDrive = DriveType::Backwards;
 }
 
 Robot::~Robot()
@@ -24,12 +27,17 @@ Robot::~Robot()
 void Robot::RobotInit()
 {
 	//timeSinceStart.Start();
+	driveChooser.AddDefault("Normal", &normalDrive);
+	driveChooser.AddObject("Backwards", &backwardsDrive);
+	SmartDashboard::PutData("Drive Mode", &driveChooser);
 }
 
 void Robot::AutonomousInit()
 {
 	autoTimer.Reset();
 	autoTimer.Start();
+
+	driveBase.setReversed(false);
 }
 
 void Robot::AutonomousPeriodic()
@@ -82,6 +90,11 @@ void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
 	driveBase.stop();
+	DriveType *driveType = driveChooser.GetSelected();
+	if(driveType == nullptr)
+		driveBase.setReversed(false);
+	else
+		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
 
 	/* ========== Shooter ========== */
 	blenderTimer.Stop();

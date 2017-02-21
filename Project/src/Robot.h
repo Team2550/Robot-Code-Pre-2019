@@ -10,6 +10,12 @@
 #include "Shooter.h"
 #include "Lift.h"
 
+enum DriveType
+{
+	Normal,
+	Backwards
+};
+
 class Robot: public IterativeRobot
 {
 private:
@@ -24,6 +30,10 @@ private:
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
+
+	DriveType normalDrive;
+	DriveType backwardsDrive;
+	SendableChooser<DriveType*> driveChooser;
 
 	bool climbToggleHold;
 	bool climbToggle;
