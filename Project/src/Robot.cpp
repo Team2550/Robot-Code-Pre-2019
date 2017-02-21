@@ -90,11 +90,6 @@ void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
 	driveBase.stop();
-	DriveType *driveType = driveChooser.GetSelected();
-	if(driveType == nullptr)
-		driveBase.setReversed(false);
-	else
-		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
 
 	/* ========== Shooter ========== */
 	blenderTimer.Stop();
@@ -126,6 +121,12 @@ void Robot::TeleopPeriodic()
 	}
 
 	/* ========== DriveBase ========== */
+	DriveType *driveType = driveChooser.GetSelected();
+	if(driveType == nullptr)
+		driveBase.setReversed(false);
+	else
+		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
+
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
 	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
