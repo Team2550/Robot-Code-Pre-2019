@@ -17,6 +17,9 @@ Robot::Robot() : driveController(0), perifController(1),
 
 	inchesPerSecond = Autonomous::inchesPerSecond;
 	oneEigtheeTime = Autonomous::oneEigtheeTime;
+
+	normalDrive = DriveType::Normal;
+	backwardsDrive = DriveType::Backwards;
 }
 
 Robot::~Robot()
@@ -29,6 +32,15 @@ void Robot::RobotInit()
 	//timeSinceStart.Start();
 	SmartDashboard::PutNumber("inchesPerSecond", inchesPerSecond);
 	SmartDashboard::PutNumber("oneEigtheeTime", oneEigtheeTime);
+
+	driveChooser.AddDefault("Normal", &normalDrive);
+	driveChooser.AddObject("Backwards", &backwardsDrive);
+	SmartDashboard::PutData("Drive Mode", &driveChooser);
+
+	SmartDashboard::PutNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
+	SmartDashboard::PutNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
+	SmartDashboard::PutNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
+	SmartDashboard::PutNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
 }
 
 void Robot::AutonomousInit()
@@ -48,6 +60,8 @@ void Robot::AutonomousInit()
 	autoDriveTimes[2] = feildHorizTime * .15625;                      //horizStretchA
 	autoDriveTimes[3] = oneEigtheeTime / 2;                           //ninteeTime
 	autoDriveTimes[4] = airshipFrontVerticalTime - autoDriveTimes[0]; //verticalStretchB
+
+	driveBase.setReversed(false);
 }
 
 void Robot::AutonomousPeriodic()
@@ -95,54 +109,6 @@ void Robot::AutonomousPeriodic()
 			indx++;
 		}
 	}
-
-
-/*
-	autoTimer.Start();
-
-	if(autoTimer.Get() <= verticalStretchA)
-	{
-		driveBase.drive(1,1);
-	}
-
-	driveBase.stop();
-
-	autoTimer.Reset();
-
-	if(autoTimer.Get() <= ninteeTime)
-	{
-		driveBase.drive(1,-1); //Turn right
-	}
-	driveBase.stop();
-	autoTimer.Reset();
-
-	if(autoTimer.Get() <= horizStretchA)
-	{
-		driveBase.drive(1,1);
-	}
-	driveBase.stop();
-
-	autoTimer.Reset();
-
-	if(autoTimer.Get() <= ninteeTime)
-	{
-		driveBase.drive(1,-1); //Turn right
-
-	}
-	driveBase.stop();
-
-	autoTimer.Reset();
-
-	if(autoTimer.Get() <= verticalStretchB)
-	{
-
-		driveBase.drive(1,1);
-	}
-	driveBase.stop();
-	autoTimer.Stop();
-
-	printf("\n");
-	*/
 }
 
 void Robot::TeleopInit()
@@ -157,31 +123,25 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	/* ========== udpReceiver ========== */
-//	udpReceiver.checkUDP();
-//
-//	if (udpReceiver.getUDPDataAge() < 1.0)
-//	{
-//		printf("New UDP data:");
-//
-//		for (int i = 0; i < UDP::DataCount; i++)
-//		{
-//			printf(i > 0 ? ", " : " ");
-//			printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
-//		}
-//
-//		printf(", Age: ");
-//		printf(std::to_string(udpReceiver.getUDPDataAge()).c_str());
-//
-//		printf("\n");
-//	}
+	/* ========== Settings ========== */
+	DriveType *driveType = driveChooser.GetSelected();
+	if(driveType == nullptr)
+		driveBase.setReversed(false);
+	else
+		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
 
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
+
+	leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
+	                               SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
+	rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
+	                                 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
+
 	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
 	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
-	float speed = turtle ? Speeds::TankDrive::Turtle : (boost ? Speeds::TankDrive::Boost : Speeds::TankDrive::Normal);
+	float speed = turtle ? Speeds::DriveBase::Turtle : (boost ? Speeds::DriveBase::Boost : Speeds::DriveBase::Normal);
 	driveBase.drive(leftSpeed *speed,
 					rightSpeed * speed);
 
@@ -262,8 +222,6 @@ void Robot::TeleopPeriodic()
 		lift.raise();
 	else
 		lift.stop();
-
-	/* ==================== */
 }
 
 START_ROBOT_CLASS(Robot)
