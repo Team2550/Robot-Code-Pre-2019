@@ -35,11 +35,13 @@ private:
 	bool autoTurn = false;
 	//bool bumpIndx = false;
 
+	int inchesPerSecond;
+	int oneEigtheeTime;
 	static const int MAX_NUM_AUTO_DRIVE_TIME = 5;
-	const int airshipFrontVerticalTime = Autonomous::inchesPerSecond *  93.3;
-	const int airshipBackVerticalTime = Autonomous::inchesPerSecond * 185.3;
-	const int feildHorizTime = Autonomous::inchesPerSecond * 277.4;
-	const int horizStretchA = feildHorizTime * .15625;
+	int airshipFrontVerticalTime;
+	int airshipBackVerticalTime;
+	int feildHorizTime;
+	int horizStretchA;
 
 	int indx = 0;
 

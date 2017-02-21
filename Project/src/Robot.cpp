@@ -15,11 +15,8 @@ Robot::Robot() : driveController(0), perifController(1),
 	climbToggleHold = false;
 	climbToggle = false;
 
-	autoDriveTimes[0] = airshipFrontVerticalTime * .8; //verticalStretchA
-	autoDriveTimes[1] = Autonomous::oneEigtheeTime / 2; //ninteeTime
-	autoDriveTimes[2] = feildHorizTime * .15625; //horizStretchA
-	autoDriveTimes[3] = Autonomous::oneEigtheeTime / 2; //ninteeTime
-	autoDriveTimes[4] = airshipFrontVerticalTime - autoDriveTimes[0]; //verticalStretchB
+	inchesPerSecond = Autonomous::inchesPerSecond;
+	oneEigtheeTime = Autonomous::oneEigtheeTime;
 }
 
 Robot::~Robot()
@@ -30,11 +27,27 @@ Robot::~Robot()
 void Robot::RobotInit()
 {
 	//timeSinceStart.Start();
+	SmartDashboard::PutNumber("inchesPerSecond", inchesPerSecond);
+	SmartDashboard::PutNumber("oneEigtheeTime", oneEigtheeTime);
 }
 
 void Robot::AutonomousInit()
 {
 	autoTimer.Start();
+
+	inchesPerSecond = SmartDashboard::GetNumber("inchesPerSecond", inchesPerSecond);
+	oneEigtheeTime = SmartDashboard::GetNumber("oneEigtheeTime", oneEigtheeTime);
+
+	airshipFrontVerticalTime = inchesPerSecond *  93.3;
+	airshipBackVerticalTime = inchesPerSecond * 185.3;
+	feildHorizTime = inchesPerSecond * 277.4;
+	horizStretchA = feildHorizTime * .15625;
+
+	autoDriveTimes[0] = airshipFrontVerticalTime * .8;                //verticalStretchA
+	autoDriveTimes[1] = oneEigtheeTime / 2;                           //ninteeTime
+	autoDriveTimes[2] = feildHorizTime * .15625;                      //horizStretchA
+	autoDriveTimes[3] = oneEigtheeTime / 2;                           //ninteeTime
+	autoDriveTimes[4] = airshipFrontVerticalTime - autoDriveTimes[0]; //verticalStretchB
 }
 
 void Robot::AutonomousPeriodic()
@@ -226,7 +239,7 @@ void Robot::TeleopPeriodic()
 
 	if (driveController.GetRawButton(Controls::TankDrive::flip)){
 		autoTimer.Start();
-		if(autoTimer.Get() >= Autonomous::oneEigtheeTime){
+		if(autoTimer.Get() >= oneEigtheeTime){
 				driveBase.drive(1,-1);
 				driveBase.stop();
 			    }
