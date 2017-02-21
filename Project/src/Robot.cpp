@@ -63,6 +63,7 @@ void Robot::AutonomousPeriodic()
 
 		if(autoTimer.Get() >= autoDriveTimes[indx])
 		{
+			autoTimer.Reset();
 			driveBase.stop();
 			indx++;
 		}
@@ -76,6 +77,7 @@ void Robot::AutonomousPeriodic()
 
 		if(autoTimer.Get() >= autoDriveTimes[indx])
 		{
+			autoTimer.Reset();
 			driveBase.stop();
 			indx++;
 		}
