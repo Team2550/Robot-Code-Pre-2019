@@ -83,8 +83,8 @@ namespace Autonomous
 {
 	//const int dist = 3;
 	//const int distTime = 3;
-	const int inchesPerSecond = 3;
-	const int oneEigtheeTime = 3;
+	const int inchesPerSecond = 100;
+	const int oneEigtheeTime = .5;
 }
 
 

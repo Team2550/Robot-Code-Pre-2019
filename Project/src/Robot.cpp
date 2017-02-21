@@ -50,14 +50,14 @@ void Robot::AutonomousInit()
 	inchesPerSecond = SmartDashboard::GetNumber("inchesPerSecond", inchesPerSecond);
 	oneEigtheeTime = SmartDashboard::GetNumber("oneEigtheeTime", oneEigtheeTime);
 
-	airshipFrontVerticalTime = inchesPerSecond *  93.3;
-	airshipBackVerticalTime = inchesPerSecond * 185.3;
-	feildHorizTime = inchesPerSecond * 277.4;
+	airshipFrontVerticalTime = 93.3 / inchesPerSecond;
+	airshipBackVerticalTime = 185.3 / inchesPerSecond;
+	feildHorizTime = 277.4 / inchesPerSecond;
 	horizStretchA = feildHorizTime * .15625;
 
 	autoDriveTimes[0] = airshipFrontVerticalTime * .8;                //verticalStretchA
 	autoDriveTimes[1] = oneEigtheeTime / 2;                           //ninteeTime
-	autoDriveTimes[2] = feildHorizTime * .15625;                      //horizStretchA
+	autoDriveTimes[2] = horizStretchA;                                //horizStretchA
 	autoDriveTimes[3] = oneEigtheeTime / 2;                           //ninteeTime
 	autoDriveTimes[4] = airshipFrontVerticalTime - autoDriveTimes[0]; //verticalStretchB
 
@@ -71,6 +71,7 @@ void Robot::AutonomousPeriodic()
 	if(indx > MAX_NUM_AUTO_DRIVE_TIME)
 	{
 		return;
+		driveBase.stop();
 	}
 	else if(indx == 1 || indx == 3)
 	{
@@ -87,22 +88,20 @@ void Robot::AutonomousPeriodic()
 		{
 			driveBase.drive(1,1);
 		}
-
-		if(autoTimer.Get() >= autoDriveTimes[indx])
+		else
 		{
 			autoTimer.Reset();
 			driveBase.stop();
 			indx++;
 		}
 	}
-	else if(autoTurn == true)
+	else
 	{
 		if(autoTimer.Get() <= autoDriveTimes[indx])
 		{
 			driveBase.drive(1,-1); //Turn right
 		}
-
-		if(autoTimer.Get() >= autoDriveTimes[indx])
+		else
 		{
 			autoTimer.Reset();
 			driveBase.stop();
