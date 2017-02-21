@@ -36,6 +36,7 @@ namespace Controls
 		const int Right = xbox::axis::rightY;
 		const int Boost = xbox::btn::rb;
 		const int Turtle = xbox::btn::lb;
+		const int flip = xbox::btn::a;
 	}
 
 	namespace Peripherals
@@ -76,8 +77,9 @@ namespace Speeds
 
 namespace Autonomous
 {
-	const int airshipVerticalTime = 3;
-	const int airshipHorizTime = 3;
+	const int dist = 3;
+	const int distTime = 3;
+	const int inchesPerSecond = distTime/dist;
 	const int oneEigtheeTime = 3;
 }
 

@@ -35,9 +35,12 @@ void Robot::AutonomousPeriodic()
 {
 	/* ========== blind autonomous ========== */
 
-	int verticalStretchA = Autonomous::airshipVerticalTime * .8;
-	int verticalStretchB = Autonomous::airshipVerticalTime - verticalStretchA;
-	int horizStretchA = Autonomous::airshipHorizTime * .15625;
+	int airshipFrontVerticalTime = Autonomous::inchesPerSecond *  93.3;
+	int airshipBackVerticalTime = Autonomous::inchesPerSecond * 185.3;
+	int verticalStretchA = airshipFrontVerticalTime * .8;
+	int verticalStretchB = airshipFrontVerticalTime - verticalStretchA;
+	int feildHorizTime = Autonomous::inchesPerSecond * 277.4;
+	int horizStretchA = feildHorizTime * .15625;
 	int ninteeTime = Autonomous::oneEigtheeTime / 2;
 	autoTimer.Start();
 	if(autoTimer.Get() >= verticalStretchA){
@@ -45,8 +48,21 @@ void Robot::AutonomousPeriodic()
 		driveBase.stop();
 	    }
 	autoTimer.Reset();
-
-
+	if(autoTimer.Get() >= ninteeTime){
+			driveBase.drive(1,-1);
+			driveBase.stop();
+		    }
+	autoTimer.Reset();
+	if(autoTimer.Get() >= horizStretchA){
+			driveBase.drive(1,1);
+			driveBase.stop();
+		    }
+	autoTimer.Reset();
+	if(autoTimer.Get() >= verticalStretchB){
+			driveBase.drive(1,1);
+			driveBase.stop();
+			}
+	autoTimer.Stop();
 
 
 
@@ -144,6 +160,15 @@ void Robot::TeleopPeriodic()
 	}
 	else
 		decreaseShooterSpeedDown = false;
+
+	if (driveController.GetRawButton(Controls::TankDrive::flip)){
+		autoTimer.Start();
+		if(autoTimer.Get() >= Autonomous::oneEigtheeTime){
+				driveBase.drive(1,-1);
+				driveBase.stop();
+			    }
+		autoTimer.Stop();
+	}
 
 	/* ========== Lift/In-Feed ========== */
 	if (perifController.GetRawButton(Controls::Peripherals::ClimbToggle))
