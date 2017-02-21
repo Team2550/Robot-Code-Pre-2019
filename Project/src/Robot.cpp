@@ -25,7 +25,7 @@ Robot::~Robot()
 void Robot::autoAim()
 {
 	 // Get data
-	  float data[UDP::DataCount];
+	 float data[UDP::DataCount];
 	 udpReceiver.getUDPData(data);
 
 	 // bool isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
