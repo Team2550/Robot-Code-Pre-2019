@@ -14,6 +14,12 @@ Robot::Robot() : driveController(0), perifController(1),
 
 	climbToggleHold = false;
 	climbToggle = false;
+
+	autoDriveTimes[0] = airshipFrontVerticalTime * .8; //verticalStretchA
+	autoDriveTimes[1] = Autonomous::oneEigtheeTime / 2; //ninteeTime
+	autoDriveTimes[2] = feildHorizTime * .15625; //horizStretchA
+	autoDriveTimes[3] = Autonomous::oneEigtheeTime / 2; //ninteeTime
+	autoDriveTimes[4] = airshipFrontVerticalTime - autoDriveTimes[0]; //verticalStretchB
 }
 
 Robot::~Robot()
@@ -28,45 +34,100 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
-
+	autoTimer.Start();
 }
 
 void Robot::AutonomousPeriodic()
 {
 	/* ========== blind autonomous ========== */
 
-	int airshipFrontVerticalTime = Autonomous::inchesPerSecond *  93.3;
-	int airshipBackVerticalTime = Autonomous::inchesPerSecond * 185.3;
-	int verticalStretchA = airshipFrontVerticalTime * .8;
-	int verticalStretchB = airshipFrontVerticalTime - verticalStretchA;
-	int feildHorizTime = Autonomous::inchesPerSecond * 277.4;
-	int horizStretchA = feildHorizTime * .15625;
-	int ninteeTime = Autonomous::oneEigtheeTime / 2;
+	if(indx > MAX_NUM_AUTO_DRIVE_TIME)
+	{
+		return;
+	}
+	else if(indx == 1 || indx == 3)
+	{
+		autoTurn = true;
+	}
+	else
+	{
+		autoTurn = false;
+	}
+
+	if(autoTurn == false)
+	{
+		if(autoTimer.Get() < autoDriveTimes[indx])
+		{
+			driveBase.drive(1,1);
+		}
+
+		if(autoTimer.Get() >= autoDriveTimes[indx])
+		{
+			driveBase.stop();
+			indx++;
+		}
+	}
+	else if(autoTurn == true)
+	{
+		if(autoTimer.Get() <= autoDriveTimes[indx])
+		{
+			driveBase.drive(1,-1); //Turn right
+		}
+
+		if(autoTimer.Get() >= autoDriveTimes[indx])
+		{
+			driveBase.stop();
+			indx++;
+		}
+	}
+
+
+/*
 	autoTimer.Start();
-	if(autoTimer.Get() >= verticalStretchA){
+
+	if(autoTimer.Get() <= verticalStretchA)
+	{
 		driveBase.drive(1,1);
-		driveBase.stop();
-	    }
+	}
+
+	driveBase.stop();
+
 	autoTimer.Reset();
-	if(autoTimer.Get() >= ninteeTime){
-			driveBase.drive(1,-1);
-			driveBase.stop();
-		    }
+
+	if(autoTimer.Get() <= ninteeTime)
+	{
+		driveBase.drive(1,-1); //Turn right
+	}
+	driveBase.stop();
 	autoTimer.Reset();
-	if(autoTimer.Get() >= horizStretchA){
-			driveBase.drive(1,1);
-			driveBase.stop();
-		    }
+
+	if(autoTimer.Get() <= horizStretchA)
+	{
+		driveBase.drive(1,1);
+	}
+	driveBase.stop();
+
 	autoTimer.Reset();
-	if(autoTimer.Get() >= verticalStretchB){
-			driveBase.drive(1,1);
-			driveBase.stop();
-			}
+
+	if(autoTimer.Get() <= ninteeTime)
+	{
+		driveBase.drive(1,-1); //Turn right
+
+	}
+	driveBase.stop();
+
+	autoTimer.Reset();
+
+	if(autoTimer.Get() <= verticalStretchB)
+	{
+
+		driveBase.drive(1,1);
+	}
+	driveBase.stop();
 	autoTimer.Stop();
 
-
-
 	printf("\n");
+	*/
 }
 
 void Robot::TeleopInit()
