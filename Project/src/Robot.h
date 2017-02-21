@@ -48,12 +48,12 @@ private:
 	int inchesPerSecond;
 	int oneEigtheeTime;
 	static const int MAX_NUM_AUTO_DRIVE_TIME = 5;
-	int airshipFrontVerticalTime;
-	int airshipBackVerticalTime;
-	int feildHorizTime;
-	int horizStretchA;
+	float airshipFrontVerticalTime;
+	float airshipBackVerticalTime;
+	float feildHorizTime;
+	float horizStretchA;
 
-	int indx = 0;
+	int indx;
 
 	/*
 	 * [0] = verticalStretchA

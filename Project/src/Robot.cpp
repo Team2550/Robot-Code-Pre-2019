@@ -45,6 +45,7 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
+	autoTimer.Reset();
 	autoTimer.Start();
 
 	inchesPerSecond = SmartDashboard::GetNumber("inchesPerSecond", inchesPerSecond);
@@ -55,6 +56,7 @@ void Robot::AutonomousInit()
 	feildHorizTime = 277.4 / inchesPerSecond;
 	horizStretchA = feildHorizTime * .15625;
 
+	indx = 0;
 	autoDriveTimes[0] = airshipFrontVerticalTime * .8;                //verticalStretchA
 	autoDriveTimes[1] = oneEigtheeTime / 2;                           //ninteeTime
 	autoDriveTimes[2] = horizStretchA;                                //horizStretchA
@@ -68,10 +70,11 @@ void Robot::AutonomousPeriodic()
 {
 	/* ========== blind autonomous ========== */
 
-	if(indx > MAX_NUM_AUTO_DRIVE_TIME)
+	if(indx >= MAX_NUM_AUTO_DRIVE_TIME)
 	{
-		return;
 		driveBase.stop();
+
+		return;
 	}
 	else if(indx == 1 || indx == 3)
 	{
@@ -84,12 +87,15 @@ void Robot::AutonomousPeriodic()
 
 	if(autoTurn == false)
 	{
+		std::cout << "AutoTurn: false, autoTimer: " << autoTimer.Get() << ", index: " << autoDriveTimes[indx] << ", ";
 		if(autoTimer.Get() < autoDriveTimes[indx])
 		{
+			std::cout << "Driving forwards" << std::endl;
 			driveBase.drive(1,1);
 		}
 		else
 		{
+			std::cout << "Stopping" << std::endl;
 			autoTimer.Reset();
 			driveBase.stop();
 			indx++;
@@ -97,12 +103,15 @@ void Robot::AutonomousPeriodic()
 	}
 	else
 	{
+		std::cout << "AutoTurn: true, autoTimer: " << autoTimer.Get() << ", index: " << autoDriveTimes[indx] << ", ";
 		if(autoTimer.Get() <= autoDriveTimes[indx])
 		{
+			std::cout << "Turning right" << std::endl;
 			driveBase.drive(1,-1); //Turn right
 		}
 		else
 		{
+			std::cout << "Stopping" << std::endl;
 			autoTimer.Reset();
 			driveBase.stop();
 			indx++;
