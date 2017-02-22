@@ -53,8 +53,10 @@ namespace Speeds
 		const float Normal = 0.5;
 		const float Boost = 1;
 		const float Turtle = 0.25;
-		const float LeftPowerRatio = 1;
-		const float RightPowerRatio = 1;
+		const float LeftPowerRatioBackwards = 1;
+		const float RightPowerRatioBackwards = 1;
+		const float LeftPowerRatioForwards = 1;
+		const float RightPowerRatioForwards = 1;
 	}
 
 	namespace Lift
