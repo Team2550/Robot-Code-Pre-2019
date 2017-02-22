@@ -120,16 +120,19 @@ def processCamera(camCapture):
                 objectDist = diagonalOfObjectPlaneInches * 0.5 * COTANGENT_FOV
                 objectXOffset = ((avgX / IMAGE_WIDTH) - (1/2)) * widthOfObjectPlaneInches
                 objectYOffset = ((avgY / IMAGE_HEIGHT) - (1/2)) * heightOfObjectPlaneInches
-                
-                xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
-                yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
-                
-                #print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
 
-                cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
-                cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
-                
-                dataPoints += [(objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Test values
+                if (math.abs(objectYOffset) > 8)
+                    xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
+                    yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
+
+                    percentMatch = (math.abs(ar - TARGET_ASPECT_RATIO) + TARGET_ASPECT_RATIO) / TARGET_ASPECT_RATIO
+                    
+                    #print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
+
+                    cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
+                    cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
+                    
+                    dataPoints += [(percentMatch, objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Test values
 
     cv2.imshow('Original', imgOriginal)
     cv2.imshow('Mask', maskDraw)

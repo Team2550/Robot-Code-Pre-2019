@@ -100,24 +100,43 @@ void UDP_Receiver::checkUDP()
 	if (bytesRecievedCount > 0) {
 		buffer[bytesRecievedCount] = '\0';
 		std::string bufferString = buffer;
-		printf(("Got data: " + bufferString).c_str());
+		printf(("Got data: " + bufferString + '\n').c_str());
 
-		std::vector<std::string> dataPoints = Utility::splitString(bufferString, ',');
+		std::vector<std::string> dataPointsStrings = Utility::splitString(bufferString, ',');
 
-		std::vector<std::vector<float>> data;
+		std::vector<std::vector<float>> dataPoints;
 
-		for (unsigned int i = 0; i < dataPoints.size(); i++)
-			data.push_back(Utility::strVectorToFloatVector(Utility::splitString(dataPoints[i], ' ')));
+		std::vector<float> currentDataPoint;
 
-		for (int i = 0; i < UDP::DataCount; i++)
+		// Convert to float and sort data points by size from smallest to greatest distance
+		for (unsigned int i = 0; i < dataPointsStrings.size(); i++)
 		{
-			newestUDPData[i] = 0;
-			for (unsigned int j = 0; j < data.size(); j++)
-				newestUDPData[i] += data[j][i] / data.size();
+			currentDataPoint = Utility::strVectorToFloatVector(Utility::splitString(dataPointsStrings[i], ' '));
+			if (currentDataPoint.size() == UDP::DataCount)
+				for (unsigned int j = 0; j <= dataPoints.size(); j++)
+					if (j >= dataPoints.size() || dataPoints[j][UDP::Index::PercentMatch] > currentDataPoint[UDP::Index::PercentMatch])
+					{
+						dataPoints.insert(dataPoints.begin() + j, currentDataPoint);
+						j = dataPoints.size() + 1;
+					}
 		}
 
-		udpAgeTimer.Reset();
-		isRealData = true;
+		if (0 < dataPoints.size() && dataPoints.size() < 2)
+		{
+			// Use only match
+			for (unsigned int i = 0; i < UDP::DataCount; i++)
+				newestUDPData[i] += dataPoints[0][i];
+			udpAgeTimer.Reset();
+			isRealData = true;
+		}
+		else if (dataPoints.size() > 0)
+		{
+			// Average two best matches
+			for (unsigned int i = 0; i < UDP::DataCount; i++)
+				newestUDPData[i] += (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
+			udpAgeTimer.Reset();
+			isRealData = true;
+		}
 	}
 }
 

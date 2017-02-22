@@ -46,7 +46,7 @@ std::vector<float> Utility::strVectorToFloatVector(std::vector<std::string> strs
 			num = stof(strs[i]);
 			nums.push_back(num);
 		}
-		catch (const int e)
+		catch (...)
 		{}
 
 	return nums;
