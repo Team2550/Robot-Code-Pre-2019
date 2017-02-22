@@ -5,6 +5,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
+                 choreographer(Autonomous::PeriodCount, Autonomous::Timetable),
 				 driveBase(),
 				 shooter(),
 				 lift()
@@ -14,9 +15,6 @@ Robot::Robot() : driveController(0), perifController(1),
 
 	climbToggleHold = false;
 	climbToggle = false;
-
-	inchesPerSecond = Autonomous::inchesPerSecond;
-	oneEigtheeTime = Autonomous::oneEigtheeTime;
 }
 
 Robot::~Robot()
@@ -26,123 +24,17 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	//timeSinceStart.Start();
-	SmartDashboard::PutNumber("inchesPerSecond", inchesPerSecond);
-	SmartDashboard::PutNumber("oneEigtheeTime", oneEigtheeTime);
+
 }
 
 void Robot::AutonomousInit()
 {
 	autoTimer.Start();
-
-	inchesPerSecond = SmartDashboard::GetNumber("inchesPerSecond", inchesPerSecond);
-	oneEigtheeTime = SmartDashboard::GetNumber("oneEigtheeTime", oneEigtheeTime);
-
-	airshipFrontVerticalTime = inchesPerSecond *  93.3;
-	airshipBackVerticalTime = inchesPerSecond * 185.3;
-	feildHorizTime = inchesPerSecond * 277.4;
-	horizStretchA = feildHorizTime * .15625;
-
-	autoDriveTimes[0] = airshipFrontVerticalTime * .8;                //verticalStretchA
-	autoDriveTimes[1] = oneEigtheeTime / 2;                           //ninteeTime
-	autoDriveTimes[2] = feildHorizTime * .15625;                      //horizStretchA
-	autoDriveTimes[3] = oneEigtheeTime / 2;                           //ninteeTime
-	autoDriveTimes[4] = airshipFrontVerticalTime - autoDriveTimes[0]; //verticalStretchB
 }
 
 void Robot::AutonomousPeriodic()
 {
-	/* ========== blind autonomous ========== */
-
-	if(indx > MAX_NUM_AUTO_DRIVE_TIME)
-	{
-		return;
-	}
-	else if(indx == 1 || indx == 3)
-	{
-		autoTurn = true;
-	}
-	else
-	{
-		autoTurn = false;
-	}
-
-	if(autoTurn == false)
-	{
-		if(autoTimer.Get() < autoDriveTimes[indx])
-		{
-			driveBase.drive(1,1);
-		}
-
-		if(autoTimer.Get() >= autoDriveTimes[indx])
-		{
-			autoTimer.Reset();
-			driveBase.stop();
-			indx++;
-		}
-	}
-	else if(autoTurn == true)
-	{
-		if(autoTimer.Get() <= autoDriveTimes[indx])
-		{
-			driveBase.drive(1,-1); //Turn right
-		}
-
-		if(autoTimer.Get() >= autoDriveTimes[indx])
-		{
-			autoTimer.Reset();
-			driveBase.stop();
-			indx++;
-		}
-	}
-
-
-/*
-	autoTimer.Start();
-
-	if(autoTimer.Get() <= verticalStretchA)
-	{
-		driveBase.drive(1,1);
-	}
-
-	driveBase.stop();
-
-	autoTimer.Reset();
-
-	if(autoTimer.Get() <= ninteeTime)
-	{
-		driveBase.drive(1,-1); //Turn right
-	}
-	driveBase.stop();
-	autoTimer.Reset();
-
-	if(autoTimer.Get() <= horizStretchA)
-	{
-		driveBase.drive(1,1);
-	}
-	driveBase.stop();
-
-	autoTimer.Reset();
-
-	if(autoTimer.Get() <= ninteeTime)
-	{
-		driveBase.drive(1,-1); //Turn right
-
-	}
-	driveBase.stop();
-
-	autoTimer.Reset();
-
-	if(autoTimer.Get() <= verticalStretchB)
-	{
-
-		driveBase.drive(1,1);
-	}
-	driveBase.stop();
-	autoTimer.Stop();
-
-	printf("\n");
-	*/
+	choreographer.applySchedule(autoTimer.Get(), driveBase);
 }
 
 void Robot::TeleopInit()
@@ -157,25 +49,6 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	/* ========== udpReceiver ========== */
-//	udpReceiver.checkUDP();
-//
-//	if (udpReceiver.getUDPDataAge() < 1.0)
-//	{
-//		printf("New UDP data:");
-//
-//		for (int i = 0; i < UDP::DataCount; i++)
-//		{
-//			printf(i > 0 ? ", " : " ");
-//			printf(std::to_string(udpReceiver.getUDPData()[i]).c_str());
-//		}
-//
-//		printf(", Age: ");
-//		printf(std::to_string(udpReceiver.getUDPDataAge()).c_str());
-//
-//		printf("\n");
-//	}
-
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
@@ -236,15 +109,6 @@ void Robot::TeleopPeriodic()
 	}
 	else
 		decreaseShooterSpeedDown = false;
-
-	if (driveController.GetRawButton(Controls::TankDrive::flip)){
-		autoTimer.Start();
-		if(autoTimer.Get() >= oneEigtheeTime){
-				driveBase.drive(1,-1);
-				driveBase.stop();
-			    }
-		autoTimer.Stop();
-	}
 
 	/* ========== Lift/In-Feed ========== */
 	if (perifController.GetRawButton(Controls::Peripherals::ClimbToggle))

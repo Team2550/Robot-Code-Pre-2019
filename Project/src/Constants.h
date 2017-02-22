@@ -77,10 +77,12 @@ namespace Speeds
 
 namespace Autonomous
 {
-	//const int dist = 3;
-	//const int distTime = 3;
-	const int inchesPerSecond = 3;
-	const int oneEigtheeTime = 3;
+	// Timetable format is an array of arrays, each of which is three floats long
+    //                                                  (timeLength, leftSpeed, rightSpeed)
+	const int PeriodCount = 3;
+	const float Timetable[PeriodCount][3] = {{2,1,1},
+	                                         {0.5,-1,1},
+								             {1,1,1}};
 }
 
 
