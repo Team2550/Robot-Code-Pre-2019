@@ -6,8 +6,12 @@ import math
 
 #################################################################################################################
 
+IS_TEST = false
+
 TARGET_RECT_SIZE_INCHES = (2, 5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
+TARGET_YOFFSET = 0
+TARGET_MAX_YOFFSET = 8
 
 TARGET_ASPECT_RATIO = min(TARGET_RECT_SIZE_INCHES) / max(TARGET_RECT_SIZE_INCHES) # Always less than one
 TARGET_ASPECT_MARGIN_OF_ERROR = 0.15 # Percentage that any rectangles seen can defer from the known aspect ratio
@@ -121,21 +125,22 @@ def processCamera(camCapture):
                 objectXOffset = ((avgX / IMAGE_WIDTH) - (1/2)) * widthOfObjectPlaneInches
                 objectYOffset = ((avgY / IMAGE_HEIGHT) - (1/2)) * heightOfObjectPlaneInches
 
-                if (math.abs(objectYOffset) > 8)
+                if (math.abs(objectYOffset - TARGET_YOFFSET) > TARGET_MAX_YOFFSET)
                     xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
                     yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
 
                     percentMatch = (math.abs(ar - TARGET_ASPECT_RATIO) + TARGET_ASPECT_RATIO) / TARGET_ASPECT_RATIO
-                    
-                    #print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
+                    percentMatch *= 1 - ((objectYOffset - TARGET_YOFFSET) / (TARGET_MAX_YOFFSET))**2
 
-                    cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
-                    cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
+                    if (IS_TEST)
+                        cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
+                        cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
                     
                     dataPoints += [(percentMatch, objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Test values
 
-    cv2.imshow('Original', imgOriginal)
-    cv2.imshow('Mask', maskDraw)
+    if (IS_TEST)
+        cv2.imshow('Original', imgOriginal)
+        cv2.imshow('Mask', maskDraw)
     
     return dataPoints
 
