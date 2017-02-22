@@ -44,6 +44,14 @@ namespace Controls
 
 namespace Speeds
 {
+	namespace DriveBase
+	{
+		const float Normal = 0.5;
+		const float Boost = 1;
+		const float Turtle = 0.25;
+		const float LeftPowerRatio = 1;
+		const float RightPowerRatio = 1;
+	}
 
 }
 

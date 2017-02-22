@@ -24,6 +24,7 @@ void Robot::RobotInit()
 void Robot::AutonomousInit()
 {
 
+	driveBase.setReversed(true);
 }
 
 void Robot::AutonomousPeriodic()
@@ -49,16 +50,50 @@ void Robot::AutonomousPeriodic()
 
 		printf("\n");
 	}
+
+	printf("\n");
+
+	/* ========== DriveBase ========== */
+	/*if(autoTimer.Get() <= 3) // Placeholder time
+	{
+		driveBase.drive(0.8);
+	}
+	else
+	{
+		autoAim();
+	}*/
+
+	driveBase.drive(1.0);
+
+	/** RECOMMENDED PSUEDO CODE
+	 *
+	 * (Segment timed periods using if structure used above)
+	 *
+	 * Move forward for x seconds
+	 * Then...
+	 * Run autoAim until end of autonomous
+	 */
 }
 
 void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
 	driveBase.stop();
+
+	/* ========== Shooter ========== */
+	blenderTimer.Stop();
+	blenderTimer.Reset();
 }
 
 void Robot::TeleopPeriodic()
 {
+	/* ========== Settings ========== */
+	DriveType *driveType = driveChooser.GetSelected();
+	if(driveType == nullptr)
+		driveBase.setReversed(false);
+	else
+		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
+
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
@@ -86,8 +121,9 @@ void Robot::TeleopPeriodic()
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
 	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
 	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
-	driveBase.drive(leftSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)),
-					rightSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)));
+	float speed = turtle ? Speeds::DriveBase::Turtle : (boost ? Speeds::DriveBase::Boost : Speeds::DriveBase::Normal);
+	driveBase.drive(leftSpeed *speed,
+					rightSpeed * speed);
 
 	/* ========== Shooter ========== */
 	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
