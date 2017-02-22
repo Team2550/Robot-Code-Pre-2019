@@ -9,8 +9,8 @@ DriveBase::DriveBase() : leftMotor(Ports::TankDrive::Left), rightMotor(Ports::Ta
 
 void DriveBase::drive(float speed)
 {
-	leftMotor.Set(speed);
-	rightMotor.Set(speed);
+	leftMotor.Set(speed * Speeds::DriveBase::LeftPowerRatio);
+	rightMotor.Set(speed * Speeds::DriveBase::RightPowerRatio);
 }
 
 void DriveBase::drive(float leftSpeed, float rightSpeed)
@@ -22,8 +22,8 @@ void DriveBase::drive(float leftSpeed, float rightSpeed)
 		rightSpeed = -temp;
 	}
 
-	leftMotor.Set(leftSpeed);
-	rightMotor.Set(rightSpeed);
+	leftMotor.Set(leftSpeed * Speeds::DriveBase::LeftPowerRatio);
+	rightMotor.Set(rightSpeed * Speeds::DriveBase::RightPowerRatio);
 }
 
 void DriveBase::stop()

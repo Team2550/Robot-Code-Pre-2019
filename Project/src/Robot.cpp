@@ -37,7 +37,7 @@ void Robot::AutonomousInit()
 	autoTimer.Reset();
 	autoTimer.Start();
 
-	driveBase.setReversed(false);
+	driveBase.setReversed(true);
 }
 
 void Robot::AutonomousPeriodic()
@@ -90,11 +90,6 @@ void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
 	driveBase.stop();
-	DriveType *driveType = driveChooser.GetSelected();
-	if(driveType == nullptr)
-		driveBase.setReversed(false);
-	else
-		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
 
 	/* ========== Shooter ========== */
 	blenderTimer.Stop();
@@ -103,6 +98,13 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+	/* ========== Settings ========== */
+	DriveType *driveType = driveChooser.GetSelected();
+	if(driveType == nullptr)
+		driveBase.setReversed(false);
+	else
+		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
+
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
@@ -130,7 +132,7 @@ void Robot::TeleopPeriodic()
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
 	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
 	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
-	float speed = turtle ? Speeds::TankDrive::Turtle : (boost ? Speeds::TankDrive::Boost : Speeds::TankDrive::Normal);
+	float speed = turtle ? Speeds::DriveBase::Turtle : (boost ? Speeds::DriveBase::Boost : Speeds::DriveBase::Normal);
 	driveBase.drive(leftSpeed *speed,
 					rightSpeed * speed);
 
