@@ -33,7 +33,7 @@ public:
 	UDP_Receiver();
 
 	void checkUDP();
-	float* getUDPData();
+	void getUDPData(float data[]);
 	double getUDPDataAge();
 	bool getUDPDataIsReal();
 };

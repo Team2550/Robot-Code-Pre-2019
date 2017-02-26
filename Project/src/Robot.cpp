@@ -10,9 +10,11 @@ Robot::Robot() : driveController(0), perifController(1),
 				 shooter(),
 				 lift()
 {
+	normalDrive = DriveType::Normal;
+	backwardsDrive = DriveType::Backwards;
+
 	decreaseShooterSpeedDown = false;
 	increaseShooterSpeedDown = false;
-
 	climbToggleHold = false;
 	climbToggle = false;
 }
@@ -24,16 +26,33 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
+	SmartDashboard::PutNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
+	SmartDashboard::PutNumber("fullRotationTime", Autonomous::FullRotationTime);
 
+	driveChooser.AddDefault("Normal", &normalDrive);
+	driveChooser.AddObject("Backwards", &backwardsDrive);
+	SmartDashboard::PutData("Drive Mode", &driveChooser);
+
+	SmartDashboard::PutNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
+	SmartDashboard::PutNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
+	SmartDashboard::PutNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
+	SmartDashboard::PutNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
 }
 
 void Robot::AutonomousInit()
 {
+	autoTimer.Reset();
 	autoTimer.Start();
+
+	driveBase.setReversed(false);
 }
 
 void Robot::AutonomousPeriodic()
 {
+	/* ========== Blind Autonomous ========== */
+	//float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
+	//float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
+
 	choreographer.applySchedule(autoTimer.Get(), driveBase);
 }
 
@@ -49,12 +68,25 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+	/* ========== Settings ========== */
+	DriveType *driveType = driveChooser.GetSelected();
+	if(driveType == nullptr)
+		driveBase.setReversed(false);
+	else
+		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
+
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
+
+	leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
+	                               SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
+	rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
+	                                 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
+
 	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
 	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
-	float speed = turtle ? Speeds::TankDrive::Turtle : (boost ? Speeds::TankDrive::Boost : Speeds::TankDrive::Normal);
+	float speed = turtle ? Speeds::DriveBase::Turtle : (boost ? Speeds::DriveBase::Boost : Speeds::DriveBase::Normal);
 	driveBase.drive(leftSpeed *speed,
 					rightSpeed * speed);
 
@@ -126,8 +158,6 @@ void Robot::TeleopPeriodic()
 		lift.raise();
 	else
 		lift.stop();
-
-	/* ==================== */
 }
 
 START_ROBOT_CLASS(Robot)
