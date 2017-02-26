@@ -5,19 +5,21 @@
 #include "Constants.h"
 #include "DriveBase.h"
 
+struct Period {
+	float time;
+	float leftSpeed;
+	float rightSpeed;
+};
+
 class Choreographer {
 private:
-	struct Period {
-		float time;
-		float leftSpeed;
-		float rightSpeed;
-	};
-
 	std::vector<Period> timetable;
 
 public:
 	Choreographer(int timePeriodCount, const float _timetable[][3]); // Array of arrays, inner arrays are formatted as (time, left, right)
 
+	Period getPeriod(int index);
+	void setPeriod(int index, Period period);
 	void applySchedule(float time, DriveBase& driveBase);
 };
 

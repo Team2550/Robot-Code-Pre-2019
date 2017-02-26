@@ -13,6 +13,16 @@ Choreographer::Choreographer(int timePeriodCount, const float _timetable[][3])
 	}
 }
 
+Period Choreographer::getPeriod(int index)
+{
+	return timetable[index];
+}
+
+void Choreographer::setPeriod(int index, Period period)
+{
+	timetable[index] = period;
+}
+
 void Choreographer::applySchedule(float time, DriveBase& driveBase)
 {
 	unsigned int i = 0;

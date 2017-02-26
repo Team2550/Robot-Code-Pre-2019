@@ -92,6 +92,7 @@ namespace Autonomous
 								             {277.4 / SpeedInchesPerSecond * 0.15625,1,1},
 	                                         {FullRotationTime / 2.0,-1,1},
 	                                         {93.3 / SpeedInchesPerSecond * 0.2,-1,1}};
+	// Constants need to be defined to name different periods.
 }
 
 namespace UDP
