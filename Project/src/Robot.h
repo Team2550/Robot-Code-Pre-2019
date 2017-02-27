@@ -2,10 +2,10 @@
 #define ROBOT_H
 
 #include <WPILib.h>
-#include "xBox.h"
 #include "Constants.h"
+#include "xBox.h"
+#include "Choreographer.h"
 #include "UDP-Receiver.h"
-#include "Timer.h"
 #include "DriveBase.h"
 #include "Shooter.h"
 #include "Lift.h"
@@ -21,7 +21,7 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	//Timer timeSinceStart;
+	Choreographer choreographer;
 
 	Timer blenderTimer;
 	Timer autoTimer;
@@ -38,31 +38,8 @@ private:
 
 	bool climbToggleHold;
 	bool climbToggle;
-
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
-
-	bool autoTurn = false;
-	//bool bumpIndx = false;
-
-	int inchesPerSecond;
-	int oneEigtheeTime;
-	static const int MAX_NUM_AUTO_DRIVE_TIME = 5;
-	float airshipFrontVerticalTime;
-	float airshipBackVerticalTime;
-	float feildHorizTime;
-	float horizStretchA;
-
-	int indx;
-
-	/*
-	 * [0] = verticalStretchA
-	 * [1] = ninteeTime
-	 * [2] = horizStretchA
-	 * [3] = ninteeTime
-	 * [4] = verticalStretchB
-	 */
-	float autoDriveTimes[MAX_NUM_AUTO_DRIVE_TIME];
 
 public:
 	Robot();

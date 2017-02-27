@@ -5,21 +5,18 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
+                 choreographer(Autonomous::PeriodCount, Autonomous::Timetable),
 				 driveBase(),
 				 shooter(),
 				 lift()
 {
-	decreaseShooterSpeedDown = false;
-	increaseShooterSpeedDown = false;
-
-	climbToggleHold = false;
-	climbToggle = false;
-
-	inchesPerSecond = Autonomous::inchesPerSecond;
-	oneEigtheeTime = Autonomous::oneEigtheeTime;
-
 	normalDrive = DriveType::Normal;
 	backwardsDrive = DriveType::Backwards;
+
+	decreaseShooterSpeedDown = false;
+	increaseShooterSpeedDown = false;
+	climbToggleHold = false;
+	climbToggle = false;
 }
 
 Robot::~Robot()
@@ -29,9 +26,8 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	//timeSinceStart.Start();
-	SmartDashboard::PutNumber("inchesPerSecond", inchesPerSecond);
-	SmartDashboard::PutNumber("oneEigtheeTime", oneEigtheeTime);
+	SmartDashboard::PutNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
+	SmartDashboard::PutNumber("fullRotationTime", Autonomous::FullRotationTime);
 
 	driveChooser.AddDefault("Normal", &normalDrive);
 	driveChooser.AddObject("Backwards", &backwardsDrive);
@@ -48,75 +44,23 @@ void Robot::AutonomousInit()
 	autoTimer.Reset();
 	autoTimer.Start();
 
-	inchesPerSecond = SmartDashboard::GetNumber("inchesPerSecond", inchesPerSecond);
-	oneEigtheeTime = SmartDashboard::GetNumber("oneEigtheeTime", oneEigtheeTime);
-
-	airshipFrontVerticalTime = 93.3 / inchesPerSecond;
-	airshipBackVerticalTime = 185.3 / inchesPerSecond;
-	feildHorizTime = 277.4 / inchesPerSecond;
-	horizStretchA = feildHorizTime * .15625;
-
-	indx = 0;
-	autoDriveTimes[0] = airshipFrontVerticalTime * .8;                //verticalStretchA
-	autoDriveTimes[1] = oneEigtheeTime / 2;                           //ninteeTime
-	autoDriveTimes[2] = horizStretchA;                                //horizStretchA
-	autoDriveTimes[3] = oneEigtheeTime / 2;                           //ninteeTime
-	autoDriveTimes[4] = airshipFrontVerticalTime - autoDriveTimes[0]; //verticalStretchB
-
 	driveBase.setReversed(false);
 }
 
 void Robot::AutonomousPeriodic()
 {
-	/* ========== blind autonomous ========== */
+	/* ========== Blind Autonomous ========== */
+	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
+	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
 
-	if(indx >= MAX_NUM_AUTO_DRIVE_TIME)
-	{
-		driveBase.stop();
+	// Will be removed in end build
+	choreographer.setPeriod(1, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.8),1,1});
+	choreographer.setPeriod(2, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
+	choreographer.setPeriod(3, (struct Period) {static_cast<float>(277.4 / speedInchesPerSecond * 0.15625),1,1});
+	choreographer.setPeriod(4, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
+	choreographer.setPeriod(5, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.2),-1,1});
 
-		return;
-	}
-	else if(indx == 1 || indx == 3)
-	{
-		autoTurn = true;
-	}
-	else
-	{
-		autoTurn = false;
-	}
-
-	if(autoTurn == false)
-	{
-		std::cout << "AutoTurn: false, autoTimer: " << autoTimer.Get() << ", index: " << autoDriveTimes[indx] << ", ";
-		if(autoTimer.Get() < autoDriveTimes[indx])
-		{
-			std::cout << "Driving forwards" << std::endl;
-			driveBase.drive(1,1);
-		}
-		else
-		{
-			std::cout << "Stopping" << std::endl;
-			autoTimer.Reset();
-			driveBase.stop();
-			indx++;
-		}
-	}
-	else
-	{
-		std::cout << "AutoTurn: true, autoTimer: " << autoTimer.Get() << ", index: " << autoDriveTimes[indx] << ", ";
-		if(autoTimer.Get() <= autoDriveTimes[indx])
-		{
-			std::cout << "Turning right" << std::endl;
-			driveBase.drive(1,-1); //Turn right
-		}
-		else
-		{
-			std::cout << "Stopping" << std::endl;
-			autoTimer.Reset();
-			driveBase.stop();
-			indx++;
-		}
-	}
+	choreographer.applySchedule(autoTimer.Get(), driveBase);
 }
 
 void Robot::TeleopInit()
@@ -204,15 +148,6 @@ void Robot::TeleopPeriodic()
 	}
 	else
 		decreaseShooterSpeedDown = false;
-
-	if (driveController.GetRawButton(Controls::TankDrive::flip)){
-		autoTimer.Start();
-		if(autoTimer.Get() >= oneEigtheeTime){
-				driveBase.drive(1,-1);
-				driveBase.stop();
-			    }
-		autoTimer.Stop();
-	}
 
 	/* ========== Lift/In-Feed ========== */
 	if (perifController.GetRawButton(Controls::Peripherals::ClimbToggle))

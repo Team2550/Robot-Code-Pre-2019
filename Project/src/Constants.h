@@ -36,7 +36,6 @@ namespace Controls
 		const int Right = xbox::axis::rightY;
 		const int Boost = xbox::btn::rb;
 		const int Turtle = xbox::btn::lb;
-		const int flip = xbox::btn::a;
 	}
 
 	namespace Peripherals
@@ -81,12 +80,19 @@ namespace Speeds
 
 namespace Autonomous
 {
-	//const int dist = 3;
-	//const int distTime = 3;
-	const int inchesPerSecond = 100;
-	const int oneEigtheeTime = .5;
-}
+	const float SpeedInchesPerSecond = 100;
+	const float FullRotationTime = .5;
 
+	// Timetable format is an array of arrays, each of which is three floats long
+    //                                                  (timeLength, leftSpeed, rightSpeed)
+	const int PeriodCount = 5;
+	const float Timetable[PeriodCount][3] = {{93.3 / SpeedInchesPerSecond * 0.8,1,1}, // These need comments for what the values represent
+	                                         {FullRotationTime / 2.0,-1,1},
+								             {277.4 / SpeedInchesPerSecond * 0.15625,1,1},
+	                                         {FullRotationTime / 2.0,-1,1},
+	                                         {93.3 / SpeedInchesPerSecond * 0.2,-1,1}};
+	// Constants need to be defined to name different periods.
+}
 
 namespace UDP
 {
