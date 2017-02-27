@@ -54,11 +54,11 @@ void Robot::AutonomousPeriodic()
 	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
 
 	// Will be removed in end build
-	choreographer.setPeriod(1, (struct Period) {93.3 / speedInchesPerSecond * 0.8,1,1});
-	choreographer.setPeriod(2, (struct Period) {fullRotationTime / 2.0,-1,1});
-	choreographer.setPeriod(3, (struct Period) {277.4 / speedInchesPerSecond * 0.15625,1,1});
-	choreographer.setPeriod(4, (struct Period) {fullRotationTime / 2.0,-1,1});
-	choreographer.setPeriod(5, (struct Period) {93.3 / speedInchesPerSecond * 0.2,-1,1});
+	choreographer.setPeriod(1, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.8),1,1});
+	choreographer.setPeriod(2, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
+	choreographer.setPeriod(3, (struct Period) {static_cast<float>(277.4 / speedInchesPerSecond * 0.15625),1,1});
+	choreographer.setPeriod(4, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
+	choreographer.setPeriod(5, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.2),-1,1});
 
 	choreographer.applySchedule(autoTimer.Get(), driveBase);
 }
