@@ -49,6 +49,7 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
+	// allows user to enter the scenario # in from the smartdashboard//
 	float senario = SmartDashboard::GetNumber("choose your scenario:", Autonomous::scenario);
 	SmartDashboard::PutNumber("you chose scenario:", Autonomous::scenario);
 	if(senario == 1)
@@ -68,6 +69,8 @@ void Robot::AutonomousPeriodic()
 		scenario4();
 	}
 }
+
+//The scenarios are organized from 1 being the farthest left section against the wall and 4 being the farthest right section
 void Robot::scenario1()
 {
 	printf("senario1 \n");
@@ -88,7 +91,7 @@ void Robot::scenario2()
 
 	section3.applySchedule(autoTimer.Get(), driveBase);
 
-	autoAim();
+	autoAimVisual();
 }
 void Robot::scenario3()
 {
@@ -117,12 +120,23 @@ void Robot::scenario4()
 
 	section3.applySchedule(autoTimer.Get(), driveBase);
 
-	autoAim();
+	autoAimVisual();
 
 }
-void Robot::autoAim()
+void Robot::autoAimVisual()
 {
+	aiming = true;
+	while(aiming == true);
 	printf("aiming \n");
+	if(udpReceiver.newestUDPData[1] > 5)
+	{
+		printf("move forward");
+	}
+	if(udpReceiver.newestUDPData[1] < 5)
+	{
+		printf("hot distance");
+		aiming = false;
+	}
 }
 void Robot::TeleopInit()
 {

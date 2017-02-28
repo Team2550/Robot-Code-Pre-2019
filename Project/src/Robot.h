@@ -41,6 +41,7 @@ private:
 	bool climbToggle;
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
+	bool aiming = false;
 
 public:
 	Robot();
@@ -54,7 +55,7 @@ public:
 	void scenario2();
 	void scenario3();
 	void scenario4();
-	void autoAim();
+	void autoAimVisual();
 	void distTest();
 };
 
