@@ -92,6 +92,7 @@ namespace Autonomous
 	                                         {FullRotationTime / 2.0,-1,1},
 	                                         {93.3 / SpeedInchesPerSecond * 0.2,-1,1}};
 	// Constants need to be defined to name different periods.
+	const float scenario = 0;
 }
 
 namespace UDP

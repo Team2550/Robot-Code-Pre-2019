@@ -21,7 +21,8 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	Choreographer choreographer;
+	Choreographer section3;
+	Choreographer section4;
 
 	Timer blenderTimer;
 	Timer autoTimer;
@@ -49,7 +50,11 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
-
+	void scenario1();
+	void scenario2();
+	void scenario3();
+	void scenario4();
+	void autoAim();
 	void distTest();
 };
 

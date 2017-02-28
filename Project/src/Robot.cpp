@@ -49,20 +49,90 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
+	float senario = SmartDashboard::GetNumber("choose your scenario:", Autonomous::scenario);
+	SmartDashboard::PutNumber("you chose scenario:", Autonomous::scenario);
+	if(senario == 1)
+	{
+		scenario1();
+	}
+	if(senario == 2)
+	{
+		scenario2();
+	}
+	if(senario == 3)
+	{
+		scenario3();
+	}
+	if(senario == 4)
+	{
+		scenario4();
+	}
+}
+void Robot::scenario1()
+{
+	printf("senario1 \n");
+}
+void Robot::scenario2()
+{
+	printf("scenario2 \n");
 	/* ========== Blind Autonomous ========== */
 	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
 	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
 
 	// Will be removed in end build
-	choreographer.setPeriod(1, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.8),1,1});
-	choreographer.setPeriod(2, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
-	choreographer.setPeriod(3, (struct Period) {static_cast<float>(277.4 / speedInchesPerSecond * 0.15625),1,1});
-	choreographer.setPeriod(4, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
-	choreographer.setPeriod(5, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.2),-1,1});
+	section3.setPeriod(1, (struct Period) {static_cast<float>(90 / speedInchesPerSecond),1,1});
+	section3.setPeriod(2, (struct Period) {static_cast<float>(0),0});
+	section3.setPeriod(3, (struct Period) {static_cast<float>(0),0});
+	section3.setPeriod(4, (struct Period) {static_cast<float>(0),0});
+	section3.setPeriod(5, (struct Period) {static_cast<float>(0),0});
 
-	choreographer.applySchedule(autoTimer.Get(), driveBase);
+	section3.applySchedule(autoTimer.Get(), driveBase);
+
+	autoAim();
+}
+void Robot::scenario3()
+{
+	printf("senario3 \n");
+	/* ========== Blind Autonomous ========== */
+	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
+	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
+
+	// Will be removed in end build
+	section3.setPeriod(1, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.8),1,1});
+	section3.setPeriod(2, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
+	section3.setPeriod(3, (struct Period) {static_cast<float>(277.4 / speedInchesPerSecond * 0.15625),1,1});
+	section3.setPeriod(4, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
+	section3.setPeriod(5, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.2),-1,1});
+
+	section3.applySchedule(autoTimer.Get(), driveBase);
+
+	autoAim();
+
 }
 
+void Robot::scenario4()
+{
+	printf("scenario4 \n");
+	/* ========== Blind Autonomous ========== */
+	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
+	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
+
+	// Will be removed in end build
+	section3.setPeriod(1, (struct Period) {static_cast<float>(90 / speedInchesPerSecond),1,1});
+	section3.setPeriod(2, (struct Period) {static_cast<float>(fullRotationTime / 4.0),-1,1});
+	section3.setPeriod(3, (struct Period) {static_cast<float>(277.4 / speedInchesPerSecond * 0.15625),1,1});
+	section3.setPeriod(4, (struct Period) {static_cast<float>(0),0});
+	section3.setPeriod(5, (struct Period) {static_cast<float>(0),0});
+
+	section3.applySchedule(autoTimer.Get(), driveBase);
+
+	autoAim();
+
+}
+void Robot::autoAim()
+{
+	printf("aiming \n");
+}
 void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
