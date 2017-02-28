@@ -83,16 +83,58 @@ namespace Autonomous
 	const float SpeedInchesPerSecond = 100;
 	const float FullRotationTime = .5;
 
+	enum PosScenario
+	{
+		FarLeft,
+		MidLeft,
+		MidRight,
+		FarRight
+	};
+
+	const PosScenario DefaultScenario = FarLeft;
+
 	// Timetable format is an array of arrays, each of which is three floats long
     //                                                  (timeLength, leftSpeed, rightSpeed)
-	const int PeriodCount = 5;
-	const float Timetable[PeriodCount][3] = {{93.3 / SpeedInchesPerSecond * 0.8,1,1}, // These need comments for what the values represent
-	                                         {FullRotationTime / 2.0,-1,1},
-								             {277.4 / SpeedInchesPerSecond * 0.15625,1,1},
-	                                         {FullRotationTime / 2.0,-1,1},
-	                                         {93.3 / SpeedInchesPerSecond * 0.2,-1,1}};
-	// Constants need to be defined to name different periods.
-	const float scenario = 0;
+	// Namespaces here denote different starting positions
+	namespace BlindScenarioFarLeftPos
+	{
+		const int PeriodCount = 5;
+		const float Timetable[PeriodCount][3] = {{93.3 / SpeedInchesPerSecond * 0.8,1,1}, // These need comments for what the values represent
+		                                         {FullRotationTime / 2.0,-1,1},
+		                                         {277.4 / SpeedInchesPerSecond * 0.15625,1,1},
+		                                         {FullRotationTime / 2.0,-1,1},
+		                                         {93.3 / SpeedInchesPerSecond * 0.2,-1,1}};
+	}
+
+	namespace BlindScenarioMidLeftPos
+	{
+		const int PeriodCount = 5;
+		const float Timetable[PeriodCount][3] = {{93.3 / SpeedInchesPerSecond * 0.8,1,1}, // These need comments for what the values represent
+		                                         {FullRotationTime / 2.0,-1,1},
+		                                         {277.4 / SpeedInchesPerSecond * 0.15625,1,1},
+		                                         {FullRotationTime / 2.0,-1,1},
+		                                         {93.3 / SpeedInchesPerSecond * 0.2,-1,1}};
+	}
+
+	namespace BlindScenarioMidRightPos
+	{
+		const int PeriodCount = 5;
+		const float Timetable[PeriodCount][3] = {{93.3 / SpeedInchesPerSecond * 0.8,1,1}, // These need comments for what the values represent
+		                                         {FullRotationTime / 2.0,-1,1},
+		                                         {277.4 / SpeedInchesPerSecond * 0.15625,1,1},
+		                                         {FullRotationTime / 2.0,-1,1},
+		                                         {93.3 / SpeedInchesPerSecond * 0.2,-1,1}};
+	}
+
+	namespace BlindScenarioFarRightPos
+	{
+		const int PeriodCount = 5;
+		const float Timetable[PeriodCount][3] = {{93.3 / SpeedInchesPerSecond * 0.8,1,1}, // These need comments for what the values represent
+		                                         {FullRotationTime / 2.0,-1,1},
+		                                         {277.4 / SpeedInchesPerSecond * 0.15625,1,1},
+		                                         {FullRotationTime / 2.0,-1,1},
+		                                         {93.3 / SpeedInchesPerSecond * 0.2,-1,1}};
+	}
 }
 
 namespace UDP

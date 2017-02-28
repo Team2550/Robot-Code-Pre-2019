@@ -26,8 +26,15 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
+	SmartDashboard::PutNumber("autonomousScenario", 0);
 	SmartDashboard::PutNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
 	SmartDashboard::PutNumber("fullRotationTime", Autonomous::FullRotationTime);
+
+	driveChooser.AddDefault("Far Left", &farLeftScenario);
+	driveChooser.AddObject("Middle Left", &midLeftScenario);
+	driveChooser.AddObject("Middle Right", &midRightScenario);
+	driveChooser.AddObject("Far Right", &farRightScenario);
+	SmartDashboard::PutData("Drive Mode", &scenarioChooser);
 
 	driveChooser.AddDefault("Normal", &normalDrive);
 	driveChooser.AddObject("Backwards", &backwardsDrive);
@@ -41,6 +48,29 @@ void Robot::RobotInit()
 
 void Robot::AutonomousInit()
 {
+	// Initialize choreographer to selected position scenario
+	Autonomous::PosScenario *autoPosScenario = scenarioChooser.GetSelected();
+	if(autoPosScenario == nullptr)
+		autoPosScenario = Autonomous::DefaultScenario;
+
+	switch (autoPosScenario)
+	{
+	case farLeftScenario:
+		choreographer.setTimetable()
+		break;
+	case midLeftScenario:
+		scenario = 1;
+		break;
+	case midRightScenario:
+		scenario = 2;
+		break;
+	case farRightScenario:
+		scenario = 3;
+		break;
+	default:
+		break;
+	}
+
 	autoTimer.Reset();
 	autoTimer.Start();
 
@@ -50,8 +80,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	// allows user to enter the scenario # in from the smartdashboard//
-	float senario = SmartDashboard::GetNumber("choose your scenario:", Autonomous::scenario);
-	SmartDashboard::PutNumber("you chose scenario:", Autonomous::scenario);
+	float senario = SmartDashboard::GetNumber("Choose a scenario:", Autonomous::scenario);
 	if(senario == 1)
 	{
 		scenario1();

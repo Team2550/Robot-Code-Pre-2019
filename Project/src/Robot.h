@@ -21,8 +21,7 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	Choreographer section3;
-	Choreographer section4;
+	Choreographer choreographer;
 
 	Timer blenderTimer;
 	Timer autoTimer;
@@ -32,6 +31,12 @@ private:
 	DriveBase driveBase;
 	Shooter shooter;
 	Lift lift;
+
+	Autonomous::PosScenario farLeftScenario;
+	Autonomous::PosScenario midLeftScenario;
+	Autonomous::PosScenario midRightScenario;
+	Autonomous::PosScenario farRightScenario;
+	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
 
 	DriveType normalDrive;
 	DriveType backwardsDrive;
