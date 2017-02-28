@@ -101,11 +101,12 @@ namespace UDP
 
 	namespace Index
 	{
-		const int Distance = 0;
-		const int XOffset = 1;
-		const int YOffset = 2;
-		const int HorizAngle = 3;
-		const int VertAngle = 4;
+		const int PercentMatch = 0;
+		const int Distance = 1;
+		const int XOffset = 2;
+		const int YOffset = 3;
+		const int HorizAngle = 4;
+		const int VertAngle = 5;
 	}
 }
 

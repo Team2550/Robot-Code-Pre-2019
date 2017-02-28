@@ -97,17 +97,8 @@ void Robot::scenario3()
 	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
 	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
 
-	// Will be removed in end build
-	section3.setPeriod(1, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.8),1,1});
-	section3.setPeriod(2, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
-	section3.setPeriod(3, (struct Period) {static_cast<float>(277.4 / speedInchesPerSecond * 0.15625),1,1});
-	section3.setPeriod(4, (struct Period) {static_cast<float>(fullRotationTime / 2.0),-1,1});
-	section3.setPeriod(5, (struct Period) {static_cast<float>(93.3 / speedInchesPerSecond * 0.2),-1,1});
-
-	section3.applySchedule(autoTimer.Get(), driveBase);
-
-	autoAim();
-
+		printf("\n");
+	}
 }
 
 void Robot::scenario4()
@@ -145,12 +136,8 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
-	/* ========== Settings ========== */
-	DriveType *driveType = driveChooser.GetSelected();
-	if(driveType == nullptr)
-		driveBase.setReversed(false);
-	else
-		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
+	/* ========== udpReceiver ========== */
+	udpReceiver.checkUDP();
 
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
@@ -219,15 +206,17 @@ void Robot::TeleopPeriodic()
 	else
 		decreaseShooterSpeedDown = false;
 
-	/* ========== Lift/In-Feed ========== */
-	if (perifController.GetRawButton(Controls::Peripherals::ClimbToggle))
-	{
-		if(climbToggleHold == false)
-		{
-			climbToggle = !climbToggle;
-			climbToggleHold = true;
-		}
-	}
+	/* ========== DriveBase ========== */
+	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
+	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
+	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
+	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
+	driveBase.drive(leftSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)),
+					rightSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)));
+
+	/* ========== Shooter ========== */
+	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
+		shooter.shoot();
 	else
 		climbToggleHold = false;
 
