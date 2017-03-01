@@ -243,6 +243,23 @@ void Robot::TeleopPeriodic()
 	}
 	else
 		decreaseShooterSpeedDown = false;
+
+	/* ========== Lift/In-Feed ========== */
+	if (perifController.GetRawButton(Controls::Peripherals::ClimbToggle))
+	{
+		if(climbToggleHold == false)
+		{
+			climbToggle = !climbToggle;
+			climbToggleHold = true;
+		}
+	}
+	else
+		climbToggleHold = false;
+
+	if(climbToggle || perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.5)
+		lift.raise();
+	else
+		lift.stop();
 }
 
 START_ROBOT_CLASS(Robot)
