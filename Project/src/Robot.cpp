@@ -5,14 +5,11 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 choreographer(Autonomous::PeriodCount, Autonomous::Timetable),
+                 choreographer(),
 				 driveBase(),
 				 shooter(),
 				 lift()
 {
-	normalDrive = DriveType::Normal;
-	backwardsDrive = DriveType::Backwards;
-
 	decreaseShooterSpeedDown = false;
 	increaseShooterSpeedDown = false;
 	climbToggleHold = false;
@@ -26,15 +23,14 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	SmartDashboard::PutNumber("autonomousScenario", 0);
-	SmartDashboard::PutNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
-	SmartDashboard::PutNumber("fullRotationTime", Autonomous::FullRotationTime);
+	SmartDashboard::PutNumber("Robot Speed (in/sec)", Autonomous::SpeedInchesPerSecond);
+	SmartDashboard::PutNumber("Full Rotation Time", Autonomous::FullRotationTime);
 
-	driveChooser.AddDefault("Far Left", &farLeftScenario);
-	driveChooser.AddObject("Middle Left", &midLeftScenario);
-	driveChooser.AddObject("Middle Right", &midRightScenario);
-	driveChooser.AddObject("Far Right", &farRightScenario);
-	SmartDashboard::PutData("Drive Mode", &scenarioChooser);
+	scenarioChooser.AddDefault("Far Left", &farLeftScenario);
+	scenarioChooser.AddObject("Middle", &middleScenario);
+	scenarioChooser.AddObject("Middle Right", &midRightScenario);
+	scenarioChooser.AddObject("Far Right", &farRightScenario);
+	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
 
 	driveChooser.AddDefault("Normal", &normalDrive);
 	driveChooser.AddObject("Backwards", &backwardsDrive);
@@ -51,63 +47,54 @@ void Robot::AutonomousInit()
 	// Initialize choreographer to selected position scenario
 	Autonomous::PosScenario *autoPosScenario = scenarioChooser.GetSelected();
 	if(autoPosScenario == nullptr)
-		autoPosScenario = Autonomous::DefaultScenario;
+		switch (Autonomous::DefaultScenario)
+		{
+		case Autonomous::FarLeft:
+			autoPosScenario = &farLeftScenario;
+			break;
+		case Autonomous::Middle:
+			autoPosScenario = &middleScenario;
+			break;
+		case Autonomous::MidRight:
+			autoPosScenario = &midRightScenario;
+			break;
+		case Autonomous::FarRight:
+			autoPosScenario = &farRightScenario;
+			break;
+		}
 
-	switch (autoPosScenario)
-	{
-	case farLeftScenario:
-		choreographer.setTimetable()
-		break;
-	case midLeftScenario:
-		scenario = 1;
-		break;
-	case midRightScenario:
-		scenario = 2;
-		break;
-	case farRightScenario:
-		scenario = 3;
-		break;
-	default:
-		break;
-	}
+	if (autoPosScenario == &farLeftScenario)
+		choreographer.setTimetable(Autonomous::BlindScenarioFarLeftPos::PeriodCount,
+		                           Autonomous::BlindScenarioFarLeftPos::Timetable);
+	else if (autoPosScenario == &middleScenario)
+		choreographer.setTimetable(Autonomous::BlindScenarioMiddlePos::PeriodCount,
+		                           Autonomous::BlindScenarioMiddlePos::Timetable);
+	else if (autoPosScenario == &midRightScenario)
+		choreographer.setTimetable(Autonomous::BlindScenarioMidRightPos::PeriodCount,
+		                           Autonomous::BlindScenarioMidRightPos::Timetable);
+	else if (autoPosScenario == &farRightScenario)
+		choreographer.setTimetable(Autonomous::BlindScenarioFarRightPos::PeriodCount,
+		                           Autonomous::BlindScenarioFarRightPos::Timetable);
+
+	driveBase.setReversed(false);
 
 	autoTimer.Reset();
 	autoTimer.Start();
-
-	driveBase.setReversed(false);
 }
 
 void Robot::AutonomousPeriodic()
 {
-	// allows user to enter the scenario # in from the smartdashboard//
-	float senario = SmartDashboard::GetNumber("Choose a scenario:", Autonomous::scenario);
-	if(senario == 1)
-	{
-		scenario1();
-	}
-	if(senario == 2)
-	{
-		scenario2();
-	}
-	if(senario == 3)
-	{
-		scenario3();
-	}
-	if(senario == 4)
-	{
-		scenario4();
-	}
+	choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
 }
 
 //The scenarios are organized from 1 being the farthest left section against the wall and 4 being the farthest right section
-void Robot::scenario1()
+/*void Robot::scenario1()
 {
 	printf("senario1 \n");
 }
 void Robot::scenario2()
 {
 	printf("scenario2 \n");
-	/* ========== Blind Autonomous ========== */
 	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
 	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
 
@@ -125,7 +112,6 @@ void Robot::scenario2()
 void Robot::scenario3()
 {
 	printf("senario3 \n");
-	/* ========== Blind Autonomous ========== */
 	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
 	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
 
@@ -136,7 +122,6 @@ void Robot::scenario3()
 void Robot::scenario4()
 {
 	printf("scenario4 \n");
-	/* ========== Blind Autonomous ========== */
 	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
 	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
 
@@ -151,22 +136,25 @@ void Robot::scenario4()
 
 	autoAimVisual();
 
-}
-void Robot::autoAimVisual()
+}*/
+
+void Robot::autoAim()
 {
-	aiming = true;
-	while(aiming == true);
-	printf("aiming \n");
-	if(udpReceiver.newestUDPData[1] > 5)
+	printf("Aiming \n");
+
+	float data[UDP::DataCount];
+	udpReceiver.getUDPData(data);
+
+	if (data[UDP::Index::Distance] > 5)
 	{
-		printf("move forward");
+		printf("Move forward");
 	}
-	if(udpReceiver.newestUDPData[1] < 5)
+	else if (data[UDP::Index::Distance] < 5)
 	{
-		printf("hot distance");
-		aiming = false;
+		printf("Optimal distance");
 	}
 }
+
 void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
@@ -179,6 +167,13 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+	/* ========== Settings ========== */
+	DriveType *driveType = driveChooser.GetSelected();
+	if(driveType == nullptr)
+		driveBase.setReversed(false);
+	else
+		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
+
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
@@ -248,25 +243,6 @@ void Robot::TeleopPeriodic()
 	}
 	else
 		decreaseShooterSpeedDown = false;
-
-	/* ========== DriveBase ========== */
-	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
-	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
-	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
-	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
-	driveBase.drive(leftSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)),
-					rightSpeed * (turtle ? 0.25 : (boost ? 0.8 : 0.4)));
-
-	/* ========== Shooter ========== */
-	if(perifController.GetRawButton(Controls::Peripherals::Shoot))
-		shooter.shoot();
-	else
-		climbToggleHold = false;
-
-	if(climbToggle || perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.5)
-		lift.raise();
-	else
-		lift.stop();
 }
 
 START_ROBOT_CLASS(Robot)

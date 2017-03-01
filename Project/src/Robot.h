@@ -32,14 +32,14 @@ private:
 	Shooter shooter;
 	Lift lift;
 
-	Autonomous::PosScenario farLeftScenario;
-	Autonomous::PosScenario midLeftScenario;
-	Autonomous::PosScenario midRightScenario;
-	Autonomous::PosScenario farRightScenario;
+	Autonomous::PosScenario farLeftScenario = Autonomous::FarLeft;
+	Autonomous::PosScenario middleScenario = Autonomous::Middle;
+	Autonomous::PosScenario midRightScenario = Autonomous::MidRight;
+	Autonomous::PosScenario farRightScenario = Autonomous::FarRight;
 	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
 
-	DriveType normalDrive;
-	DriveType backwardsDrive;
+	DriveType normalDrive = DriveType::Normal;
+	DriveType backwardsDrive = DriveType::Backwards;
 	SendableChooser<DriveType*> driveChooser;
 
 	bool climbToggleHold;
@@ -56,11 +56,7 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
-	void scenario1();
-	void scenario2();
-	void scenario3();
-	void scenario4();
-	void autoAimVisual();
+	void autoAim();
 	void distTest();
 };
 
