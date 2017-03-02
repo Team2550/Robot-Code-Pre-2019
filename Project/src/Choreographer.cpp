@@ -10,14 +10,32 @@ Choreographer::Choreographer(int timePeriodCount, const float _timetable[][3])
 	setTimetable(timePeriodCount, _timetable);
 }
 
-Period Choreographer::getPeriod(int index)
+Period Choreographer::getPeriod(unsigned int index)
 {
-	return timetable[index];
+	if (index >= 0 && index < timetable.size())
+		return timetable[index];
+	else
+		return {-1, -1, -1};
 }
 
-void Choreographer::setPeriod(int index, Period period)
+void Choreographer::setPeriod(unsigned int index, Period period)
 {
-	timetable[index] = period;
+	if (index >= 0 && index <= timetable.size())
+	{
+		if (index > 0)
+			period.time += timetable[index - 1].time;
+
+		if (index == timetable.size())
+			timetable.push_back(period);
+		else
+		{
+			float timeOffset = period.time - timetable[index].time;
+			timetable[index] = period;
+
+			for (unsigned int i = index + 1; i < timetable.size(); i++)
+				timetable[i].time += timeOffset;
+		}
+	}
 }
 
 void Choreographer::setTimetable(int timePeriodCount, const float _timetable[][3])

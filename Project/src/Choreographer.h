@@ -19,8 +19,8 @@ public:
 	Choreographer();
 	Choreographer(int timePeriodCount, const float _timetable[][3]); // Array of arrays, inner arrays are formatted as (time, left, right)
 
-	Period getPeriod(int index);
-	void setPeriod(int index, Period period);
+	Period getPeriod(unsigned int index);
+	void setPeriod(unsigned int index, Period period);
 	void setTimetable(int timePeriodCount, const float _timetable[][3]);
 
 	void applyScheduleToRobot(float time, DriveBase& driveBase);

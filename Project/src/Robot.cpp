@@ -63,18 +63,45 @@ void Robot::AutonomousInit()
 			break;
 		}
 
+	float speedInchesPerSecond = SmartDashboard::GetNumber("Robot Speed (in/sec)", Autonomous::SpeedInchesPerSecond);
+	float fullRotationTime = SmartDashboard::GetNumber("Full Rotation Time", Autonomous::FullRotationTime);
+
 	if (autoPosScenario == &farLeftScenario)
-		choreographer.setTimetable(Autonomous::BlindScenarioFarLeftPos::PeriodCount,
-		                           Autonomous::BlindScenarioFarLeftPos::Timetable);
+	{
+		//choreographer.setTimetable(Autonomous::BlindScenarios::FarLeftPos::PeriodCount,
+		//                           Autonomous::BlindScenarios::FarLeftPos::Timetable);
+		float timetable[Autonomous::DynamicBlindScenarios::FarLeftPos::PeriodCount][3];
+		Autonomous::DynamicBlindScenarios::FarLeftPos::timetable(speedInchesPerSecond, fullRotationTime, timetable);
+
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
+	}
 	else if (autoPosScenario == &middleScenario)
-		choreographer.setTimetable(Autonomous::BlindScenarioMiddlePos::PeriodCount,
-		                           Autonomous::BlindScenarioMiddlePos::Timetable);
+	{
+		//choreographer.setTimetable(Autonomous::BlindScenarios::MiddlePos::PeriodCount,
+		//                           Autonomous::BlindScenarios::MiddlePos::Timetable);
+		float timetable[Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount][3];
+		Autonomous::DynamicBlindScenarios::MiddlePos::timetable(speedInchesPerSecond, fullRotationTime, timetable);
+
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
+	}
 	else if (autoPosScenario == &midRightScenario)
-		choreographer.setTimetable(Autonomous::BlindScenarioMidRightPos::PeriodCount,
-		                           Autonomous::BlindScenarioMidRightPos::Timetable);
+	{
+		//choreographer.setTimetable(Autonomous::BlindScenarios::MidRightPos::PeriodCount,
+		//                           Autonomous::BlindScenarios::MidRightPos::Timetable);
+		float timetable[Autonomous::DynamicBlindScenarios::MidRightPos::PeriodCount][3];
+		Autonomous::DynamicBlindScenarios::MidRightPos::timetable(speedInchesPerSecond, fullRotationTime, timetable);
+
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
+	}
 	else if (autoPosScenario == &farRightScenario)
-		choreographer.setTimetable(Autonomous::BlindScenarioFarRightPos::PeriodCount,
-		                           Autonomous::BlindScenarioFarRightPos::Timetable);
+	{
+		//choreographer.setTimetable(Autonomous::BlindScenarios::FarRightPos::PeriodCount,
+		//                           Autonomous::BlindScenarios::FarRightPos::Timetable);
+		float timetable[Autonomous::DynamicBlindScenarios::FarRightPos::PeriodCount][3];
+		Autonomous::DynamicBlindScenarios::FarRightPos::timetable(speedInchesPerSecond, fullRotationTime, timetable);
+
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
+	}
 
 	driveBase.setReversed(false);
 
@@ -86,57 +113,6 @@ void Robot::AutonomousPeriodic()
 {
 	choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
 }
-
-//The scenarios are organized from 1 being the farthest left section against the wall and 4 being the farthest right section
-/*void Robot::scenario1()
-{
-	printf("senario1 \n");
-}
-void Robot::scenario2()
-{
-	printf("scenario2 \n");
-	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
-	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
-
-	// Will be removed in end build
-	section3.setPeriod(1, (struct Period) {static_cast<float>(90 / speedInchesPerSecond),1,1});
-	section3.setPeriod(2, (struct Period) {static_cast<float>(0),0});
-	section3.setPeriod(3, (struct Period) {static_cast<float>(0),0});
-	section3.setPeriod(4, (struct Period) {static_cast<float>(0),0});
-	section3.setPeriod(5, (struct Period) {static_cast<float>(0),0});
-
-	section3.applySchedule(autoTimer.Get(), driveBase);
-
-	autoAimVisual();
-}
-void Robot::scenario3()
-{
-	printf("senario3 \n");
-	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
-	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
-
-		printf("\n");
-	}
-}
-
-void Robot::scenario4()
-{
-	printf("scenario4 \n");
-	float speedInchesPerSecond = SmartDashboard::GetNumber("speedInchesPerSecond", Autonomous::SpeedInchesPerSecond);
-	float fullRotationTime = SmartDashboard::GetNumber("fullRotationTime", Autonomous::FullRotationTime);
-
-	// Will be removed in end build
-	section3.setPeriod(1, (struct Period) {static_cast<float>(90 / speedInchesPerSecond),1,1});
-	section3.setPeriod(2, (struct Period) {static_cast<float>(fullRotationTime / 4.0),-1,1});
-	section3.setPeriod(3, (struct Period) {static_cast<float>(277.4 / speedInchesPerSecond * 0.15625),1,1});
-	section3.setPeriod(4, (struct Period) {static_cast<float>(0),0});
-	section3.setPeriod(5, (struct Period) {static_cast<float>(0),0});
-
-	section3.applySchedule(autoTimer.Get(), driveBase);
-
-	autoAimVisual();
-
-}*/
 
 void Robot::autoAim()
 {

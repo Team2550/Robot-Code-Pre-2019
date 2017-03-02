@@ -93,33 +93,75 @@ namespace Autonomous
 
 	const PosScenario DefaultScenario = FarLeft;
 
-	// Timetable format is an array of arrays, each of which is three floats long
-    //                                                  (timeLength, leftSpeed, rightSpeed)
-	// Namespaces here denote different starting positions
-	namespace BlindScenarioFarLeftPos
+	namespace BlindScenarios
 	{
-		const int PeriodCount = 1;
-		const float Timetable[PeriodCount][3] = {{0,0,0}};
+		// Timetable format is an array of arrays, each of which is three floats long
+		//                                                  (timeLength, leftSpeed, rightSpeed)
+		// Namespaces here denote different starting positions
+		namespace FarLeftPos
+		{
+			const int PeriodCount = 1;
+			const float Timetable[PeriodCount][3] = {{0,0,0}};
+		}
+
+		namespace MiddlePos
+		{
+			const int PeriodCount = 1;
+			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,1,1}};
+		}
+
+		namespace MidRightPos
+		{
+			const int PeriodCount = 1;
+			const float Timetable[PeriodCount][3] = {{0,0,0}};
+		}
+
+		namespace FarRightPos
+		{
+			const int PeriodCount = 3;
+			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,1,1},
+													 {FullRotationTime / 4.0,-1,1},
+													 {277.4 / SpeedInchesPerSecond * 0.15625,1,1}};
+		}
 	}
 
-	namespace BlindScenarioMiddlePos
+	namespace DynamicBlindScenarios
 	{
-		const int PeriodCount = 1;
-		const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,1,1}};
-	}
+		// These namespaces contain functions that return timings based on input variables. The timetable is placed in the 2D array passed to it.
+		// These should only be used when testing for figuring out values.
+		namespace FarLeftPos
+		{
+			const int PeriodCount = 1;
+			inline void timetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+						{float tt[PeriodCount][3] = {{0,0,0}};
+						 std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
+		}
 
-	namespace BlindScenarioMidRightPos
-	{
-		const int PeriodCount = 1;
-		const float Timetable[PeriodCount][3] = {{0,0,0}};
-	}
+		namespace MiddlePos
+		{
+			const int PeriodCount = 1;
+			inline void timetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+						{float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,1,1}};
+						 std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
+		}
 
-	namespace BlindScenarioFarRightPos
-	{
-		const int PeriodCount = 3;
-		const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,1,1},
-		                                         {FullRotationTime / 4.0,-1,1},
-		                                         {277.4 / SpeedInchesPerSecond * 0.15625,1,1}};
+		namespace MidRightPos
+		{
+			const int PeriodCount = 1;
+			inline void timetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+						{float tt[PeriodCount][3] = {{0,0,0}};
+						 std::copy(&tt[0][0], &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
+		}
+
+		namespace FarRightPos
+		{
+			const int PeriodCount = 3;
+			inline void timetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+						{float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,1,1},
+								 	 	 	 	 	 {fullRotationTime / 4,-1,1},
+													 {277.4f / speedInchesPerSecond * 0.15625f,1,1}};
+						 std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
+		}
 	}
 }
 
