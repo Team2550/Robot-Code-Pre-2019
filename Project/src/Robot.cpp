@@ -45,7 +45,11 @@ void Robot::RobotInit()
 void Robot::AutonomousInit()
 {
 	// Initialize choreographer to selected position scenario
+
+	// Get scenario from smart dashboard
 	Autonomous::PosScenario *autoPosScenario = scenarioChooser.GetSelected();
+	// If not value could be retrieved, default to the value stored in the default scenario constant.
+	// The pointers that autoPosScenario is being set to are the same that would have been retrieved by the function above.
 	if(autoPosScenario == nullptr)
 		switch (Autonomous::DefaultScenario)
 		{
@@ -63,9 +67,15 @@ void Robot::AutonomousInit()
 			break;
 		}
 
+	// Get dynamic fine-tuning values from smart dashboard
 	float speedInchesPerSecond = SmartDashboard::GetNumber("Robot Speed (in/sec)", Autonomous::SpeedInchesPerSecond);
 	float fullRotationTime = SmartDashboard::GetNumber("Full Rotation Time", Autonomous::FullRotationTime);
 
+	// Set the timetable of the choreographer to the appropriate scenario
+	// Currently, the lines that would be used in production are commented out
+	// The functions being used are from the dynamic blind scenarios namespace.
+	// They take the speed and rotation time values and use them to update the array passed to them with the appropriate timetable values
+	//                                                                                                      (time, leftSpeed, rightSpeed)
 	if (autoPosScenario == &farLeftScenario)
 	{
 		//choreographer.setTimetable(Autonomous::BlindScenarios::FarLeftPos::PeriodCount,

@@ -127,8 +127,18 @@ namespace Autonomous
 
 	namespace DynamicBlindScenarios
 	{
-		// These namespaces contain functions that return timings based on input variables. The timetable is placed in the 2D array passed to it.
+		// These scenarios are mode of inline functions that are designed to generate the timetables based on variables that can be changed live.
 		// These should only be used when testing for figuring out values.
+		/*=================================================
+			Name: timetable
+			Desc: Initializes a timetable array to be used by a choreographer.
+			Arguments:
+				speedInchesPerSecond (I) : The max speed of the robot in inches per second
+				fullRotationTime (I)     : The amount of time in seconds it takes the robot to turn 180 degrees at full speed
+				_timetable (O)           : The array to initialize as a timetable
+			Return:
+				none
+		=================================================*/
 		namespace FarLeftPos
 		{
 			const int PeriodCount = 1;
