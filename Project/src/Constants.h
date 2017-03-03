@@ -66,7 +66,7 @@ namespace Speeds
 	namespace Lift
 	{
 		const float Lift = 1;
-		const float Lower = -5;
+		const float Lower = -1;
 	}
 
 	namespace Shooter
@@ -107,7 +107,7 @@ namespace Autonomous
 		namespace MiddlePos
 		{
 			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,1,1}};
+			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5}};
 		}
 
 		namespace MidRightPos
@@ -119,9 +119,9 @@ namespace Autonomous
 		namespace FarRightPos
 		{
 			const int PeriodCount = 3;
-			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,1,1},
-													 {FullRotationTime / 4.0,-1,1},
-													 {277.4 / SpeedInchesPerSecond * 0.15625,1,1}};
+			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
+													 {FullRotationTime / 4.0,-0.5,0.5},
+													 {277.4 / SpeedInchesPerSecond * 0.15625,0.5,0.5}};
 		}
 	}
 
@@ -142,7 +142,7 @@ namespace Autonomous
 		namespace FarLeftPos
 		{
 			const int PeriodCount = 1;
-			inline void timetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 						{float tt[PeriodCount][3] = {{0,0,0}};
 						 std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
 		}
@@ -150,15 +150,15 @@ namespace Autonomous
 		namespace MiddlePos
 		{
 			const int PeriodCount = 1;
-			inline void timetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-						{float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,1,1}};
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+						{float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5}};
 						 std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
 		}
 
 		namespace MidRightPos
 		{
 			const int PeriodCount = 1;
-			inline void timetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 						{float tt[PeriodCount][3] = {{0,0,0}};
 						 std::copy(&tt[0][0], &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
 		}
@@ -166,10 +166,11 @@ namespace Autonomous
 		namespace FarRightPos
 		{
 			const int PeriodCount = 3;
-			inline void timetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-						{float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,1,1},
-								 	 	 	 	 	 {fullRotationTime / 4,-1,1},
-													 {277.4f / speedInchesPerSecond * 0.15625f,1,1}};
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+						{float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
+								 	 	 	 	 	 {fullRotationTime / 4,-0.5,0.5},
+													 // what does this represent?
+													 {277.4f / speedInchesPerSecond * 0.15625f,0.5,0.5}};
 						 std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
 		}
 	}

@@ -23,7 +23,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	SmartDashboard::PutNumber("Robot Speed (in/sec)", Autonomous::SpeedInchesPerSecond);
+	SmartDashboard::PutNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
 	SmartDashboard::PutNumber("Full Rotation Time", Autonomous::FullRotationTime);
 
 	scenarioChooser.AddDefault("Far Left", &farLeftScenario);
@@ -48,9 +48,11 @@ void Robot::AutonomousInit()
 
 	// Get scenario from smart dashboard
 	Autonomous::PosScenario *autoPosScenario = scenarioChooser.GetSelected();
-	// If not value could be retrieved, default to the value stored in the default scenario constant.
+	//if value could not be retrieved, default to the value stored in the default scenario constant.
 	// The pointers that autoPosScenario is being set to are the same that would have been retrieved by the function above.
 	if(autoPosScenario == nullptr)
+	{
+		printf("No scenario found\n");
 		switch (Autonomous::DefaultScenario)
 		{
 		case Autonomous::FarLeft:
@@ -66,9 +68,10 @@ void Robot::AutonomousInit()
 			autoPosScenario = &farRightScenario;
 			break;
 		}
+	}
 
 	// Get dynamic fine-tuning values from smart dashboard
-	float speedInchesPerSecond = SmartDashboard::GetNumber("Robot Speed (in/sec)", Autonomous::SpeedInchesPerSecond);
+	float speedInchesPerSecond = SmartDashboard::GetNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
 	float fullRotationTime = SmartDashboard::GetNumber("Full Rotation Time", Autonomous::FullRotationTime);
 
 	// Set the timetable of the choreographer to the appropriate scenario
@@ -78,39 +81,43 @@ void Robot::AutonomousInit()
 	//                                                                                                      (time, leftSpeed, rightSpeed)
 	if (autoPosScenario == &farLeftScenario)
 	{
+		printf("Far Left\n");
 		//choreographer.setTimetable(Autonomous::BlindScenarios::FarLeftPos::PeriodCount,
 		//                           Autonomous::BlindScenarios::FarLeftPos::Timetable);
 		float timetable[Autonomous::DynamicBlindScenarios::FarLeftPos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::FarLeftPos::timetable(speedInchesPerSecond, fullRotationTime, timetable);
+		Autonomous::DynamicBlindScenarios::FarLeftPos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
 
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::FarLeftPos::PeriodCount, timetable);
 	}
 	else if (autoPosScenario == &middleScenario)
 	{
+		printf("Middle\n");
 		//choreographer.setTimetable(Autonomous::BlindScenarios::MiddlePos::PeriodCount,
 		//                           Autonomous::BlindScenarios::MiddlePos::Timetable);
 		float timetable[Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::MiddlePos::timetable(speedInchesPerSecond, fullRotationTime, timetable);
+		Autonomous::DynamicBlindScenarios::MiddlePos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
 
 		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
 	}
 	else if (autoPosScenario == &midRightScenario)
 	{
+		printf("Mid Right\n");
 		//choreographer.setTimetable(Autonomous::BlindScenarios::MidRightPos::PeriodCount,
 		//                           Autonomous::BlindScenarios::MidRightPos::Timetable);
 		float timetable[Autonomous::DynamicBlindScenarios::MidRightPos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::MidRightPos::timetable(speedInchesPerSecond, fullRotationTime, timetable);
+		Autonomous::DynamicBlindScenarios::MidRightPos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
 
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MidRightPos::PeriodCount, timetable);
 	}
 	else if (autoPosScenario == &farRightScenario)
 	{
+		printf("Far Right\n");
 		//choreographer.setTimetable(Autonomous::BlindScenarios::FarRightPos::PeriodCount,
 		//                           Autonomous::BlindScenarios::FarRightPos::Timetable);
 		float timetable[Autonomous::DynamicBlindScenarios::FarRightPos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::FarRightPos::timetable(speedInchesPerSecond, fullRotationTime, timetable);
+		Autonomous::DynamicBlindScenarios::FarRightPos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
 
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::FarRightPos::PeriodCount, timetable);
 	}
 
 	driveBase.setReversed(false);
@@ -242,8 +249,8 @@ void Robot::TeleopPeriodic()
 	else
 		climbToggleHold = false;
 
-	if(climbToggle || perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.5)
-		lift.raise();
+	if(perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.25)
+		lift.raise(perifController.GetRawAxis(Controls::Peripherals::Climb));
 	else
 		lift.stop();
 }

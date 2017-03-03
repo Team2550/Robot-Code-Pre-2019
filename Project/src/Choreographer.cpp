@@ -54,10 +54,11 @@ void Choreographer::setTimetable(int timePeriodCount, const float _timetable[][3
 void Choreographer::applyScheduleToRobot(float time, DriveBase& driveBase)
 {
 	unsigned int i = 0;
+	// what part of timetable are we on
 	while (i < timetable.size() && time > timetable[i++].time) {}
 
 	if (i >= timetable.size())
-		driveBase.drive(0);
+		driveBase.drive(0); // STOP!! END OF TIMETABLE
 	else
 		driveBase.drive(timetable[i].leftSpeed, timetable[i].rightSpeed);
 }
