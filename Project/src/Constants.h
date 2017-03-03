@@ -88,7 +88,8 @@ namespace Autonomous
 		FarLeft,
 		Middle,
 		MidRight,
-		FarRight
+		FarRight,
+		Test
 	};
 
 	const PosScenario DefaultScenario = FarLeft;
@@ -168,9 +169,17 @@ namespace Autonomous
 			const int PeriodCount = 3;
 			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 						{float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
-								 	 	 	 	 	 {fullRotationTime / 4,-0.5,0.5},
+								 	 	 	 	 	 {fullRotationTime / 4,0.5,-0.5},
 													 // what does this represent?
 													 {277.4f / speedInchesPerSecond * 0.15625f,0.5,0.5}};
+						 std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
+		}
+
+		namespace TestScenario
+		{
+			const int PeriodCount = 1;
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+						{float tt[PeriodCount][3] = {{2, 1, 1}};
 						 std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);}
 		}
 	}

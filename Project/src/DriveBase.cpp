@@ -7,6 +7,16 @@ DriveBase::DriveBase() : leftMotor(Ports::TankDrive::Left), rightMotor(Ports::Ta
     isReversed = false;
 }
 
+float DriveBase::getLeftSpeed()
+{
+	return leftMotor.Get();
+}
+
+float DriveBase::getRightSpeed()
+{
+	return rightMotor.Get();
+}
+
 void DriveBase::drive(float speed)
 {
 	drive(speed, speed);

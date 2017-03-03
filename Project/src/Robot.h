@@ -36,6 +36,7 @@ private:
 	Autonomous::PosScenario middleScenario = Autonomous::Middle;
 	Autonomous::PosScenario midRightScenario = Autonomous::MidRight;
 	Autonomous::PosScenario farRightScenario = Autonomous::FarRight;
+	Autonomous::PosScenario testScenario = Autonomous::Test;
 	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
 
 	DriveType normalDrive = DriveType::Normal;

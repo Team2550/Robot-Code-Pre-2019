@@ -30,6 +30,7 @@ void Robot::RobotInit()
 	scenarioChooser.AddObject("Middle", &middleScenario);
 	scenarioChooser.AddObject("Middle Right", &midRightScenario);
 	scenarioChooser.AddObject("Far Right", &farRightScenario);
+	scenarioChooser.AddObject("Test Scenario", &testScenario);
 	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
 
 	driveChooser.AddDefault("Normal", &normalDrive);
@@ -66,6 +67,9 @@ void Robot::AutonomousInit()
 			break;
 		case Autonomous::FarRight:
 			autoPosScenario = &farRightScenario;
+			break;
+		case Autonomous::Test:
+			autoPosScenario = &testScenario;
 			break;
 		}
 	}
@@ -119,6 +123,16 @@ void Robot::AutonomousInit()
 
 		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::FarRightPos::PeriodCount, timetable);
 	}
+	else if (autoPosScenario == &testScenario)
+	{
+		printf("Test\n");
+		//choreographer.setTimetable(Autonomous::BlindScenarios::FarRightPos::PeriodCount,
+		//                           Autonomous::BlindScenarios::FarRightPos::Timetable);
+		float timetable[Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount][3];
+		Autonomous::DynamicBlindScenarios::TestScenario::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
+
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount, timetable);
+	}
 
 	driveBase.setReversed(false);
 
@@ -129,6 +143,16 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
+
+	float leftSpeed = driveBase.getLeftSpeed();
+	float rightSpeed = driveBase.getRightSpeed();
+
+	leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
+	                               SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
+	rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
+	                                 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
+
+	driveBase.drive(leftSpeed, rightSpeed);
 }
 
 void Robot::autoAim()
