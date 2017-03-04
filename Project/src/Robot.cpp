@@ -14,6 +14,8 @@ Robot::Robot() : driveController(0), perifController(1),
 	increaseShooterSpeedDown = false;
 	climbToggleHold = false;
 	climbToggle = false;
+
+	scenarioChooser.InitTable();
 }
 
 Robot::~Robot()
