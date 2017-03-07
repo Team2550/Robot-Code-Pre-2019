@@ -23,7 +23,6 @@ private:
 	Joystick perifController;
 	Choreographer choreographer;
 
-	Timer blenderTimer;
 	Timer autoTimer;
 
 	PowerDistributionPanel pdp;
