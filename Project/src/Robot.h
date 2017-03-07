@@ -17,7 +17,6 @@ private:
 	Joystick perifController;
 	//Timer timeSinceStart;
 
-	Timer blenderTimer;
 	Timer autoTimer;
 
 	PowerDistributionPanel pdp;
