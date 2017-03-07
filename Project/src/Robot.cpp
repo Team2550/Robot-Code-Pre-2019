@@ -14,9 +14,6 @@ Robot::Robot() : driveController(0), perifController(1),
 
 	climbToggleHold = false;
 	climbToggle = false;
-
-	normalDrive = DriveType::Normal;
-	backwardsDrive = DriveType::Backwards;
 }
 
 Robot::~Robot()
@@ -26,11 +23,6 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	//timeSinceStart.Start();
-	driveChooser.AddDefault("Normal", &normalDrive);
-	driveChooser.AddObject("Backwards", &backwardsDrive);
-	SmartDashboard::PutData("Drive Mode", &driveChooser);
-
 	SmartDashboard::PutNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
 	SmartDashboard::PutNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
 	SmartDashboard::PutNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
@@ -122,18 +114,12 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
+	driveBase.setReversed(false);
 	driveBase.stop();
 }
 
 void Robot::TeleopPeriodic()
 {
-	/* ========== Settings ========== */
-	DriveType *driveType = driveChooser.GetSelected();
-	if(driveType == nullptr)
-		driveBase.setReversed(false);
-	else
-		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
-
 	/* ========== udpReceiver ========== */
 	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
