@@ -10,6 +10,11 @@ void Lift::raise()
 	liftMotor.Set(Speeds::Lift::Lift);
 }
 
+void Lift::raise(float speed)
+{
+	liftMotor.Set(speed * Speeds::Lift::Lift);
+}
+
 void Lift::lower()
 {
 	liftMotor.Set(Speeds::Lift::Lower);
