@@ -7,8 +7,8 @@ namespace Ports
 {
 	namespace TankDrive
 	{
-		const int Left = 1;
-		const int Right = 0;
+		const int Left = 0;
+		const int Right = 1;
 	}
 
 	namespace Shooter
