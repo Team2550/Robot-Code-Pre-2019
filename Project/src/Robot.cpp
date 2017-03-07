@@ -47,8 +47,36 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	/* ========== udpReceiver ========== */
-	udpReceiver.checkUDP();
+	/* ========== blind autonomous ========== */
+
+	int airshipFrontVerticalTime = Autonomous::inchesPerSecond *  93.3;
+	int airshipBackVerticalTime = Autonomous::inchesPerSecond * 185.3;
+	int verticalStretchA = airshipFrontVerticalTime * .8;
+	int verticalStretchB = airshipFrontVerticalTime - verticalStretchA;
+	int feildHorizTime = Autonomous::inchesPerSecond * 277.4;
+	int horizStretchA = feildHorizTime * .15625;
+	int ninteeTime = Autonomous::oneEigtheeTime / 2;
+	autoTimer.Start();
+	if(autoTimer.Get() >= verticalStretchA){
+		driveBase.drive(1,1);
+		driveBase.stop();
+	    }
+	autoTimer.Reset();
+	if(autoTimer.Get() >= ninteeTime){
+			driveBase.drive(1,-1);
+			driveBase.stop();
+		    }
+	autoTimer.Reset();
+	if(autoTimer.Get() >= horizStretchA){
+			driveBase.drive(1,1);
+			driveBase.stop();
+		    }
+	autoTimer.Reset();
+	if(autoTimer.Get() >= verticalStretchB){
+			driveBase.drive(1,1);
+			driveBase.stop();
+			}
+	autoTimer.Stop();
 
 	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
@@ -95,10 +123,6 @@ void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
 	driveBase.stop();
-
-	/* ========== Shooter ========== */
-	blenderTimer.Stop();
-	blenderTimer.Reset();
 }
 
 void Robot::TeleopPeriodic()
@@ -111,8 +135,6 @@ void Robot::TeleopPeriodic()
 		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
 
 	/* ========== udpReceiver ========== */
-	udpReceiver.checkUDP();
-
 	if (udpReceiver.getUDPDataAge() < 1.0)
 	{
 		printf("New UDP data:");
@@ -148,22 +170,17 @@ void Robot::TeleopPeriodic()
 					rightSpeed * speed);
 
 	/* ========== Shooter ========== */
-	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
-	{
-		shooter.shoot();
+	SmartDashboard::PutNumber("shooterCurrent", pdp.GetCurrent(Ports::PDP::Shooter));
 
-		blenderTimer.Start();
-		//shooter.blend(fmod(timeSinceStart.Get(), 4) < 2.0);
-		if(blenderTimer.Get() >= 4.0)
-			shooter.blend(!perifController.GetRawButton(Controls::Peripherals::ReverseBlender));
-	}
+	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
+		shooter.shoot(pdp.GetCurrent(Ports::PDP::Shooter));
 	else
-	{
 		shooter.stop();
+
+	if(perifController.GetRawButton(Controls::Peripherals::Blender))
+		shooter.blend(!perifController.GetRawButton(Controls::Peripherals::ReverseBlender));
+	else
 		shooter.stopBlend();
-		blenderTimer.Stop();
-		blenderTimer.Reset();
-	}
 
 	if (perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed))
 	{
@@ -171,7 +188,7 @@ void Robot::TeleopPeriodic()
 		{
 			shooter.addSpeedOffset(0.01);
 			printf("New shooter speed: ");
-			printf(std::to_string(Speeds::Shooter::ShooterSpeed +
+			printf(std::to_string(Speeds::Shooter::Shooter +
 								  shooter.getSpeedOffset()).c_str());
 			printf("\n");
 
@@ -187,7 +204,7 @@ void Robot::TeleopPeriodic()
 		{
 			shooter.addSpeedOffset(-0.01);
 			printf("New shooter speed: ");
-			printf(std::to_string(Speeds::Shooter::ShooterSpeed +
+			printf(std::to_string(Speeds::Shooter::Shooter +
 								  shooter.getSpeedOffset()).c_str());
 			printf("\n");
 
@@ -196,6 +213,15 @@ void Robot::TeleopPeriodic()
 	}
 	else
 		decreaseShooterSpeedDown = false;
+
+	/*if (driveController.GetRawButton(Controls::TankDrive::flip)){
+		autoTimer.Start();
+		if(autoTimer.Get() >= Autonomous::oneEigtheeTime){
+				driveBase.drive(1,-1);
+				driveBase.stop();
+			    }
+		autoTimer.Stop();
+	}*/
 
 	/* ========== Lift/In-Feed ========== */
 	if (perifController.GetRawButton(Controls::Peripherals::ClimbToggle))
@@ -209,8 +235,10 @@ void Robot::TeleopPeriodic()
 	else
 		climbToggleHold = false;
 
-	if(climbToggle || perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.5)
+	if(climbToggle)
 		lift.raise();
+	else if(perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.25)
+		lift.raise(perifController.GetRawAxis(Controls::Peripherals::Climb));
 	else
 		lift.stop();
 
@@ -221,10 +249,10 @@ void Robot::TeleopPeriodic()
 	 *
 	 * If control is pressed, run autoAim
 	 */
-	if (driveController.GetRawButton(Controls::TankDrive::AutoAim))
+	/*if (driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
 		autoAim();
-	}
+	}*/
 }
 
 void Robot::autoAim()

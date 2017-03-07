@@ -14,6 +14,7 @@ public:
 	Lift();
 
 	void raise();
+	void raise(float speed);
 	void lower(); //DEPRACATED; lowering is now physically impossible
 	void stop();
 };

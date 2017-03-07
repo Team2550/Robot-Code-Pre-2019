@@ -23,9 +23,9 @@ private:
 	Joystick perifController;
 	//Timer timeSinceStart;
 
-	Timer blenderTimer;
 	Timer autoTimer;
 
+	PowerDistributionPanel pdp;
 	UDP_Receiver udpReceiver;
 	DriveBase driveBase;
 	Shooter shooter;
@@ -49,7 +49,6 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
-
 	void autoAim();
 };
 
