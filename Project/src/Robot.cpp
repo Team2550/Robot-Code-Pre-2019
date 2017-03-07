@@ -22,46 +22,6 @@ Robot::~Robot()
 
 }
 
-void Robot::autoAim()
-{
-	 // Get data
-	 float data[UDP::DataCount];
-	 udpReceiver.getUDPData(data);
-
-	 // bool isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
-
-	  while(!(udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal())) //!isDataGood)
-	  {
-		  //if (!isDataGood) // If data isn't good, rotate blindly
-			 // driveBase.drive(-0.3, 0.3); //turn left
-		  if (data[UDP::Index::HorizAngle] > 5) // Target is to the right, rotate clockwise
-		  {
-			  driveBase.drive(0.3, -0.3); //turn right
-		  }
-		  else if (data[UDP::Index::HorizAngle] < -5) // Target is to the left, rotate counter-clockwise
-		  {
-			  driveBase.drive(-0.3, 0.3); //turn left
-		  }
-		  else
-		  {
-			  driveBase.stop();
-		  }
-		  	 //isDataGood = udpReceiver.getUDPDataAge() < 2.0 && udpReceiver.getUDPDataIsReal();
-	  }
-
-	  while(data[UDP::Index::Distance] > 5)
-	  {
-		  driveBase.drive(0.3);
-		  printf("Dist: ");
-		  printf(std::to_string(data[UDP::Index::Distance]).c_str());
-
-		  if(data[UDP::Index::Distance] <= 5)
-		  {
-			driveBase.stop();
-		  }
-	  }
-}
-
 void Robot::RobotInit()
 {
 	SmartDashboard::PutNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
@@ -217,6 +177,7 @@ void Robot::autoAim()
 {
 	printf("Aiming...\n");
 
+	// Get data
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
