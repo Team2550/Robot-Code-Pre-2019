@@ -5,11 +5,6 @@ Lift::Lift() : liftMotor(Ports::Lifter::Motor)
 
 }
 
-void Lift::raise()
-{
-	liftMotor.Set(Speeds::Lift::Lift);
-}
-
 void Lift::raise(float speed)
 {
 	liftMotor.Set(speed * Speeds::Lift::Lift);
