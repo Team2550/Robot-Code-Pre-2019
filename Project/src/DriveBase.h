@@ -10,12 +10,16 @@ class DriveBase {
 private:
     VictorSP leftMotor;
     VictorSP rightMotor;
+
+    bool isReversed;
 public:
     DriveBase();
 
     void drive(float speed);
     void drive(float leftSpeed, float rightSpeed);
     void stop();
+
+    void setReversed(bool reverse);
 };
 
 #endif

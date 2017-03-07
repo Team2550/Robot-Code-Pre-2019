@@ -17,7 +17,7 @@ ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5
 IMAGE_SIZE = (IMAGE_WIDTH, IMAGE_HEIGHT) = (320, 240)
 IMAGE_DIAGONAL = (IMAGE_SIZE[0]**2 + IMAGE_SIZE[1]**2)**(0.5)
 
-CAMERA_FOV = 59 # FOV of axis camera, needs to change for USB camera 
+CAMERA_FOV = 68.5 # FOV of axis camera, needs to change for USB camera 
 
 #################################################################################################################
 
@@ -25,14 +25,20 @@ COTANGENT_FOV = 1 / math.tan(math.radians(CAMERA_FOV / 2.0))
 
 CAMERA_URL = 0
 
-print("Searching for camera...")
+print("Searching for local camera...")
 try:
-    CAMERA_IP = socket.gethostbyname("axis-camera.local")
-    CAMERA_URL = "http://" + CAMERA_IP + "/mjpg/video.mjpg"
+    CAMERA_IP = socket.gethostbyname("raspberrypi")
+    CAMERA_URL = "http://" + CAMERA_IP + ":8080/?action=stream&amp;type=.mjpg"
     print("Found camera at", CAMERA_IP)
 except Exception:
-    CAMERA_URL = 0
-    print("No IP camera found. Defaulting to USB camera.")
+    try:
+        print("Searching for network camera...")
+        CAMERA_IP = socket.gethostbyname("raspberrypi.local")
+        CAMERA_URL = "http://" + CAMERA_IP + ":8080/?action=stream&amp;type=.mjpg"
+        print("Found camera at", CAMERA_IP)
+    except Exception:
+        CAMERA_URL = 0
+        print("No IP camera found. Defaulting to USB camera.")
 
 UDP_IP = "10.25.50.20"
 
@@ -59,15 +65,18 @@ def processCamera(camCapture):
 
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
-    lowerBound = np.array([0, 0, 240])
+    lowerBound = np.array([0, 0, 230])
     upperBound = np.array([255, 50, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
-
+    maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+    
     # find contours in the thresholded image
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
                             cv2.CHAIN_APPROX_SIMPLE)[1]
 
+    dataPoints = []
+    
     for c in cnts:
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.04 * peri, True)
@@ -117,9 +126,15 @@ def processCamera(camCapture):
                 
                 #print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
 
-                return objectDist, objectXOffset, objectYOffset, xAngle, yAngle # Test values
-        
-    return None
+                cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
+                cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
+                
+                dataPoints += [(objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Test values
+
+    cv2.imshow('Original', imgOriginal)
+    cv2.imshow('Mask', maskDraw)
+    
+    return dataPoints
 
 def main():
     camCapture = cv2.VideoCapture(CAMERA_URL) # declare a VideoCapture object and associate to webcam, 0 => use 1st webcam
@@ -139,7 +154,10 @@ def main():
         
         return                                                          # and exit function (which exits program)
         
-    test_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sendingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+    receivingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    receivingSocket.bind(("localhost", UDP_PORT))
 
     running = True
 
@@ -149,19 +167,23 @@ def main():
                 data = processCamera(camCapture)
 
                 if (data is not None):
-                    dist, xOffset, yOffset, horizAngle, vertAngle = data
+                    print("Found", len(data), "targets")
+
+                    for d in data:
+                        dist, xOffset, yOffset, horizAngle, vertAngle = d
+                        print("Found target (dist, xOffset, yOffset, horizAngle, vertAngle):", dist, xOffset, yOffset, horizAngle, vertAngle)
                     
-                    print("Found target (dist, xOffset, yOffset, horizAngle, vertAngle):", dist, xOffset, yOffset, horizAngle, vertAngle)
-                    
-                    arr = [dist, xOffset, yOffset, horizAngle, vertAngle]
-                    data = ' '.join(str(x) for x in arr)
-                    test_socket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
+                    data = ' '.join(str(x) for x in data)
+                    sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
                     print("Sent data to RoboRIO!")
+                else:
+                    print("No target found.")
 
             except Exception:
                 running = False
 
-                test_socket.close()
+                sendingSocket.close()
+                receivingSocket.close()
                 camCapture.release()
                 
                 raise
@@ -169,7 +191,8 @@ def main():
     except KeyboardInterrupt: # Catch exit by Ctrl-C
         print("\nTerminating script...")
         
-        test_socket.close()
+        sendingSocket.close()
+        receivingSocket.close()
         camCapture.release()
     
     return

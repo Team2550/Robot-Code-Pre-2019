@@ -36,7 +36,6 @@ namespace Controls
 		const int Right = xbox::axis::rightY;
 		const int Boost = xbox::btn::rb;
 		const int Turtle = xbox::btn::lb;
-		const int flip = xbox::btn::a;
 	}
 
 	namespace Peripherals
@@ -54,11 +53,15 @@ namespace Controls
 
 namespace Speeds
 {
-	namespace TankDrive
+	namespace DriveBase
 	{
 		const float Normal = 0.5;
 		const float Boost = 1;
 		const float Turtle = 0.25;
+		const float LeftPowerRatioBackwards = 1;
+		const float RightPowerRatioBackwards = 1;
+		const float LeftPowerRatioForwards = 1;
+		const float RightPowerRatioForwards = 1;
 	}
 
 	namespace Lift
@@ -88,6 +91,15 @@ namespace Autonomous
 namespace UDP
 {
 	const int DataCount = 5;
+
+	namespace Index
+	{
+		const int Distance = 0;
+		const int XOffset = 1;
+		const int YOffset = 2;
+		const int HorizAngle = 3;
+		const int VertAngle = 4;
+	}
 }
 
 #endif
