@@ -1,6 +1,8 @@
 #ifndef XBOX_H
 #define XBOX_H
 
+#include <stdint.h>
+
 namespace xbox
 {
 	namespace axis

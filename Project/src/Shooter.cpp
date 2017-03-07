@@ -7,14 +7,21 @@ Shooter::Shooter() :
 
 {
 	shooterMotor.SetInverted(true);
+	timeSinceAdjustment.Start();
 	shooterSpeedOffset = 0;
 
 	blenderMotor.SetInverted(true);
 }
 
-void Shooter::shoot()
+void Shooter::shoot(float motorCurrent)
 {
-	shooterMotor.Set(Speeds::Shooter::ShooterSpeed + shooterSpeedOffset);
+	if(timeSinceAdjustment.Get() >= 0.75)
+			timeSinceAdjustment.Reset();
+
+	if(motorCurrent < Speeds::Shooter::CurrentThreshold || timeSinceAdjustment.Get() >= 0.15)
+		shooterMotor.Set(Speeds::Shooter::Shooter + shooterSpeedOffset);
+	else
+		shooterMotor.Set(Speeds::Shooter::MaxShooter);
 }
 
 void Shooter::stop()
@@ -25,9 +32,9 @@ void Shooter::stop()
 void Shooter::blend(bool reverse)
 {
 	if (reverse)
-		blenderMotor.Set(-Speeds::Shooter::BlenderSpeed);
+		blenderMotor.Set(-Speeds::Shooter::Blender);
 	else
-		blenderMotor.Set(Speeds::Shooter::BlenderSpeed);
+		blenderMotor.Set(Speeds::Shooter::Blender);
 }
 
 void Shooter::stopBlend()
@@ -37,13 +44,13 @@ void Shooter::stopBlend()
 
 void Shooter::setSpeedOffset(float speedOffset)
 {
-	float s = Speeds::Shooter::ShooterSpeed;
+	float s = Speeds::Shooter::Shooter;
 	shooterSpeedOffset = fmax(0, fmin(1, s + speedOffset)) - s;
 }
 
 void Shooter::addSpeedOffset(float speedOffset)
 {
-	float s = Speeds::Shooter::ShooterSpeed;
+	float s = Speeds::Shooter::Shooter;
 	shooterSpeedOffset = fmax(0, fmin(1, s + shooterSpeedOffset + speedOffset)) - s;
 }
 

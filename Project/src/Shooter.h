@@ -9,11 +9,13 @@ private:
     VictorSP shooterMotor;
     VictorSP blenderMotor;
 
+    Timer timeSinceAdjustment;
+
     float shooterSpeedOffset;
 public:
 	Shooter();
 
-	void shoot();
+	void shoot(float motorCurrent = 0);
 	void stop();
 	void blend(bool reverse = false);
 	void stopBlend();

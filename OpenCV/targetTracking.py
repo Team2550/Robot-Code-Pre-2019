@@ -6,15 +6,19 @@ import math
 
 #################################################################################################################
 
+IS_TEST = True
+
 TARGET_RECT_SIZE_INCHES = (2, 5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
+TARGET_YOFFSET = 2.5
+TARGET_MAX_YOFFSET = 20
 
 TARGET_ASPECT_RATIO = min(TARGET_RECT_SIZE_INCHES) / max(TARGET_RECT_SIZE_INCHES) # Always less than one
-TARGET_ASPECT_MARGIN_OF_ERROR = 0.15 # Percentage that any rectangles seen can defer from the known aspect ratio
+TARGET_ASPECT_MARGIN_OF_ERROR = 0.30 # Percentage that any rectangles seen can defer from the known aspect ratio
 
 ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5
 
-IMAGE_SIZE = (IMAGE_WIDTH, IMAGE_HEIGHT) = (320, 240)
+IMAGE_SIZE = (IMAGE_WIDTH, IMAGE_HEIGHT) = (640, 480)
 IMAGE_DIAGONAL = (IMAGE_SIZE[0]**2 + IMAGE_SIZE[1]**2)**(0.5)
 
 CAMERA_FOV = 68.5 # FOV of axis camera, needs to change for USB camera 
@@ -65,8 +69,8 @@ def processCamera(camCapture):
 
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
-    lowerBound = np.array([0, 0, 230])
-    upperBound = np.array([255, 50, 255])
+    lowerBound = np.array([0, 0, 215])
+    upperBound = np.array([255, 90, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
     maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
@@ -119,20 +123,24 @@ def processCamera(camCapture):
                 
                 objectDist = diagonalOfObjectPlaneInches * 0.5 * COTANGENT_FOV
                 objectXOffset = ((avgX / IMAGE_WIDTH) - (1/2)) * widthOfObjectPlaneInches
-                objectYOffset = ((avgY / IMAGE_HEIGHT) - (1/2)) * heightOfObjectPlaneInches
-                
-                xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
-                yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
-                
-                #print("Found rectangle,", size, ":", ar, ":", x, y, width, height, "Dist:", objectDist)
+                objectYOffset = -((avgY / IMAGE_HEIGHT) - (1/2)) * heightOfObjectPlaneInches
 
-                cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
-                cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
-                
-                dataPoints += [(objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Test values
+                if (abs(objectYOffset - TARGET_YOFFSET) < TARGET_MAX_YOFFSET):
+                    xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
+                    yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
 
-    cv2.imshow('Original', imgOriginal)
-    cv2.imshow('Mask', maskDraw)
+                    percentMatch = 1 - (abs(ar - TARGET_ASPECT_RATIO)) / TARGET_ASPECT_RATIO
+                    percentMatch *= 1 - ((objectYOffset - TARGET_YOFFSET) / (TARGET_MAX_YOFFSET))**2
+
+                    if (IS_TEST):
+                        cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
+                        cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
+                    
+                    dataPoints += [(percentMatch, objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Test values
+
+    if (IS_TEST):
+        cv2.imshow('Original', imgOriginal)
+        cv2.imshow('Mask', maskDraw)
     
     return dataPoints
 
@@ -166,14 +174,14 @@ def main():
             try:            
                 data = processCamera(camCapture)
 
-                if (data is not None):
+                if (data is not None and len(data) > 0):
                     print("Found", len(data), "targets")
 
                     for d in data:
-                        dist, xOffset, yOffset, horizAngle, vertAngle = d
-                        print("Found target (dist, xOffset, yOffset, horizAngle, vertAngle):", dist, xOffset, yOffset, horizAngle, vertAngle)
+                        percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle = d
+                        print("Found target (percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle):", percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle)
                     
-                    data = ','.join(' '.join(str(y) for y in x) for x in data)
+                    data = ','.join(' '.join("{0:.5f}".format(y) for y in x) for x in data)
                     sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
                     print("Sent data to RoboRIO!")
                 else:

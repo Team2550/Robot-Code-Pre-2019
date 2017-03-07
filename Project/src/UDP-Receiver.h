@@ -21,7 +21,7 @@ private:
 	struct sockaddr_in remoteAddress;
 	socklen_t addressLength = sizeof(remoteAddress);
 	int bytesRecievedCount;
-	unsigned char buffer[BUFSIZE];
+	char buffer[BUFSIZE];
 
 	bool isRealData = false;
 	float newestUDPData[UDP::DataCount] = {-1, -1, -1, -1, -1};
