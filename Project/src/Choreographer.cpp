@@ -10,6 +10,11 @@ Choreographer::Choreographer(int timePeriodCount, const float _timetable[][3])
 	setTimetable(timePeriodCount, _timetable);
 }
 
+unsigned int Choreographer::getPeriodCount()
+{
+	return timetable.size();
+}
+
 Period Choreographer::getPeriod(unsigned int index)
 {
 	if (index >= 0 && index < timetable.size())

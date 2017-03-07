@@ -41,6 +41,8 @@ void Robot::RobotInit()
 	SmartDashboard::PutNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
 	SmartDashboard::PutNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
 	SmartDashboard::PutNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
+
+	SmartDashboard::PutBoolean("Is camera tracking ready", false);
 }
 
 void Robot::AutonomousInit()
@@ -134,6 +136,8 @@ void Robot::AutonomousInit()
 		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount, timetable);
 	}
 
+	canAutoAim = SmartDashboard::GetBoolean("Is camera tracking ready", false);
+
 	driveBase.setReversed(false);
 
 	autoTimer.Reset();
@@ -142,33 +146,90 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
+	/* ========== udpReceiver ========== */
+	udpReceiver.checkUDP();
 
-	float leftSpeed = driveBase.getLeftSpeed();
-	float rightSpeed = driveBase.getRightSpeed();
+	/* ========== DriveBase ========== */
+	// Run choreographer script until end of second to last step, unless can't auto aim
+	if (!canAutoAim || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 2).time)
+	{
+		choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
 
-	leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
-	                               SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
-	rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
-	                                 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
+		// Modify motor speeds based on trim from smartDashboard
+		float leftSpeed = driveBase.getLeftSpeed();
+		float rightSpeed = driveBase.getRightSpeed();
 
-	driveBase.drive(leftSpeed, rightSpeed);
+		leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
+									   SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
+		rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
+										 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
+
+		driveBase.drive(leftSpeed, rightSpeed);
+	}
+	else
+	{
+		autoAim();
+	}
 }
 
 void Robot::autoAim()
 {
-	printf("Aiming \n");
+	printf("Aiming...\n");
 
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	if (data[UDP::Index::Distance] > 5)
+	if (udpReceiver.getUDPDataAge() > 1.5)
 	{
-		printf("Move forward");
+		printf("Cannot see target! ");
+		if (!udpReceiver.getUDPDataIsReal() || data[UDP::Index::Distance] > 15)
+		{
+			printf("Rotating...\n");
+			driveBase.drive(0.4, -0.4);
+		}
+		else
+		{
+			printf("Stopping...\n");
+			driveBase.stop();
+		}
 	}
-	else if (data[UDP::Index::Distance] < 5)
+	else
 	{
-		printf("Optimal distance");
+		if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
+		{
+			printf("Target is far left\n");
+			driveBase.drive(0.4, -0.4);
+		}
+		else if (data[UDP::Index::XOffset] > 2) // Move while rotating
+		{
+			printf("Target is slight right\n");
+			driveBase.drive(0.4, 0);
+		}
+		else if (data[UDP::Index::XOffset] < -10)
+		{
+			printf("Target is far left\n");
+			driveBase.drive(-0.4, 0.4);
+		}
+		else if (data[UDP::Index::XOffset] < -2)
+		{
+			printf("Target is slight left\n");
+			driveBase.drive(0, 0.4);
+		}
+		else if (data[UDP::Index::Distance] > 20)
+		{
+			printf("Target is distant\n");
+			driveBase.drive(0.6);
+		}
+		else if (data[UDP::Index::Distance] > 10)
+		{
+			printf("Target is near\n");
+			driveBase.drive(0.3);
+		}
+		else
+		{
+			printf("At target\n");
+			driveBase.stop();
+		}
 	}
 }
 

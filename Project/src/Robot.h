@@ -46,7 +46,7 @@ private:
 	bool climbToggle;
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
-	bool aiming = false;
+	bool canAutoAim;
 
 public:
 	Robot();
