@@ -85,9 +85,17 @@ namespace Autonomous
 	const float SpeedInchesPerSecond = 100;
 	const float FullRotationTime = .5;
 
+	enum safeMode
+	{
+		on,
+		off
+	};
+
+	const safeMode DefaultMode = off;
 	enum PosScenario
 	{
 		FarLeft,
+		SafeFarLeft,
 		Middle,
 		MidRight,
 		FarRight,
@@ -105,6 +113,11 @@ namespace Autonomous
 		{
 			const int PeriodCount = 1;
 			const float Timetable[PeriodCount][3] = {{0,0,0}};
+		}
+		namespace SafeFarLeftPos
+		{
+			const int PeriodCount = 2;
+			const float Timetable[PeriodCount][3] = {{185.3 / SpeedInchesPerSecond,1,1}};
 		}
 
 		namespace MiddlePos

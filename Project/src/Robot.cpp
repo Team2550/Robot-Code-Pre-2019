@@ -34,6 +34,11 @@ void Robot::RobotInit()
 	scenarioChooser.AddObject("Test Scenario", &testScenario);
 	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
 
+	safemodeSwitch.AddDefault("Off", &off);
+	safemodeSwitch.AddObject("On", &on);
+	SmartDashboard::PutData("Safemode", &safemodeSwitch);
+
+
 	driveChooser.AddDefault("Normal", &normalDrive);
 	driveChooser.AddObject("Backwards", &backwardsDrive);
 	SmartDashboard::PutData("Drive Mode", &driveChooser);
@@ -52,6 +57,7 @@ void Robot::AutonomousInit()
 
 	// Get scenario from smart dashboard
 	Autonomous::PosScenario *autoPosScenario = scenarioChooser.GetSelected();
+	Autonomous::safeMode *autoSafeMode = safemodeSwitch.GetSelected();
 	//if value could not be retrieved, default to the value stored in the default scenario constant.
 	// The pointers that autoPosScenario is being set to are the same that would have been retrieved by the function above.
 	if(autoPosScenario == nullptr)
@@ -60,8 +66,13 @@ void Robot::AutonomousInit()
 		switch (Autonomous::DefaultScenario)
 		{
 		case Autonomous::FarLeft:
-			autoPosScenario = &farLeftScenario;
-			break;
+			if(autoSafeMode == on){
+				autoPosScenario = &SafeFarLeft;
+			}
+			else{
+				autoPosScenario = &farLeftScenario;
+				break;
+			}
 		case Autonomous::Middle:
 			autoPosScenario = &middleScenario;
 			break;

@@ -32,11 +32,16 @@ private:
 	Lift lift;
 
 	Autonomous::PosScenario farLeftScenario = Autonomous::FarLeft;
+	Autonomous::PosScenario safeFarLeft = Autonomous::SafeFarLeft;
 	Autonomous::PosScenario middleScenario = Autonomous::Middle;
 	Autonomous::PosScenario midRightScenario = Autonomous::MidRight;
 	Autonomous::PosScenario farRightScenario = Autonomous::FarRight;
 	Autonomous::PosScenario testScenario = Autonomous::Test;
 	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
+
+	Autonomous::safeMode off = Autonomous::off;
+	Autonomous::safeMode on = Autonomous::on;
+	SendableChooser<Autonomous::safeMode*> safemodeSwitch;
 
 	DriveType normalDrive = DriveType::Normal;
 	DriveType backwardsDrive = DriveType::Backwards;
