@@ -36,6 +36,7 @@ private:
 	Autonomous::PosScenario middleScenario = Autonomous::Middle;
 	Autonomous::PosScenario safeMiddleScenario = Autonomous::SafeMiddle;
 	Autonomous::PosScenario midRightScenario = Autonomous::MidRight;
+	Autonomous::PosScenario safeMidRightScenario = Autonomous::SafeMidRight;
 	Autonomous::PosScenario farRightScenario = Autonomous::FarRight;
 	Autonomous::PosScenario testScenario = Autonomous::Test;
 	SendableChooser<Autonomous::PosScenario*> scenarioChooser;

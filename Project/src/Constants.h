@@ -99,7 +99,9 @@ namespace Autonomous
 		Middle,
 		SafeMiddle,
 		MidRight,
+		SafeMidRight,
 		FarRight,
+		SafeFarRight,
 		Test
 	};
 
@@ -141,6 +143,16 @@ namespace Autonomous
 		{
 			const int PeriodCount = 1;
 			const float Timetable[PeriodCount][3] = {{0,0,0}};
+		}
+		namespace SafeMidRightPos
+		{
+			const int PeriodCount = 6;
+			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
+								 	 	 	         {FullRotationTime / 2.0,0.5,-0.5},
+													 {60 / SpeedInchesPerSecond,0.5,0.5},
+													 {90 / SpeedInchesPerSecond,0.5,0.5},
+													 {FullRotationTime / 2.0,-0.5,0.5},
+													 {90 / SpeedInchesPerSecond,0.5,0.5}};
 		}
 
 		namespace FarRightPos
@@ -197,14 +209,14 @@ namespace Autonomous
 		}
 		namespace SafeMiddlePos
 		{
-		const int PeriodCount = 6;
-		inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+			const int PeriodCount = 6;
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 			{
 				float tt[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
 							 	 	 	 	{FullRotationTime / 2.0,-0.5,0.5},
 											{60 / SpeedInchesPerSecond,0.5,0.5},
 											{90 / SpeedInchesPerSecond,0.5,0.5},
-											{FullRotationTime / 4.0,-0.5,0.5},
+											{FullRotationTime / 4.0,0.5,-0.5},
 											{90 / SpeedInchesPerSecond,0.5,0.5}};
 
 		 	 	std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
@@ -218,6 +230,22 @@ namespace Autonomous
 			{
 				float tt[PeriodCount][3] = {{0,0,0}};
 				std::copy(&tt[0][0], &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
+			}
+		}
+		namespace SafeMidRightPos
+		{
+			const int PeriodCount = 6;
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+
+			{
+				float tt[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
+									 	 	{FullRotationTime / 2.0,0.5,-0.5},
+											{60 / SpeedInchesPerSecond,0.5,0.5},
+											{90 / SpeedInchesPerSecond,0.5,0.5},
+											{FullRotationTime / 4.0,-0.5,0.5},
+											{90 / SpeedInchesPerSecond,0.5,0.5}};
+
+				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
 
