@@ -45,7 +45,7 @@ namespace Controls
 
 		const int Shoot = xbox::btn::b;
 		const int Blender = xbox::btn::a;
-		const int ReverseBlender = xbox::axis::LT;
+		const int ReverseBlender = xbox::axis::RT;
 		const int IncreaseShootSpeed = xbox::btn::y;
 		const int DecreaseShootSpeed = xbox::btn::x;
 	}

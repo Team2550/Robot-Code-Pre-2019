@@ -9,8 +9,6 @@ Shooter::Shooter() :
 	shooterMotor.SetInverted(true);
 	timeSinceAdjustment.Start();
 	shooterSpeedOffset = 0;
-
-	blenderMotor.SetInverted(true);
 }
 
 void Shooter::shoot(float motorCurrent)
