@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <vector>
+#include "Utility.h"
 #include "Constants.h"
 
 #define BUFSIZE      2048
@@ -20,7 +21,7 @@ private:
 	struct sockaddr_in remoteAddress;
 	socklen_t addressLength = sizeof(remoteAddress);
 	int bytesRecievedCount;
-	unsigned char buffer[BUFSIZE];
+	char buffer[BUFSIZE];
 
 	bool isRealData = false;
 	float newestUDPData[UDP::DataCount] = {-1, -1, -1, -1, -1};
@@ -28,7 +29,7 @@ private:
 	Timer udpAgeTimer;
 
 	int createUDPSocket();
-	void getNumsFromString(unsigned char str[], int length, float nums[]);
+	//void getNumsFromString(unsigned char str[], int length, float nums[]);
 public:
 	UDP_Receiver();
 
