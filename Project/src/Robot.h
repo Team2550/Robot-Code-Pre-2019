@@ -32,8 +32,9 @@ private:
 	Lift lift;
 
 	Autonomous::PosScenario farLeftScenario = Autonomous::FarLeft;
-	Autonomous::PosScenario safeFarLeft = Autonomous::SafeFarLeft;
+	Autonomous::PosScenario safeFarLeftScenario = Autonomous::SafeFarLeft;
 	Autonomous::PosScenario middleScenario = Autonomous::Middle;
+	Autonomous::PosScenario safeMiddleScenario = Autonomous::SafeMiddle;
 	Autonomous::PosScenario midRightScenario = Autonomous::MidRight;
 	Autonomous::PosScenario farRightScenario = Autonomous::FarRight;
 	Autonomous::PosScenario testScenario = Autonomous::Test;

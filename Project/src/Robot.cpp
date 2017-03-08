@@ -66,16 +66,20 @@ void Robot::AutonomousInit()
 		switch (Autonomous::DefaultScenario)
 		{
 		case Autonomous::FarLeft:
-			if(autoSafeMode == on){
-				autoPosScenario = &SafeFarLeft;
-			}
+			if(autoSafeMode == &on){
+				autoPosScenario = &safeFarLeftScenario;			}
 			else{
 				autoPosScenario = &farLeftScenario;
 				break;
 			}
 		case Autonomous::Middle:
-			autoPosScenario = &middleScenario;
-			break;
+			if(autoSafeMode == &on){
+				autoPosScenario = &safeMiddleScenario;
+			}
+			else{
+				autoPosScenario = &middleScenario;
+				break;
+			}
 		case Autonomous::MidRight:
 			autoPosScenario = &midRightScenario;
 			break;
