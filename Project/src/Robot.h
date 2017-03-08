@@ -39,7 +39,6 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
-	void autoAim();
 };
 
 #endif
