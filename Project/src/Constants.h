@@ -162,6 +162,11 @@ namespace Autonomous
 													 {FullRotationTime / 4.0,-0.5,0.5},
 													 {277.4 / SpeedInchesPerSecond * 0.15625,0.5,0.5}};
 		}
+		namespace SafeFarRightPos
+		{
+			const int PeriodCount = 1;
+			const float Timetable[PeriodCount][3] = {{185.3 / SpeedInchesPerSecond,0.5,0.5}};
+		}
 	}
 
 	namespace DynamicBlindScenarios
@@ -260,7 +265,16 @@ namespace Autonomous
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
+		namespace SafeFarRightScenario
+		{
+			const int PeriodCount = 1;
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+			{
+				float tt[PeriodCount][3] = {{185 / speedInchesPerSecond,0.5,0.5}};
+				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 
+			}
+		}
 		namespace TestScenario
 		{
 			const int PeriodCount = 1;

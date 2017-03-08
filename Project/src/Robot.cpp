@@ -89,8 +89,13 @@ void Robot::AutonomousInit()
 			break;
 			}
 		case Autonomous::FarRight:
+			if(autoSafeMode == &on){
+				autoPosScenario = &safeFarRightScenario;
+			}
+			else{
 			autoPosScenario = &farRightScenario;
 			break;
+			}
 		case Autonomous::Test:
 			autoPosScenario = &testScenario;
 			break;
