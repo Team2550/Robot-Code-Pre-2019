@@ -2,10 +2,10 @@
 #define ROBOT_H
 
 #include <WPILib.h>
-#include "xBox.h"
 #include "Constants.h"
+#include "xBox.h"
+#include "Choreographer.h"
 #include "UDP-Receiver.h"
-#include "Timer.h"
 #include "DriveBase.h"
 #include "Shooter.h"
 #include "Lift.h"
@@ -15,7 +15,7 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	//Timer timeSinceStart;
+	Choreographer choreographer;
 
 	Timer autoTimer;
 
@@ -27,9 +27,9 @@ private:
 
 	bool climbToggleHold;
 	bool climbToggle;
-
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
+	bool aiming = false;
 
 public:
 	Robot();
