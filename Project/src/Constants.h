@@ -45,9 +45,10 @@ namespace Controls
 
 		const int Shoot = xbox::btn::b;
 		const int Blender = xbox::btn::a;
-		const int ReverseBlender = xbox::btn::rb;
+		const int ReverseBlender = xbox::axis::RT;
 		const int IncreaseShootSpeed = xbox::btn::y;
 		const int DecreaseShootSpeed = xbox::btn::x;
+		const int AutoAim = xbox::btn::a;
 	}
 }
 
@@ -67,7 +68,7 @@ namespace Speeds
 	namespace Lift
 	{
 		const float Lift = 1;
-		const float Lower = -5;
+		const float Lower = -1;
 	}
 
 	namespace Shooter
@@ -81,12 +82,112 @@ namespace Speeds
 
 namespace Autonomous
 {
-	const int dist = 3;
-	const int distTime = 3;
-	const int inchesPerSecond = distTime/dist;
-	const int oneEigtheeTime = 3;
-}
+	const float SpeedInchesPerSecond = 100;
+	const float FullRotationTime = .5;
 
+	enum PosScenario
+	{
+		FarLeft,
+		Middle,
+		MidRight,
+		FarRight,
+		Test
+	};
+
+	const PosScenario DefaultScenario = FarLeft;
+
+	namespace BlindScenarios
+	{
+		// Timetable format is an array of arrays, each of which is three floats long
+		//                                                  (timeLength, leftSpeed, rightSpeed)
+		// Namespaces here denote different starting positions
+		namespace FarLeftPos
+		{
+			const int PeriodCount = 1;
+			const float Timetable[PeriodCount][3] = {{0,0,0}};
+		}
+		namespace MiddlePos
+		{
+			const int PeriodCount = 1;
+			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5}};
+		}
+		namespace MidRightPos
+		{
+			const int PeriodCount = 1;
+			const float Timetable[PeriodCount][3] = {{0,0,0}};
+		}
+		namespace FarRightPos
+		{
+			const int PeriodCount = 3;
+			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
+													 {FullRotationTime / 4.0,-0.5,0.5},
+													 {277.4 / SpeedInchesPerSecond * 0.15625,0.5,0.5}};
+		}
+	}
+
+	namespace DynamicBlindScenarios
+	{
+		// These scenarios are mode of inline functions that are designed to generate the timetables based on variables that can be changed live.
+		// These should only be used when testing for figuring out values.
+		/*=================================================
+			Name: timetable
+			Desc: Initializes a timetable array to be used by a choreographer.
+			Arguments:
+				speedInchesPerSecond (I) : The max speed of the robot in inches per second
+				fullRotationTime (I)     : The amount of time in seconds it takes the robot to turn 180 degrees at full speed
+				_timetable (O)           : The array to initialize as a timetable
+			Return:
+				none
+		=================================================*/
+		namespace FarLeftPos
+		{
+			const int PeriodCount = 1;
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+			{
+				float tt[PeriodCount][3] = {{0,0,0}};
+				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
+			}
+		}
+		namespace MiddlePos
+		{
+			const int PeriodCount = 1;
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+			{
+				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5}};
+				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
+			}
+		}
+		namespace MidRightPos
+		{
+			const int PeriodCount = 1;
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+			{
+				float tt[PeriodCount][3] = {{0,0,0}};
+				std::copy(&tt[0][0], &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
+			}
+		}
+		namespace FarRightPos
+		{
+			const int PeriodCount = 3;
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+			{
+				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
+			                                {fullRotationTime / 4,0.5,-0.5},
+										    {277.4f / speedInchesPerSecond * 0.15625f,0.5,0.5}};
+				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
+			}
+		}
+		namespace TestScenario
+		{
+			const int PeriodCount = 1;
+			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
+			{
+				float tt[PeriodCount][3] = {{2, 1, 1}};
+				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
+			}
+		}
+	}
+}
 
 namespace UDP
 {
@@ -94,12 +195,18 @@ namespace UDP
 
 	namespace Index
 	{
-		const int Distance = 0;
-		const int XOffset = 1;
-		const int YOffset = 2;
-		const int HorizAngle = 3;
-		const int VertAngle = 4;
+		const int PercentMatch = 0;
+		const int Distance = 1;
+		const int XOffset = 2;
+		const int YOffset = 3;
+		const int HorizAngle = 4;
+		const int VertAngle = 5;
 	}
+}
+
+namespace Other
+{
+	const float MatchLength = 0;
 }
 
 #endif

@@ -2,10 +2,10 @@
 #define ROBOT_H
 
 #include <WPILib.h>
-#include "xBox.h"
 #include "Constants.h"
+#include "xBox.h"
+#include "Choreographer.h"
 #include "UDP-Receiver.h"
-#include "Timer.h"
 #include "DriveBase.h"
 #include "Shooter.h"
 #include "Lift.h"
@@ -15,7 +15,7 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	//Timer timeSinceStart;
+	Choreographer choreographer;
 
 	Timer autoTimer;
 
@@ -25,11 +25,19 @@ private:
 	Shooter shooter;
 	Lift lift;
 
+	Autonomous::PosScenario farLeftScenario = Autonomous::FarLeft;
+	Autonomous::PosScenario middleScenario = Autonomous::Middle;
+	Autonomous::PosScenario midRightScenario = Autonomous::MidRight;
+	Autonomous::PosScenario farRightScenario = Autonomous::FarRight;
+	Autonomous::PosScenario testScenario = Autonomous::Test;
+	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
+
 	bool climbToggleHold;
 	bool climbToggle;
-
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
+	bool canAutoAim;
+	bool autoSafeMode;
 
 public:
 	Robot();

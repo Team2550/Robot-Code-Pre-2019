@@ -13,8 +13,7 @@ private:
 public:
 	Lift();
 
-	void raise();
-	void raise(float speed);
+	void raise(float speed = 1);
 	void lower(); //DEPRACATED; lowering is now physically impossible
 	void stop();
 };

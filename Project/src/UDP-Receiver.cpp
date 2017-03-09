@@ -56,13 +56,13 @@ Return:
 ================================================*/
 int UDP_Receiver::createUDPSocket()
 {
-	if ((ourSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	if ((ourSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+	{
 		perror("Cannot create socket\n");
 		return 1;
 	}
 
 	/* bind the socket to any valid IP address and a specific port */
-
 	memset((char *) &myAddress, 0, sizeof(myAddress));
 	myAddress.sin_family = AF_INET;
 	myAddress.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -98,17 +98,42 @@ void UDP_Receiver::checkUDP()
 	}
 
 	if (bytesRecievedCount > 0) {
-		printf("Received %d bytes\n", bytesRecievedCount);
+		buffer[bytesRecievedCount] = '\0';
+		std::string bufferString = buffer;
+		printf(("Got data: " + bufferString + '\n').c_str());
 
-		buffer[bytesRecievedCount] = 0;
-		printf("Received message: \"%s\"\n", buffer);
+		std::vector<std::string> dataPointsStrings = Utility::splitString(bufferString, ',');
 
-		float newUDPData[3] = {};
-		getNumsFromString(buffer, bytesRecievedCount, newUDPData);
+		std::vector<std::vector<float>> dataPoints;
 
-		if (newUDPData[0] != -1)
+		std::vector<float> currentDataPoint;
+
+		// Convert to float and sort data points by size from smallest to greatest distance
+		for (unsigned int i = 0; i < dataPointsStrings.size(); i++)
 		{
-			memcpy(newestUDPData, newUDPData, sizeof(newUDPData));
+			currentDataPoint = Utility::strVectorToFloatVector(Utility::splitString(dataPointsStrings[i], ' '));
+			if (currentDataPoint.size() == UDP::DataCount)
+				for (unsigned int j = 0; j <= dataPoints.size(); j++)
+					if (j >= dataPoints.size() || dataPoints[j][UDP::Index::PercentMatch] > currentDataPoint[UDP::Index::PercentMatch])
+					{
+						dataPoints.insert(dataPoints.begin() + j, currentDataPoint);
+						j = dataPoints.size() + 1;
+					}
+		}
+
+		if (0 < dataPoints.size() && dataPoints.size() < 2)
+		{
+			// Use only match
+			for (unsigned int i = 0; i < UDP::DataCount; i++)
+				newestUDPData[i] += dataPoints[0][i];
+			udpAgeTimer.Reset();
+			isRealData = true;
+		}
+		else if (dataPoints.size() > 0)
+		{
+			// Average two best matches
+			for (unsigned int i = 0; i < UDP::DataCount; i++)
+				newestUDPData[i] += (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
 			udpAgeTimer.Reset();
 			isRealData = true;
 		}
@@ -125,16 +150,18 @@ Arguments:
 Return:
 	none
 ================================================*/
-void UDP_Receiver::getNumsFromString(unsigned char str[], int length, float nums[])
+/*void UDP_Receiver::getNumsFromString(std::string str, float nums[])
 {
 	int start = 0;
 	int end = 0;
 	int i = 0;
 
-	char currentNum[BUFSIZE] = {};
+	std::string currentNum;
 
-	while(i < length && start < BUFSIZE)
+	while(i < str.length())
 	{
+		currentNum = "";
+
 		while(str[end] != ' ' && end < BUFSIZE)
 			end++;
 
@@ -150,4 +177,4 @@ void UDP_Receiver::getNumsFromString(unsigned char str[], int length, float nums
 
 		start = ++end;
 	}
-}
+}*/
