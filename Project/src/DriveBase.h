@@ -20,6 +20,10 @@ public:
     void drive(float speed);
     void drive(float leftSpeed, float rightSpeed);
     void stop();
+    void applyTrim(float leftForwardsRatio = Speeds::DriveBase::LeftPowerRatioForwards,
+    		       float rightForwardsRatio = Speeds::DriveBase::RightPowerRatioForwards,
+    		       float leftBackwardsRatio = Speeds::DriveBase::LeftPowerRatioBackwards,
+				   float rightBackwardsRatio = Speeds::DriveBase::RightPowerRatioBackwards);
 
     void setReversed(bool reverse);
 };

@@ -152,17 +152,10 @@ void Robot::AutonomousPeriodic()
 	}
 
 	// Modify motor speeds based on trim from smartDashboard
-	float leftSpeed = driveBase.getLeftSpeed();
-	float rightSpeed = driveBase.getRightSpeed();
-
-	std::cout << leftSpeed << ", " << rightSpeed << '\n';
-
-	leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
-								   SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
-	rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
-									 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
-
-	driveBase.drive(leftSpeed, rightSpeed);
+	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
+	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
+	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
+						SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 }
 
 void Robot::TeleopInit()
@@ -181,16 +174,18 @@ void Robot::TeleopPeriodic()
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
 
-	leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
-	                               SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
-	rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
-	                                 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
-
 	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
 	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
+
 	float speed = turtle ? Speeds::DriveBase::Turtle : (boost ? Speeds::DriveBase::Boost : Speeds::DriveBase::Normal);
-	driveBase.drive(leftSpeed *speed,
+
+	driveBase.drive(leftSpeed * speed,
 					rightSpeed * speed);
+
+	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
+	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
+	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
+						SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 
 	/* ========== Shooter ========== */
 	SmartDashboard::PutNumber("shooterCurrent", pdp.GetCurrent(Ports::PDP::Shooter));
