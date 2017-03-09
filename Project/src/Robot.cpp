@@ -25,10 +25,15 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	SmartDashboard::PutNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
-	SmartDashboard::PutNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
-	SmartDashboard::PutNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
-	SmartDashboard::PutNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
+	// Default value to set smart dashboard item to is it's current value, unless it doesn't exist.
+	SmartDashboard::PutNumber("Left Forwards Ratio",
+			                  SmartDashboard::GetNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards));
+	SmartDashboard::PutNumber("Right Forwards Ratio",
+			                  SmartDashboard::GetNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards));
+	SmartDashboard::PutNumber("Left Backwards Ratio",
+			                  SmartDashboard::GetNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards));
+	SmartDashboard::PutNumber("Right Backwards Ratio",
+			                  SmartDashboard::GetNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards));
 
 	SmartDashboard::PutBoolean("Is camera tracking ready", false);
 	SmartDashboard::PutBoolean("Safe mode", true);
