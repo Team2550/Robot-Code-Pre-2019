@@ -10,12 +10,6 @@
 #include "Shooter.h"
 #include "Lift.h"
 
-enum DriveType
-{
-	Normal,
-	Backwards
-};
-
 class Robot: public IterativeRobot
 {
 private:
@@ -38,10 +32,6 @@ private:
 	Autonomous::PosScenario testScenario = Autonomous::Test;
 	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
 
-	DriveType normalDrive = DriveType::Normal;
-	DriveType backwardsDrive = DriveType::Backwards;
-	SendableChooser<DriveType*> driveChooser;
-
 	bool climbToggleHold;
 	bool climbToggle;
 	bool decreaseShooterSpeedDown;
@@ -58,7 +48,6 @@ public:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void autoAim();
-	void distTest();
 };
 
 #endif

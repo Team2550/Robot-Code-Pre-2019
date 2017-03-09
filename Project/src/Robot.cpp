@@ -25,20 +25,6 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	SmartDashboard::PutNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
-	SmartDashboard::PutNumber("Full Rotation Time", Autonomous::FullRotationTime);
-
-	scenarioChooser.AddDefault("Far Left", &farLeftScenario);
-	scenarioChooser.AddObject("Middle", &middleScenario);
-	scenarioChooser.AddObject("Middle Right", &midRightScenario);
-	scenarioChooser.AddObject("Far Right", &farRightScenario);
-	scenarioChooser.AddObject("Test Scenario", &testScenario);
-	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
-
-	driveChooser.AddDefault("Normal", &normalDrive);
-	driveChooser.AddObject("Backwards", &backwardsDrive);
-	SmartDashboard::PutData("Drive Mode", &driveChooser);
-
 	SmartDashboard::PutNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
 	SmartDashboard::PutNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
 	SmartDashboard::PutNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
@@ -166,34 +152,21 @@ void Robot::AutonomousPeriodic()
 	}
 
 	// Modify motor speeds based on trim from smartDashboard
-	float leftSpeed = driveBase.getLeftSpeed();
-	float rightSpeed = driveBase.getRightSpeed();
-
-	std::cout << leftSpeed << ", " << rightSpeed << '\n';
-
-	leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
-								   SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
-	rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
-									 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
-
-	driveBase.drive(leftSpeed, rightSpeed);
+	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
+	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
+	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
+						SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 }
 
 void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
+	driveBase.setReversed(false);
 	driveBase.stop();
 }
 
 void Robot::TeleopPeriodic()
 {
-	/* ========== Settings ========== */
-	DriveType *driveType = driveChooser.GetSelected();
-	if(driveType == nullptr)
-		driveBase.setReversed(false);
-	else
-		driveBase.setReversed(driveChooser.GetSelected() == &backwardsDrive);
-
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
@@ -201,16 +174,18 @@ void Robot::TeleopPeriodic()
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
 
-	leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
-	                               SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
-	rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
-	                                 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
-
 	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
 	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
+
 	float speed = turtle ? Speeds::DriveBase::Turtle : (boost ? Speeds::DriveBase::Boost : Speeds::DriveBase::Normal);
-	driveBase.drive(leftSpeed *speed,
+
+	driveBase.drive(leftSpeed * speed,
 					rightSpeed * speed);
+
+	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
+	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
+	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
+						SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 
 	/* ========== Shooter ========== */
 	SmartDashboard::PutNumber("shooterCurrent", pdp.GetCurrent(Ports::PDP::Shooter));
@@ -221,7 +196,7 @@ void Robot::TeleopPeriodic()
 		shooter.stop();
 
 	if(perifController.GetRawButton(Controls::Peripherals::Blender))
-		shooter.blend(!perifController.GetRawButton(Controls::Peripherals::ReverseBlender));
+		shooter.blend(perifController.GetRawAxis(Controls::Peripherals::ReverseBlender) > 0.3);
 	else
 		shooter.stopBlend();
 
@@ -269,7 +244,9 @@ void Robot::TeleopPeriodic()
 	else
 		climbToggleHold = false;
 
-	if(perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.25)
+	if(climbToggle)
+		lift.raise();
+	else if(perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.25)
 		lift.raise(perifController.GetRawAxis(Controls::Peripherals::Climb));
 	else
 		lift.stop();
