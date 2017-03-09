@@ -16,6 +16,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	climbToggleHold = false;
 	climbToggle = false;
 	canAutoAim = false;
+	autoSafeMode = true;
 }
 
 Robot::~Robot()
