@@ -85,23 +85,12 @@ namespace Autonomous
 	const float SpeedInchesPerSecond = 100;
 	const float FullRotationTime = .5;
 
-	enum safeMode
-	{
-		on,
-		off
-	};
-
-	const safeMode DefaultMode = off;
 	enum PosScenario
 	{
 		FarLeft,
-		SafeFarLeft,
 		Middle,
-		SafeMiddle,
 		MidRight,
-		SafeMidRight,
 		FarRight,
-		SafeFarRight,
 		Test
 	};
 
@@ -117,55 +106,22 @@ namespace Autonomous
 			const int PeriodCount = 1;
 			const float Timetable[PeriodCount][3] = {{0,0,0}};
 		}
-		namespace SafeFarLeftPos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{185.3 / SpeedInchesPerSecond,0.5,0.5}};
-		}
-
 		namespace MiddlePos
 		{
 			const int PeriodCount = 1;
 			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5}};
-		}
-
-		namespace SafeMiddle
-		{
-			const int PeriodCount = 6;
-			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
-					 	 	 	 	 	 	 	 	 {FullRotationTime / 2.0,-0.5,0.5},
-													 {60 / SpeedInchesPerSecond,0.5,0.5},
-													 {90 / SpeedInchesPerSecond,0.5,0.5},
-													 {FullRotationTime / 2.0,0.5,-0.5},
-													 {90 / SpeedInchesPerSecond,0.5,0.5}};
 		}
 		namespace MidRightPos
 		{
 			const int PeriodCount = 1;
 			const float Timetable[PeriodCount][3] = {{0,0,0}};
 		}
-		namespace SafeMidRightPos
-		{
-			const int PeriodCount = 6;
-			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
-								 	 	 	         {FullRotationTime / 2.0,0.5,-0.5},
-													 {60 / SpeedInchesPerSecond,0.5,0.5},
-													 {90 / SpeedInchesPerSecond,0.5,0.5},
-													 {FullRotationTime / 2.0,-0.5,0.5},
-													 {90 / SpeedInchesPerSecond,0.5,0.5}};
-		}
-
 		namespace FarRightPos
 		{
 			const int PeriodCount = 3;
 			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
 													 {FullRotationTime / 4.0,-0.5,0.5},
 													 {277.4 / SpeedInchesPerSecond * 0.15625,0.5,0.5}};
-		}
-		namespace SafeFarRightPos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{185.3 / SpeedInchesPerSecond,0.5,0.5}};
 		}
 	}
 
@@ -192,17 +148,6 @@ namespace Autonomous
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
-		namespace SafeFarLeftPos
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float speedInchesPerSecond , float fullRotationTime, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{185 / speedInchesPerSecond,0.5,0.5}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-
-			}
-		}
-
 		namespace MiddlePos
 		{
 			const int PeriodCount = 1;
@@ -212,22 +157,6 @@ namespace Autonomous
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
-		namespace SafeMiddlePos
-		{
-			const int PeriodCount = 6;
-			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
-							 	 	 	 	{FullRotationTime / 2.0,-0.5,0.5},
-											{60 / SpeedInchesPerSecond,0.5,0.5},
-											{90 / SpeedInchesPerSecond,0.5,0.5},
-											{FullRotationTime / 4.0,0.5,-0.5},
-											{90 / SpeedInchesPerSecond,0.5,0.5}};
-
-		 	 	std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-
 		namespace MidRightPos
 		{
 			const int PeriodCount = 1;
@@ -237,23 +166,6 @@ namespace Autonomous
 				std::copy(&tt[0][0], &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
-		namespace SafeMidRightPos
-		{
-			const int PeriodCount = 6;
-			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-
-			{
-				float tt[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
-									 	 	{FullRotationTime / 2.0,0.5,-0.5},
-											{60 / SpeedInchesPerSecond,0.5,0.5},
-											{90 / SpeedInchesPerSecond,0.5,0.5},
-											{FullRotationTime / 4.0,-0.5,0.5},
-											{90 / SpeedInchesPerSecond,0.5,0.5}};
-
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-
 		namespace FarRightPos
 		{
 			const int PeriodCount = 3;
@@ -263,16 +175,6 @@ namespace Autonomous
 			                                {fullRotationTime / 4,0.5,-0.5},
 										    {277.4f / speedInchesPerSecond * 0.15625f,0.5,0.5}};
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace SafeFarRightScenario
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{185 / speedInchesPerSecond,0.5,0.5}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-
 			}
 		}
 		namespace TestScenario

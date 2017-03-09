@@ -65,7 +65,7 @@ void Choreographer::applyScheduleToRobot(float time, DriveBase& driveBase)
 	while (i < timetable.size() && time > timetable[i].time) {i++;}
 
 	if (i >= timetable.size())
-		driveBase.drive(0); // STOP!! END OF TIMETABLE
+		driveBase.stop(); // STOP!! END OF TIMETABLE
 	else
 		driveBase.drive(timetable[i].leftSpeed, timetable[i].rightSpeed);
 }

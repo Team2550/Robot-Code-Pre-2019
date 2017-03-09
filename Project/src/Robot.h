@@ -32,19 +32,11 @@ private:
 	Lift lift;
 
 	Autonomous::PosScenario farLeftScenario = Autonomous::FarLeft;
-	Autonomous::PosScenario safeFarLeftScenario = Autonomous::SafeFarLeft;
 	Autonomous::PosScenario middleScenario = Autonomous::Middle;
-	Autonomous::PosScenario safeMiddleScenario = Autonomous::SafeMiddle;
 	Autonomous::PosScenario midRightScenario = Autonomous::MidRight;
-	Autonomous::PosScenario safeMidRightScenario = Autonomous::SafeMidRight;
 	Autonomous::PosScenario farRightScenario = Autonomous::FarRight;
-	Autonomous::PosScenario safeFarRightScenario = Autonomous::SafeFarRight;
 	Autonomous::PosScenario testScenario = Autonomous::Test;
 	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
-
-	Autonomous::safeMode off = Autonomous::off;
-	Autonomous::safeMode on = Autonomous::on;
-	SendableChooser<Autonomous::safeMode*> safemodeSwitch;
 
 	DriveType normalDrive = DriveType::Normal;
 	DriveType backwardsDrive = DriveType::Backwards;
@@ -55,6 +47,7 @@ private:
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
 	bool canAutoAim;
+	bool autoSafeMode;
 
 public:
 	Robot();

@@ -15,6 +15,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	increaseShooterSpeedDown = false;
 	climbToggleHold = false;
 	climbToggle = false;
+	canAutoAim = false;
 }
 
 Robot::~Robot()
@@ -34,11 +35,6 @@ void Robot::RobotInit()
 	scenarioChooser.AddObject("Test Scenario", &testScenario);
 	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
 
-	safemodeSwitch.AddDefault("Off", &off);
-	safemodeSwitch.AddObject("On", &on);
-	SmartDashboard::PutData("Safemode", &safemodeSwitch);
-
-
 	driveChooser.AddDefault("Normal", &normalDrive);
 	driveChooser.AddObject("Backwards", &backwardsDrive);
 	SmartDashboard::PutData("Drive Mode", &driveChooser);
@@ -49,15 +45,17 @@ void Robot::RobotInit()
 	SmartDashboard::PutNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
 
 	SmartDashboard::PutBoolean("Is camera tracking ready", false);
+	SmartDashboard::PutBoolean("Safe mode", true);
 }
 
 void Robot::AutonomousInit()
 {
 	// Initialize choreographer to selected position scenario
-
 	// Get scenario from smart dashboard
 	Autonomous::PosScenario *autoPosScenario = scenarioChooser.GetSelected();
-	Autonomous::safeMode *autoSafeMode = safemodeSwitch.GetSelected();
+	autoSafeMode = SmartDashboard::GetBoolean("Safe mode", true);
+	printf(autoSafeMode ? "Safe mode\n" : "Not safe mode\n");
+
 	//if value could not be retrieved, default to the value stored in the default scenario constant.
 	// The pointers that autoPosScenario is being set to are the same that would have been retrieved by the function above.
 	if(autoPosScenario == nullptr)
@@ -66,36 +64,17 @@ void Robot::AutonomousInit()
 		switch (Autonomous::DefaultScenario)
 		{
 		case Autonomous::FarLeft:
-			if(autoSafeMode == &on){
-				autoPosScenario = &safeFarLeftScenario;			}
-			else{
-				autoPosScenario = &farLeftScenario;
-				break;
-			}
+			autoPosScenario = &farLeftScenario;
+			break;
 		case Autonomous::Middle:
-			if(autoSafeMode == &on){
-				autoPosScenario = &safeMiddleScenario;
-			}
-			else{
-				autoPosScenario = &middleScenario;
-				break;
-			}
+			autoPosScenario = &middleScenario;
+			break;
 		case Autonomous::MidRight:
-			if(autoSafeMode == &on){
-				autoPosScenario = &safeMidRightScenario;
-			}
-			else{
 			autoPosScenario = &midRightScenario;
 			break;
-			}
 		case Autonomous::FarRight:
-			if(autoSafeMode == &on){
-				autoPosScenario = &safeFarRightScenario;
-			}
-			else{
 			autoPosScenario = &farRightScenario;
 			break;
-			}
 		case Autonomous::Test:
 			autoPosScenario = &testScenario;
 			break;
@@ -114,8 +93,6 @@ void Robot::AutonomousInit()
 	if (autoPosScenario == &farLeftScenario)
 	{
 		printf("Far Left\n");
-		//choreographer.setTimetable(Autonomous::BlindScenarios::FarLeftPos::PeriodCount,
-		//                           Autonomous::BlindScenarios::FarLeftPos::Timetable);
 		float timetable[Autonomous::DynamicBlindScenarios::FarLeftPos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::FarLeftPos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
 
@@ -124,8 +101,6 @@ void Robot::AutonomousInit()
 	else if (autoPosScenario == &middleScenario)
 	{
 		printf("Middle\n");
-		//choreographer.setTimetable(Autonomous::BlindScenarios::MiddlePos::PeriodCount,
-		//                           Autonomous::BlindScenarios::MiddlePos::Timetable);
 		float timetable[Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::MiddlePos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
 
@@ -134,8 +109,6 @@ void Robot::AutonomousInit()
 	else if (autoPosScenario == &midRightScenario)
 	{
 		printf("Mid Right\n");
-		//choreographer.setTimetable(Autonomous::BlindScenarios::MidRightPos::PeriodCount,
-		//                           Autonomous::BlindScenarios::MidRightPos::Timetable);
 		float timetable[Autonomous::DynamicBlindScenarios::MidRightPos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::MidRightPos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
 
@@ -144,8 +117,6 @@ void Robot::AutonomousInit()
 	else if (autoPosScenario == &farRightScenario)
 	{
 		printf("Far Right\n");
-		//choreographer.setTimetable(Autonomous::BlindScenarios::FarRightPos::PeriodCount,
-		//                           Autonomous::BlindScenarios::FarRightPos::Timetable);
 		float timetable[Autonomous::DynamicBlindScenarios::FarRightPos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::FarRightPos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
 
@@ -154,8 +125,6 @@ void Robot::AutonomousInit()
 	else if (autoPosScenario == &testScenario)
 	{
 		printf("Test\n");
-		//choreographer.setTimetable(Autonomous::BlindScenarios::FarRightPos::PeriodCount,
-		//                           Autonomous::BlindScenarios::FarRightPos::Timetable);
 		float timetable[Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::TestScenario::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
 
@@ -177,25 +146,37 @@ void Robot::AutonomousPeriodic()
 
 	/* ========== DriveBase ========== */
 	// Run choreographer script until end of second to last step, unless can't auto aim
-	if (!canAutoAim || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 2).time)
+	if (autoSafeMode)
 	{
-		choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
-
-		// Modify motor speeds based on trim from smartDashboard
-		float leftSpeed = driveBase.getLeftSpeed();
-		float rightSpeed = driveBase.getRightSpeed();
-
-		leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
-									   SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
-		rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
-										 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
-
-		driveBase.drive(leftSpeed, rightSpeed);
+		if (autoTimer.Get() < 2.5)
+			driveBase.drive(0.8);
+		else
+			driveBase.stop();
 	}
 	else
 	{
-		autoAim();
+		if (!canAutoAim || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 2).time)
+		{
+			choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
+		}
+		else
+		{
+			autoAim();
+		}
 	}
+
+	// Modify motor speeds based on trim from smartDashboard
+	float leftSpeed = driveBase.getLeftSpeed();
+	float rightSpeed = driveBase.getRightSpeed();
+
+	std::cout << leftSpeed << ", " << rightSpeed << '\n';
+
+	leftSpeed *= (leftSpeed > 0) ? SmartDashboard::GetNumber("Left Forwards Ratio", 1.0) :
+								   SmartDashboard::GetNumber("Left Backwards Ratio", 1.0);
+	rightSpeed *= (rightSpeed > 0) ? SmartDashboard::GetNumber("Right Forwards Ratio", 1.0) :
+									 SmartDashboard::GetNumber("Right Backwards Ratio", 1.0);
+
+	driveBase.drive(leftSpeed, rightSpeed);
 }
 
 void Robot::autoAim()
