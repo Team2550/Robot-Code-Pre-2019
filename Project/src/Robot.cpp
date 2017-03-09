@@ -31,8 +31,10 @@ void Robot::RobotInit()
 	SmartDashboard::PutNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
 	SmartDashboard::PutNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
 
-	SmartDashboard::PutBoolean("Is camera tracking ready", false);
-	SmartDashboard::PutBoolean("Safe mode", true);
+	SmartDashboard::PutBoolean("Is camera tracking ready",
+	                           SmartDashboard::GetBoolean("Is camera tracking ready", false));
+	SmartDashboard::PutBoolean("Safe mode",
+	                           SmartDashboard::GetBoolean("Safe mode", true));
 }
 
 void Robot::AutonomousInit()
