@@ -1,5 +1,5 @@
-#ifndef UDP_H
-#define UDP_H
+#ifndef UDP_R_H
+#define UDP_R_H
 
 #include <WPILib.h>
 #include <iostream>

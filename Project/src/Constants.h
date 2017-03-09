@@ -48,6 +48,7 @@ namespace Controls
 		const int ReverseBlender = xbox::axis::RT;
 		const int IncreaseShootSpeed = xbox::btn::y;
 		const int DecreaseShootSpeed = xbox::btn::x;
+		const int AutoAim = xbox::btn::a;
 	}
 }
 
@@ -105,19 +106,16 @@ namespace Autonomous
 			const int PeriodCount = 1;
 			const float Timetable[PeriodCount][3] = {{0,0,0}};
 		}
-
 		namespace MiddlePos
 		{
 			const int PeriodCount = 1;
 			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5}};
 		}
-
 		namespace MidRightPos
 		{
 			const int PeriodCount = 1;
 			const float Timetable[PeriodCount][3] = {{0,0,0}};
 		}
-
 		namespace FarRightPos
 		{
 			const int PeriodCount = 3;
@@ -150,7 +148,6 @@ namespace Autonomous
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
-
 		namespace MiddlePos
 		{
 			const int PeriodCount = 1;
@@ -160,7 +157,6 @@ namespace Autonomous
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
-
 		namespace MidRightPos
 		{
 			const int PeriodCount = 1;
@@ -170,7 +166,6 @@ namespace Autonomous
 				std::copy(&tt[0][0], &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
-
 		namespace FarRightPos
 		{
 			const int PeriodCount = 3;
@@ -182,7 +177,6 @@ namespace Autonomous
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
-
 		namespace TestScenario
 		{
 			const int PeriodCount = 1;
@@ -208,6 +202,11 @@ namespace UDP
 		const int HorizAngle = 4;
 		const int VertAngle = 5;
 	}
+}
+
+namespace Other
+{
+	const float MatchLength = 0;
 }
 
 #endif

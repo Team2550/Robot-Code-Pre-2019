@@ -19,3 +19,4 @@ void Lift::stop()
 {
 	liftMotor.Set(0);
 }
+

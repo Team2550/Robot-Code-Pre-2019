@@ -10,6 +10,11 @@ Choreographer::Choreographer(int timePeriodCount, const float _timetable[][3])
 	setTimetable(timePeriodCount, _timetable);
 }
 
+unsigned int Choreographer::getPeriodCount()
+{
+	return timetable.size();
+}
+
 Period Choreographer::getPeriod(unsigned int index)
 {
 	if (index >= 0 && index < timetable.size())
@@ -60,7 +65,7 @@ void Choreographer::applyScheduleToRobot(float time, DriveBase& driveBase)
 	while (i < timetable.size() && time > timetable[i].time) {i++;}
 
 	if (i >= timetable.size())
-		driveBase.drive(0); // STOP!! END OF TIMETABLE
+		driveBase.stop(); // STOP!! END OF TIMETABLE
 	else
 		driveBase.drive(timetable[i].leftSpeed, timetable[i].rightSpeed);
 }
