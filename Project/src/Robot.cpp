@@ -165,69 +165,6 @@ void Robot::AutonomousPeriodic()
 	driveBase.drive(leftSpeed, rightSpeed);
 }
 
-void Robot::autoAim()
-{
-	printf("Aiming...\n");
-
-	// Get data
-	float data[UDP::DataCount];
-	udpReceiver.getUDPData(data);
-
-	if (udpReceiver.getUDPDataAge() > 1.5)
-	{
-		printf("Cannot see target! ");
-		if (!udpReceiver.getUDPDataIsReal() || data[UDP::Index::Distance] > 15)
-		{
-			printf("Rotating...\n");
-			driveBase.drive(0.4, -0.4);
-		}
-		else
-		{
-			printf("Stopping...\n");
-			driveBase.stop();
-		}
-	}
-	else
-	{
-		if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
-		{
-			printf("Target is far left\n");
-			driveBase.drive(0.4, -0.4);
-		}
-		else if (data[UDP::Index::XOffset] > 2) // Move while rotating
-		{
-			printf("Target is slight right\n");
-			driveBase.drive(0.4, 0);
-		}
-		else if (data[UDP::Index::XOffset] < -10)
-		{
-			printf("Target is far left\n");
-			driveBase.drive(-0.4, 0.4);
-		}
-		else if (data[UDP::Index::XOffset] < -2)
-		{
-			printf("Target is slight left\n");
-			driveBase.drive(0, 0.4);
-		}
-		else if (data[UDP::Index::Distance] > 20)
-		{
-			printf("Target is distant\n");
-			driveBase.drive(0.6);
-		}
-		else if (data[UDP::Index::Distance] > 10)
-		{
-			printf("Target is near\n");
-			driveBase.drive(0.3);
-		}
-		else
-		{
-			printf("At target\n");
-			driveBase.stop();
-		}
-	}
-}
-
-
 void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
@@ -318,6 +255,68 @@ void Robot::TeleopPeriodic()
 		lift.raise(perifController.GetRawAxis(Controls::Peripherals::Climb));
 	else
 		lift.stop();
+}
+
+void Robot::autoAim()
+{
+	printf("Aiming...\n");
+
+	// Get data
+	float data[UDP::DataCount];
+	udpReceiver.getUDPData(data);
+
+	if (udpReceiver.getUDPDataAge() > 1.5)
+	{
+		printf("Cannot see target! ");
+		if (!udpReceiver.getUDPDataIsReal() || data[UDP::Index::Distance] > 15)
+		{
+			printf("Rotating...\n");
+			driveBase.drive(0.4, -0.4);
+		}
+		else
+		{
+			printf("Stopping...\n");
+			driveBase.stop();
+		}
+	}
+	else
+	{
+		if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
+		{
+			printf("Target is far left\n");
+			driveBase.drive(0.4, -0.4);
+		}
+		else if (data[UDP::Index::XOffset] > 2) // Move while rotating
+		{
+			printf("Target is slight right\n");
+			driveBase.drive(0.4, 0);
+		}
+		else if (data[UDP::Index::XOffset] < -10)
+		{
+			printf("Target is far left\n");
+			driveBase.drive(-0.4, 0.4);
+		}
+		else if (data[UDP::Index::XOffset] < -2)
+		{
+			printf("Target is slight left\n");
+			driveBase.drive(0, 0.4);
+		}
+		else if (data[UDP::Index::Distance] > 20)
+		{
+			printf("Target is distant\n");
+			driveBase.drive(0.6);
+		}
+		else if (data[UDP::Index::Distance] > 10)
+		{
+			printf("Target is near\n");
+			driveBase.drive(0.3);
+		}
+		else
+		{
+			printf("At target\n");
+			driveBase.stop();
+		}
+	}
 }
 
 START_ROBOT_CLASS(Robot)
