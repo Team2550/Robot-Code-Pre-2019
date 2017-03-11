@@ -104,7 +104,7 @@ namespace Autonomous
 		namespace FarLeftPos
 		{
 			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{0,0,0}};
+			const float Timetable[PeriodCount][3] = {{277 / SpeedInchesPerSecond,0.5,0.5}};
 		}
 		namespace MiddlePos
 		{
@@ -157,7 +157,7 @@ namespace Autonomous
 		}
 		namespace MiddlePos
 		{
-			const int PeriodCount = 1;
+			const int PeriodCount = 7;
 			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 			{
 				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
