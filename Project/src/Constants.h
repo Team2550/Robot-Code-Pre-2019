@@ -193,10 +193,11 @@ namespace Autonomous
 		}
 		namespace TestScenario
 		{
-			const int PeriodCount = 1;
+			const int PeriodCount = 2;
 			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 			{
-				float tt[PeriodCount][3] = {{2, 1, 1}};
+				float tt[PeriodCount][3] = {{2.5, 0.8, 0.8},
+				                            {fullRotationTime, -1, 1}};
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
