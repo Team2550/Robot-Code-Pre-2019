@@ -8,8 +8,14 @@
 
 class DriveBase {
 private:
+
+#ifndef Practice_2017_ROBOT
     VictorSP leftMotor;
     VictorSP rightMotor;
+#else
+    Victor leftMotor;
+    Victor rightMotor;
+#endif
 
     bool isReversed;
 public:

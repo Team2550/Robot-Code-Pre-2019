@@ -6,8 +6,16 @@
 
 class Shooter {
 private:
+
+// We don't need this construct here, but it'll make it easy to fix if the motor controller changes for one of
+// the Robots.
+#ifndef PRACTICE_2017_ROBOT
     VictorSP shooterMotor;
     VictorSP blenderMotor;
+#else
+    VictorSP shooterMotor;
+    VictorSP blenderMotor;
+#endif
 
     Timer timeSinceAdjustment;
 
