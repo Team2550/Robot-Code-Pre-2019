@@ -112,9 +112,9 @@ namespace Autonomous
 			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
 													 {3,0,0},
 													 {45 / SpeedInchesPerSecond,-0.5,-0.5},
-													 {FullRotationTime / 4.0,-0.5,0.5},
+													 {FullRotationTime / 4.0f,-0.5,0.5},
 													 {45 / SpeedInchesPerSecond,0.5,0.5},
-													 {FullRotationTime / 4.0,0.5,-0.5},
+													 {FullRotationTime / 4.0f,0.5,-0.5},
 													 {90 / SpeedInchesPerSecond,0.5,0.5}};
 
 		}
@@ -127,7 +127,7 @@ namespace Autonomous
 		{
 			const int PeriodCount = 3;
 			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
-													 {FullRotationTime / 4.0,-0.5,0.5},
+													 {FullRotationTime / 4.0f,-0.5,0.5},
 													 {277.4 / SpeedInchesPerSecond * 0.15625,0.5,0.5}};
 		}
 	}
@@ -163,9 +163,9 @@ namespace Autonomous
 				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
 						 	 	 	 	 	{3,0,0},
 											{45 / speedInchesPerSecond,-0.5,-0.5},
-											{fullRotationTime / 4.0,-0.5,0.5},
+											{fullRotationTime / 4.0f,-0.5,0.5},
 											{45 / speedInchesPerSecond,0.5,0.5},
-											{fullRotationTime / 4.0,0.5,-0.5},
+											{fullRotationTime / 4.0f,0.5,-0.5},
 											{90 / speedInchesPerSecond,0.5,0.5}};
 
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
@@ -186,7 +186,7 @@ namespace Autonomous
 			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 			{
 				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
-			                                {fullRotationTime / 4,0.5,-0.5},
+			                                {fullRotationTime / 4.0f,0.5,-0.5},
 										    {277.4f / speedInchesPerSecond * 0.15625f,0.5,0.5}};
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
