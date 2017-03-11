@@ -33,16 +33,20 @@ void Robot::RobotInit()
 	scenarioChooser.AddObject("Test Scenario", &testScenario);
 	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
 
-	SmartDashboard::PutNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
-	SmartDashboard::PutNumber("Full Rotation Time", Autonomous::FullRotationTime);
+	SmartDashboard::PutNumber("Robot Speed Inches Per Second",
+	                          SmartDashboard::GetNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond));
+	SmartDashboard::PutNumber("Full Rotation Time",
+	                          SmartDashboard::GetNumber("Full Rotation Time", Autonomous::FullRotationTime));
 
 	SmartDashboard::PutNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
 	SmartDashboard::PutNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
 	SmartDashboard::PutNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
 	SmartDashboard::PutNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
 
-	SmartDashboard::PutBoolean("Is camera tracking ready", false);
-	SmartDashboard::PutBoolean("Safe mode", true);
+	SmartDashboard::PutBoolean("Is camera tracking ready",
+	                           SmartDashboard::GetBoolean("Is camera tracking ready", false));
+	SmartDashboard::PutBoolean("Safe mode",
+	                           SmartDashboard::GetBoolean("Safe mode", true));
 }
 
 void Robot::AutonomousInit()
