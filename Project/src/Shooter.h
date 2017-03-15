@@ -6,6 +6,7 @@
 
 class Shooter {
 private:
+
     VictorSP shooterMotor;
     VictorSP blenderMotor;
 
