@@ -9,7 +9,7 @@
 class Lift {
 private:
 
-#ifndef Practice_2017_ROBOT
+#ifndef PRACTICE_2017_ROBOT
     Spark liftMotor;
 #else
     Victor liftMotor;
