@@ -190,6 +190,13 @@ void Robot::TeleopPeriodic()
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
+	float data[UDP::DataCount];
+	udpReceiver.getUDPData(data);
+
+	printf("X Angle:");
+	printf(std::to_string(data[UDP::Index::HorizAngle]).c_str());
+	printf("\n");
+
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
 	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));

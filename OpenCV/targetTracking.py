@@ -6,7 +6,7 @@ import math
 
 #################################################################################################################
 
-IS_TEST = True
+IS_TEST = False
 
 TARGET_RECT_SIZE_INCHES = (2, 5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
@@ -19,7 +19,7 @@ TARGET_ASPECT_MARGIN_OF_ERROR = 0.30 # Percentage that any rectangles seen can d
 ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5
 
 IMAGE_SIZE = (IMAGE_WIDTH, IMAGE_HEIGHT) = (640, 480)
-IMAGE_DIAGONAL = (IMAGE_SIZE[0]**2 + IMAGE_SIZE[1]**2)**(0.5)
+IMAGE_DIAGONAL = (IMAGE_WIDTH**2 + IMAGE_HEIGHT**2)**(0.5)
 
 CAMERA_FOV = 68.5 # FOV of axis camera, needs to change for USB camera 
 
@@ -57,7 +57,7 @@ except Exception:
 UDP_PORT = 8890
 
 def dist(x1, y1, x2, y2):
-    return ((x1 - x2)*(x1 - x2)+(y1 - y2)*(y1 - y2))**(0.5)
+    return ((x1 - x2)**2+(y1 - y2)**2)**(0.5)
 
 def processCamera(camCapture):
     blnFrameReadSuccessfully, imgOriginal = camCapture.read()            # read next frame
@@ -91,8 +91,8 @@ def processCamera(camCapture):
                 sideLengths[i] = dist(approx[i][0][0], approx[i][0][1],
                                       approx[(i+1)%4][0][0], approx[(i+1)%4][0][1])
 
-            width = (sideLengths[0] + sideLengths[2])/2.0
-            height = (sideLengths[1] + sideLengths[3])/2.0
+            width = (sideLengths[0] + sideLengths[2]) / 2.0
+            height = (sideLengths[1] + sideLengths[3]) / 2.0
 
             widthSideDiff = abs(sideLengths[0] - sideLengths[2]) / width # Difference in width-wise side lengths in percent
             heightSideDiff = abs(sideLengths[1] - sideLengths[3]) / height # Difference in hight-wise side lengths in percent
@@ -100,11 +100,11 @@ def processCamera(camCapture):
             shortSide = min(width, height)
             longSide = max(width, height)
             
-            size = width * height
-            ar = shortSide / longSide # Aspect ratio: will always be less than one
+            area = width * height
+            aspect = shortSide / longSide # Aspect ratio: will always be less than one
             
-            if (size > 250 and ar >= TARGET_ASPECT_RATIO * (1 - TARGET_ASPECT_MARGIN_OF_ERROR) and
-                               ar <= TARGET_ASPECT_RATIO * (1 + TARGET_ASPECT_MARGIN_OF_ERROR) and
+            if (area > 250 and aspect >= TARGET_ASPECT_RATIO * (1 - TARGET_ASPECT_MARGIN_OF_ERROR) and
+                               aspect <= TARGET_ASPECT_RATIO * (1 + TARGET_ASPECT_MARGIN_OF_ERROR) and
                                widthSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE and
                                heightSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE):
                                   
@@ -129,7 +129,7 @@ def processCamera(camCapture):
                     xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
                     yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
 
-                    percentMatch = 1 - (abs(ar - TARGET_ASPECT_RATIO)) / TARGET_ASPECT_RATIO
+                    percentMatch = 1 - (abs(aspect - TARGET_ASPECT_RATIO)) / TARGET_ASPECT_RATIO
                     percentMatch *= 1 - ((objectYOffset - TARGET_YOFFSET) / (TARGET_MAX_YOFFSET))**2
 
                     if (IS_TEST):
@@ -184,8 +184,6 @@ def main():
                     data = ','.join(' '.join("{0:.5f}".format(y) for y in x) for x in data)
                     sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
                     print("Sent data to RoboRIO!")
-                else:
-                    print("No target found.")
 
             except Exception:
                 running = False
