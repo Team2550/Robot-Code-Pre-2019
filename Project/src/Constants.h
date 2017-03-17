@@ -5,6 +5,7 @@
 
 namespace Ports
 {
+#ifndef PRACTICE_2017_ROBOT
 	namespace TankDrive
 	{
 		const int Left = 0;
@@ -26,6 +27,29 @@ namespace Ports
 	{
 		const int Shooter = 2;
 	}
+#else
+	namespace TankDrive
+	{
+		const int Left = 0;
+		const int Right = 1;
+	}
+
+	namespace Shooter
+	{
+		const int Motor = 4;
+		const int BlenderMotor = 3;
+	}
+
+	namespace Lifter
+	{
+		const int Motor = 2;
+	}
+
+	namespace PDP
+	{
+		const int Shooter = 2;
+	}
+#endif
 }
 
 namespace Controls
