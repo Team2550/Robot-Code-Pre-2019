@@ -6,7 +6,10 @@ Shooter::Shooter() :
 				 blenderMotor(Ports::Shooter::BlenderMotor)
 
 {
+#ifndef PRACTICE_2017_ROBOT
 	shooterMotor.SetInverted(true);
+#else
+#endif
 	timeSinceAdjustment.Start();
 	shooterSpeedOffset = 0;
 }

@@ -12,7 +12,7 @@ private:
 #ifndef PRACTICE_2017_ROBOT
     Spark liftMotor;
 #else
-    Victor liftMotor;
+    Talon liftMotor;
 #endif
 
 public:
