@@ -32,6 +32,8 @@ private:
 	Autonomous::PosScenario testScenario = Autonomous::Test;
 	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
 
+	float autoSafeTime;
+
 	bool climbToggleHold;
 	bool climbToggle;
 	bool decreaseShooterSpeedDown;

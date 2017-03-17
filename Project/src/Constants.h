@@ -108,6 +108,7 @@ namespace Autonomous
 {
 	const float SpeedInchesPerSecond = 100;
 	const float FullRotationTime = .5;
+	const float safeTime = 4.6;
 
 	enum PosScenario
 	{
