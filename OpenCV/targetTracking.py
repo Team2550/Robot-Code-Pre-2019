@@ -6,7 +6,7 @@ import math
 
 #################################################################################################################
 
-IS_TEST = False
+IS_TEST = True
 
 TARGET_RECT_SIZE_INCHES = (2, 5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
@@ -69,8 +69,8 @@ def processCamera(camCapture):
 
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
-    lowerBound = np.array([0, 0, 215])
-    upperBound = np.array([255, 90, 255])
+    lowerBound = np.array([40, 0, 185])
+    upperBound = np.array([180, 165, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
     maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
@@ -103,7 +103,7 @@ def processCamera(camCapture):
             area = width * height
             aspect = shortSide / longSide # Aspect ratio: will always be less than one
             
-            if (area > 250 and aspect >= TARGET_ASPECT_RATIO * (1 - TARGET_ASPECT_MARGIN_OF_ERROR) and
+            if (area > 125 and aspect >= TARGET_ASPECT_RATIO * (1 - TARGET_ASPECT_MARGIN_OF_ERROR) and
                                aspect <= TARGET_ASPECT_RATIO * (1 + TARGET_ASPECT_MARGIN_OF_ERROR) and
                                widthSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE and
                                heightSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE):

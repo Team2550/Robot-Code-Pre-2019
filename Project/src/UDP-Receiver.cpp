@@ -122,26 +122,14 @@ void UDP_Receiver::checkUDP()
 					}
 		}
 
-		if (dataPoints.size() > 0)
+		if (dataPoints.size() > 1)
 		{
-			if (dataPoints.size() < 2)
-			{
-				// Use only match
-				for (unsigned int i = 0; i < UDP::DataCount; i++)
-					newestUDPData[i] = dataPoints[0][i];
+			// Average two best matches
+			for (unsigned int i = 0; i < UDP::DataCount; i++)
+				newestUDPData[i] = (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
 
-				udpAgeTimer.Reset();
-				isRealData = true;
-			}
-			else
-			{
-				// Average two best matches
-				for (unsigned int i = 0; i < UDP::DataCount; i++)
-					newestUDPData[i] = (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
-
-				udpAgeTimer.Reset();
-				isRealData = true;
-			}
+			udpAgeTimer.Reset();
+			isRealData = true;
 		}
 	}
 }

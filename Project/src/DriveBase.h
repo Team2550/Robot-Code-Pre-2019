@@ -32,6 +32,7 @@ public:
 				   float rightBackwardsRatio = Speeds::DriveBase::RightPowerRatioBackwards);
 
     void setReversed(bool reverse);
+    bool getReversed();
 };
 
 #endif

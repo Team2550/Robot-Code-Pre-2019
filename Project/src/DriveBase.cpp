@@ -62,3 +62,8 @@ void DriveBase::setReversed(bool reverse)
 {
 	isReversed = reverse;
 }
+
+bool DriveBase::getReversed()
+{
+	return isReversed;
+}
