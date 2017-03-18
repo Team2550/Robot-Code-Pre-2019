@@ -17,6 +17,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	climbToggle = false;
 	canAutoAim = false;
 	autoSafeMode = true;
+	autoSafeTime = Autonomous::safeTime;
 }
 
 Robot::~Robot()
@@ -38,15 +39,21 @@ void Robot::RobotInit()
 	SmartDashboard::PutNumber("Full Rotation Time",
 	                          SmartDashboard::GetNumber("Full Rotation Time", Autonomous::FullRotationTime));
 
-	SmartDashboard::PutNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
-	SmartDashboard::PutNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
-	SmartDashboard::PutNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
-	SmartDashboard::PutNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
+	// Default value to set smart dashboard item to is it's current value, unless it doesn't exist.
+	SmartDashboard::PutNumber("Left Forwards Ratio",
+			                  SmartDashboard::GetNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards));
+	SmartDashboard::PutNumber("Right Forwards Ratio",
+			                  SmartDashboard::GetNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards));
+	SmartDashboard::PutNumber("Left Backwards Ratio",
+			                  SmartDashboard::GetNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards));
+	SmartDashboard::PutNumber("Right Backwards Ratio",
+			                  SmartDashboard::GetNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards));
 
 	SmartDashboard::PutBoolean("Is camera tracking ready",
 	                           SmartDashboard::GetBoolean("Is camera tracking ready", false));
 	SmartDashboard::PutBoolean("Safe mode",
 	                           SmartDashboard::GetBoolean("Safe mode", true));
+	SmartDashboard::PutNumber("Safe mode time", autoSafeTime);
 }
 
 void Robot::AutonomousInit()
@@ -56,6 +63,8 @@ void Robot::AutonomousInit()
 	Autonomous::PosScenario *autoPosScenario = scenarioChooser.GetSelected();
 	autoSafeMode = SmartDashboard::GetBoolean("Safe mode", true);
 	printf(autoSafeMode ? "Safe mode\n" : "Not safe mode\n");
+
+	autoSafeTime = SmartDashboard::GetNumber("Safe mode time", autoSafeTime);
 
 	//if value could not be retrieved, default to the value stored in the default scenario constant.
 	// The pointers that autoPosScenario is being set to are the same that would have been retrieved by the function above.
@@ -149,8 +158,8 @@ void Robot::AutonomousPeriodic()
 	// Run choreographer script until end of second to last step, unless can't auto aim
 	if (autoSafeMode)
 	{
-		if (autoTimer.Get() < 2.5)
-			driveBase.drive(0.8);
+		if (autoTimer.Get() < autoSafeTime)
+			driveBase.drive(-Speeds::DriveBase::Turtle);
 		else
 			driveBase.stop();
 	}
@@ -184,6 +193,13 @@ void Robot::TeleopPeriodic()
 {
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
+
+	float data[UDP::DataCount];
+	udpReceiver.getUDPData(data);
+
+	printf("X Angle:");
+	printf(std::to_string(data[UDP::Index::HorizAngle]).c_str());
+	printf("\n");
 
 	/* ========== DriveBase ========== */
 	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));

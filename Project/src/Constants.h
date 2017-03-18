@@ -5,6 +5,7 @@
 
 namespace Ports
 {
+#ifndef PRACTICE_2017_ROBOT
 	namespace TankDrive
 	{
 		const int Left = 0;
@@ -26,6 +27,29 @@ namespace Ports
 	{
 		const int Shooter = 2;
 	}
+#else
+	namespace TankDrive
+	{
+		const int Left = 0;
+		const int Right = 1;
+	}
+
+	namespace Shooter
+	{
+		const int Motor = 4;
+		const int BlenderMotor = 3;
+	}
+
+	namespace Lifter
+	{
+		const int Motor = 2;
+	}
+
+	namespace PDP
+	{
+		const int Shooter = 2;
+	}
+#endif
 }
 
 namespace Controls
@@ -84,6 +108,7 @@ namespace Autonomous
 {
 	const float SpeedInchesPerSecond = 100;
 	const float FullRotationTime = .5;
+	const float safeTime = 4.6;
 
 	enum PosScenario
 	{
@@ -104,12 +129,19 @@ namespace Autonomous
 		namespace FarLeftPos
 		{
 			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{0,0,0}};
+			const float Timetable[PeriodCount][3] = {{277 / SpeedInchesPerSecond,0.5,0.5}};
 		}
 		namespace MiddlePos
 		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5}};
+			const int PeriodCount = 7;
+			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
+													 {3,0,0},
+													 {45 / SpeedInchesPerSecond,-0.5,-0.5},
+													 {FullRotationTime / 4.0f,-0.5,0.5},
+													 {45 / SpeedInchesPerSecond,0.5,0.5},
+													 {FullRotationTime / 4.0f,0.5,-0.5},
+													 {90 / SpeedInchesPerSecond,0.5,0.5}};
+
 		}
 		namespace MidRightPos
 		{
@@ -120,7 +152,7 @@ namespace Autonomous
 		{
 			const int PeriodCount = 3;
 			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
-													 {FullRotationTime / 4.0,-0.5,0.5},
+													 {FullRotationTime / 4.0f,-0.5,0.5},
 													 {277.4 / SpeedInchesPerSecond * 0.15625,0.5,0.5}};
 		}
 	}
@@ -144,16 +176,23 @@ namespace Autonomous
 			const int PeriodCount = 1;
 			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 			{
-				float tt[PeriodCount][3] = {{0,0,0}};
+				float tt[PeriodCount][3] = {{277 / speedInchesPerSecond,0.5,0.5}};
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
 		namespace MiddlePos
 		{
-			const int PeriodCount = 1;
+			const int PeriodCount = 7;
 			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 			{
-				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5}};
+				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
+						 	 	 	 	 	{3,0,0},
+											{45 / speedInchesPerSecond,-0.5,-0.5},
+											{fullRotationTime / 4.0f,-0.5,0.5},
+											{45 / speedInchesPerSecond,0.5,0.5},
+											{fullRotationTime / 4.0f,0.5,-0.5},
+											{90 / speedInchesPerSecond,0.5,0.5}};
+
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
@@ -172,17 +211,18 @@ namespace Autonomous
 			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 			{
 				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
-			                                {fullRotationTime / 4,0.5,-0.5},
+			                                {fullRotationTime / 4.0f,0.5,-0.5},
 										    {277.4f / speedInchesPerSecond * 0.15625f,0.5,0.5}};
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
 		namespace TestScenario
 		{
-			const int PeriodCount = 1;
+			const int PeriodCount = 2;
 			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
 			{
-				float tt[PeriodCount][3] = {{2, 1, 1}};
+				float tt[PeriodCount][3] = {{2.5, 0.8, 0.8},
+				                            {fullRotationTime, -1, 1}};
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}

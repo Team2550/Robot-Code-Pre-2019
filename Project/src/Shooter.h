@@ -6,8 +6,13 @@
 
 class Shooter {
 private:
+#ifndef PRACTICE_2017_ROBOT
     VictorSP shooterMotor;
     VictorSP blenderMotor;
+#else
+    Victor shooterMotor;
+    Talon blenderMotor;
+#endif
 
     Timer timeSinceAdjustment;
 
