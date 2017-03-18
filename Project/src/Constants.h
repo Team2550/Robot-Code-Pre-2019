@@ -191,7 +191,7 @@ namespace Autonomous
 
 namespace UDP
 {
-	const int DataCount = 5;
+	const int DataCount = 6;
 
 	namespace Index
 	{

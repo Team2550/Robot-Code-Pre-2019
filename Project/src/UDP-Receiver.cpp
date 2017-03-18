@@ -112,6 +112,8 @@ void UDP_Receiver::checkUDP()
 		for (unsigned int i = 0; i < dataPointsStrings.size(); i++)
 		{
 			currentDataPoint = Utility::strVectorToFloatVector(Utility::splitString(dataPointsStrings[i], ' '));
+
+			// If data point is the right length, add it to the right position in the dataPoints vector (sorted by percent match)
 			if (currentDataPoint.size() == UDP::DataCount)
 				for (unsigned int j = 0; j <= dataPoints.size(); j++)
 					if (j >= dataPoints.size() || dataPoints[j][UDP::Index::PercentMatch] > currentDataPoint[UDP::Index::PercentMatch])
@@ -125,7 +127,8 @@ void UDP_Receiver::checkUDP()
 		{
 			// Use only match
 			for (unsigned int i = 0; i < UDP::DataCount; i++)
-				newestUDPData[i] += dataPoints[0][i];
+				newestUDPData[i] = dataPoints[0][i];
+
 			udpAgeTimer.Reset();
 			isRealData = true;
 		}
@@ -133,7 +136,8 @@ void UDP_Receiver::checkUDP()
 		{
 			// Average two best matches
 			for (unsigned int i = 0; i < UDP::DataCount; i++)
-				newestUDPData[i] += (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
+				newestUDPData[i] = (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
+
 			udpAgeTimer.Reset();
 			isRealData = true;
 		}
