@@ -279,11 +279,11 @@ void Robot::TeleopPeriodic()
 		lift.stop();
 
 	/* ========== ========== */
-	//double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
-	//		       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
+			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
 
 	printf("Amps: ");
-	printf(std::to_string(pdp.GetCurrent(Ports::PDP::Shooter)).c_str());
+	printf(std::to_string(amps).c_str());
 	printf("\n");
 }
 
@@ -304,6 +304,7 @@ void Robot::autoAim()
 		double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
 				       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
 
+		// Stop moving forward if motors are no longer spinning
 		if (true)
 		{
 			printf("Moving forward...\n");
