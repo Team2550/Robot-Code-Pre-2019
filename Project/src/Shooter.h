@@ -2,31 +2,32 @@
 #define SHOOTER_H
 
 #include <WPILib.h>
-#include "Ports.h"
-#include "Controls.h"
+#include "Constants.h"
 
 class Shooter {
 private:
-    Joystick& driveController;
-    Joystick& perifController;
+#ifndef PRACTICE_2017_ROBOT
+    VictorSP shooterMotor;
+    VictorSP blenderMotor;
+#else
+    Victor shooterMotor;
+    Talon blenderMotor;
+#endif
 
-	VictorSP shooterMotor; // If anyone has an idea for a better name, go ahead and change it!
-	bool isShooting;
+    Timer timeSinceAdjustment;
 
-	float shooterSpeed;
-	bool didDecreaseSpeed;
-	bool didIncreaseSpeed;
+    float shooterSpeedOffset;
 public:
-	Shooter(Joystick& _driveController, Joystick& _perifController,
-			float _shooterSpeed);
-	void RobotInit();
-	void AutoInit();
-	void AutoPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic();
+	Shooter();
 
-	void shoot(float power = 1);
+	void shoot(float motorCurrent = 0);
 	void stop();
+	void blend(bool reverse = false);
+	void stopBlend();
+
+	void setSpeedOffset(float speedOffset);
+	void addSpeedOffset(float speedOffset);
+	float getSpeedOffset();
 };
 
 #endif

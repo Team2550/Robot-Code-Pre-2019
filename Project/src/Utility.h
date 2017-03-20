@@ -4,6 +4,8 @@
 #include <WPILib.h>
 #include <xBox.h>
 #include <math.h>
+#include <vector>
+#include <string>
 
 namespace Utility
 {
@@ -19,7 +21,28 @@ namespace Utility
 	Return:
 		none
 	=================================================*/
-	void deadzone(float& value, float tolerance = 0.2);
+	float deadzone(float value, float tolerance = 0.2);
+
+	/*=================================================
+	Name: splitString
+	Desc: Splits a string at delimiters
+	Arguments:
+		str (I): String to split
+		delimiter (I): Delimiter to split at
+	Return:
+		Vector containing substrings of original string
+	=================================================*/
+	std::vector<std::string> splitString(std::string str, char delimiter);
+
+	/*=================================================
+	Name: strVectorToFloatVector
+	Desc: Converts a vector of strings to a vector of floats
+	Arguments:
+		strs (I): Vector of strings
+	Return:
+		Vector of floats
+	=================================================*/
+	std::vector<float> strVectorToFloatVector(std::vector<std::string> strs);
 
 	/*=================================================
 	Name: setRumble

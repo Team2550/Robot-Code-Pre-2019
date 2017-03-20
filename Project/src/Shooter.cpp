@@ -1,80 +1,63 @@
+#include <WPILib.h>
 #include "Shooter.h"
 
-Shooter::Shooter(Joystick& _driveController, Joystick& _perifController,
-				 float _shooterSpeed) :
-				 driveController(_driveController), perifController(_perifController),
-				 shooterMotor(Ports::Shooter::Motor)
+Shooter::Shooter() :
+				 shooterMotor(Ports::Shooter::Motor),
+				 blenderMotor(Ports::Shooter::BlenderMotor)
+
 {
-	shooterSpeed = _shooterSpeed;
-	isShooting = false;
-	didDecreaseSpeed = false;
-	didIncreaseSpeed = false;
+#ifndef PRACTICE_2017_ROBOT
+	shooterMotor.SetInverted(true);
+#else
+	blenderMotor.SetInverted(true);
+#endif
+
+	timeSinceAdjustment.Start();
+	shooterSpeedOffset = 0;
 }
 
-void Shooter::RobotInit()
+void Shooter::shoot(float motorCurrent)
 {
+	if(timeSinceAdjustment.Get() >= 0.75)
+			timeSinceAdjustment.Reset();
 
-}
-
-void Shooter::AutoInit()
-{
-
-}
-
-void Shooter::AutoPeriodic()
-{
-
-}
-
-void Shooter::TeleopInit()
-{
-
-}
-
-void Shooter::TeleopPeriodic()
-{
-	bool _shoot = perifController.GetRawButton(Controls::Peripherals::Shoot);
-	bool increaseSpeed = perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed);
-	bool decreaseSpeed = perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed);
-
-	if(decreaseSpeed && !didDecreaseSpeed)
-	{
-		shooterSpeed -= 0.01;
-		didDecreaseSpeed = true;
-	}
-	else if(!decreaseSpeed)
-		didDecreaseSpeed = false;
-
-	if(increaseSpeed && !didIncreaseSpeed)
-	{
-		shooterSpeed += 0.01;
-		didIncreaseSpeed = true;
-	}
-	else if(!increaseSpeed)
-		didIncreaseSpeed = false;
-
-	frc::SmartDashboard::PutNumber("shooterSpeed", shooterSpeed);
-
-	if(_shoot)
-		shoot(shooterSpeed);
+	if(motorCurrent < Speeds::Shooter::CurrentThreshold || timeSinceAdjustment.Get() >= 0.15)
+		shooterMotor.Set(Speeds::Shooter::Shooter + shooterSpeedOffset);
 	else
-		stop();
-}
-
-void Shooter::shoot(float power)
-{
-	if(!isShooting)
-	{
-		shooterMotor.Set(power);
-		isShooting = true;
-	}
+		shooterMotor.Set(Speeds::Shooter::MaxShooter);
 }
 
 void Shooter::stop()
 {
-	if(isShooting)
-	{
-		shooterMotor.Set(0);
-		isShooting = false;
-	}
+	shooterMotor.Set(0);
+}
+
+void Shooter::blend(bool reverse)
+{
+	if (reverse)
+		blenderMotor.Set(-Speeds::Shooter::Blender);
+	else
+		blenderMotor.Set(Speeds::Shooter::Blender);
+}
+
+void Shooter::stopBlend()
+{
+	blenderMotor.Set(0);
+}
+
+void Shooter::setSpeedOffset(float speedOffset)
+{
+	float s = Speeds::Shooter::Shooter;
+	shooterSpeedOffset = fmax(0, fmin(1, s + speedOffset)) - s;
+}
+
+void Shooter::addSpeedOffset(float speedOffset)
+{
+	float s = Speeds::Shooter::Shooter;
+	shooterSpeedOffset = fmax(0, fmin(1, s + shooterSpeedOffset + speedOffset)) - s;
+}
+
+float Shooter::getSpeedOffset()
+{
+	return shooterSpeedOffset;
 }

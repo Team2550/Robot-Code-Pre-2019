@@ -4,30 +4,34 @@
 #include <WPILib.h>
 #include <math.h>
 #include "Utility.h"
-#include "Ports.h"
-#include "Controls.h"
+#include "Constants.h"
 
 class DriveBase {
 private:
-    Joystick& driveController;
-    Joystick& perifController;
 
-    float maxSpeed;
-    float maxBoostSpeed;
-    float maxTurtleSpeed;
+#ifndef PRACTICE_2017_ROBOT
     VictorSP leftMotor;
     VictorSP rightMotor;
-public:
-    DriveBase(Joystick& _driveController, Joystick& _perifController,
-              float _maxSpeed, float _maxBoostSpeed, float _maxTurtleSpeed);
-    void RobotInit();
-    void AutoInit();
-    void AutoPeriodic();
-    void TeleopInit();
-    void TeleopPeriodic();
+#else
+    Victor leftMotor;
+    Victor rightMotor;
+#endif
 
-    void driveForward(float speed);
+    bool isReversed;
+public:
+    DriveBase();
+
+    float getLeftSpeed();
+    float getRightSpeed();
+    void drive(float speed);
+    void drive(float leftSpeed, float rightSpeed);
     void stop();
+    void applyTrim(float leftForwardsRatio = Speeds::DriveBase::LeftPowerRatioForwards,
+    		       float rightForwardsRatio = Speeds::DriveBase::RightPowerRatioForwards,
+    		       float leftBackwardsRatio = Speeds::DriveBase::LeftPowerRatioBackwards,
+				   float rightBackwardsRatio = Speeds::DriveBase::RightPowerRatioBackwards);
+
+    void setReversed(bool reverse);
 };
 
 #endif

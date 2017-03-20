@@ -1,12 +1,14 @@
 #ifndef XBOX_H
 #define XBOX_H
 
+#include <stdint.h>
+
 namespace xbox
 {
 	namespace axis
 	{
-		const uint32_t leftY = 1;
-		const uint32_t rightY = 5;
+		const uint32_t leftY = 5;
+		const uint32_t rightY = 1;
 
 		const uint32_t leftX = 0;
 		const uint32_t rightX = 4;

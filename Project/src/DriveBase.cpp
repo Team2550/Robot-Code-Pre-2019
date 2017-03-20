@@ -1,70 +1,64 @@
 #include "DriveBase.h"
 #include "Utility.h"
 
-DriveBase::DriveBase(Joystick& _driveController, Joystick& _perifController,
-                     float _maxSpeed, float _maxBoostSpeed, float _maxTurtleSpeed) :
-                     driveController(_driveController), perifController(_perifController),
-                     maxSpeed(_maxSpeed), maxBoostSpeed(_maxBoostSpeed),maxTurtleSpeed(_maxTurtleSpeed),
-                     leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
+DriveBase::DriveBase() : leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
 {
-    rightMotor.SetInverted(true);
+    leftMotor.SetInverted(true);
+    isReversed = false;
 }
 
-void DriveBase::RobotInit()
+float DriveBase::getLeftSpeed()
 {
-
+	if (isReversed)
+		return -rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
+	else
+		return leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
 }
 
-void DriveBase::AutoInit()
+float DriveBase::getRightSpeed()
 {
-
+	if (isReversed)
+		return -leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
+	else
+		return rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
 }
 
-void DriveBase::AutoPeriodic()
+void DriveBase::drive(float speed)
 {
-
+	drive(speed, speed);
 }
 
-void DriveBase::TeleopInit()
+void DriveBase::drive(float leftSpeed, float rightSpeed)
 {
-    leftMotor.Set(0);
-    rightMotor.Set(0);
+	if(isReversed)
+	{
+		float temp = leftSpeed;
+		leftSpeed = -rightSpeed;
+		rightSpeed = -temp;
+	}
+
+	leftMotor.Set(leftSpeed);
+	rightMotor.Set(rightSpeed);
 }
 
-void DriveBase::TeleopPeriodic()
+void DriveBase::stop()
 {
-    float leftSpeed = -driveController.GetRawAxis(Controls::TankDrive::Left);
-    float rightSpeed = -driveController.GetRawAxis(Controls::TankDrive::Right);
-    bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
-    bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
+	drive(0, 0);
+}
 
-    Utility::deadzone(leftSpeed);
-    Utility::deadzone(rightSpeed);
+void DriveBase::applyTrim(float leftForwardsRatio, float rightForwardsRatio,
+    		              float leftBackwardsRatio, float rightBackwardsRatio)
+{
+	float leftSpeed = getLeftSpeed();
+	float rightSpeed = getRightSpeed();
 
-    // Basic exponential speed control
-    leftSpeed *= fabs(leftSpeed);
-    rightSpeed *= fabs(rightSpeed);
+	leftSpeed *= (leftSpeed > 0) ? leftForwardsRatio : leftBackwardsRatio;
+	rightSpeed *= (rightSpeed > 0) ? rightForwardsRatio : rightBackwardsRatio;
 
-    if(boost)
-    {
-    	leftSpeed *= maxBoostSpeed;
-    	rightSpeed *= maxBoostSpeed;
-    }
-    else if(turtle)
-    {
-    	leftSpeed *= maxTurtleSpeed;
-    	rightSpeed *= maxTurtleSpeed;
-    }
-    else
-    {
-    	leftSpeed *= maxSpeed;
-    	rightSpeed *= maxSpeed;
-    }
+	drive(leftSpeed, rightSpeed);
+}
 
-    // Accounts for physical offsets on the drive base
-    leftSpeed = leftSpeed > 0 ? leftSpeed * 1.05 : leftSpeed;
-    leftSpeed = leftSpeed < 0 ? leftSpeed * 0.99 : leftSpeed;
-
-    leftMotor.Set(leftSpeed);
-    rightMotor.Set(rightSpeed);
+void DriveBase::setReversed(bool reverse)
+{
+	isReversed = reverse;
 }

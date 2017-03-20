@@ -4,22 +4,23 @@
 #include <WPILib.h>
 #include <math.h>
 #include "Utility.h"
-#include "Ports.h"
-#include "Controls.h"
+#include "Constants.h"
 
 class Lift {
 private:
-    Joystick& driveController;
-    Joystick& perifController;
 
-	Spark liftMotor;
+#ifndef PRACTICE_2017_ROBOT
+    Spark liftMotor;
+#else
+    Talon liftMotor;
+#endif
+
 public:
-	Lift(Joystick& _driveController, Joystick& _perifController);
-	void RobotInit();
-	void AutoInit();
-	void AutoPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic();
+	Lift();
+
+	void raise(float speed = 1);
+	void lower(); //DEPRACATED; lowering is now physically impossible
+	void stop();
 };
 
 #endif

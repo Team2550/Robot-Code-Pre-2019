@@ -1,41 +1,22 @@
 #include "Lift.h"
 
-Lift::Lift(Joystick& _driveController, Joystick& _perifController) :
-		   driveController(_driveController), perifController(_perifController),
-		   liftMotor(Ports::Lifter::Motor)
+Lift::Lift() : liftMotor(Ports::Lifter::Motor)
 {
 
 }
 
-void Lift::RobotInit()
+void Lift::raise(float speed)
 {
-
+	liftMotor.Set(speed * Speeds::Lift::Lift);
 }
 
-void Lift::AutoInit()
+void Lift::lower()
 {
-
+	liftMotor.Set(Speeds::Lift::Lower);
 }
 
-void Lift::AutoPeriodic()
+void Lift::stop()
 {
-
+	liftMotor.Set(0);
 }
 
-void Lift::TeleopInit()
-{
-
-}
-
-void Lift::TeleopPeriodic()
-{
-	bool doLift = perifController.GetRawButton(Controls::Peripherals::Climb);
-	bool doLiftDown = perifController.GetRawAxis(Controls::Peripherals::ClimbDown) > 0.5;
-
-	if(doLift)
-		liftMotor.Set(1.0);
-	else if(doLiftDown)
-		liftMotor.Set(-1.0);
-	else
-		liftMotor.Set(0);
-}
