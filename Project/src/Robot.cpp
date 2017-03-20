@@ -190,7 +190,26 @@ void Robot::TeleopPeriodic()
 
 	/* ========== DriveBase ========== */
 	canAutoAim = SmartDashboard::GetBoolean("Camera Tracking", false);
+	int vibrationLevel = UDP::Index::XOffset * .1;
 
+	if(!canAutoAim){
+		Utility::setRumble(driveController, Utility::both, 0);
+	}
+	if (canAutoAim && data[UDP::Index::XOffset] > 10 && data[UDP::Index::XOffset] <! 1 )
+	{
+		Utility::setRumble(driveController, Utility::left, vibrationLevel);
+		Utility::setRumble(driveController, Utility::right, 0);
+	}
+	if (canAutoAim && data[UDP::Index::XOffset] > -10 && data[UDP::Index::XOffset] <! -1 )
+		{
+			Utility::setRumble(driveController, Utility::right, vibrationLevel);
+			Utility::setRumble(driveController, Utility::left, 0);
+		}
+	if (canAutoAim && data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
+			{
+				Utility::setRumble(driveController, Utility::both, 1);
+
+			}
 	if (canAutoAim && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
 		autoAim();
