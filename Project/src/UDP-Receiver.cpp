@@ -100,7 +100,6 @@ void UDP_Receiver::checkUDP()
 	if (bytesRecievedCount > 0) {
 		buffer[bytesRecievedCount] = '\0';
 		std::string bufferString = buffer;
-		printf(("Got data: " + bufferString + '\n').c_str());
 
 		std::vector<std::string> dataPointsStrings = Utility::splitString(bufferString, ',');
 
@@ -112,6 +111,8 @@ void UDP_Receiver::checkUDP()
 		for (unsigned int i = 0; i < dataPointsStrings.size(); i++)
 		{
 			currentDataPoint = Utility::strVectorToFloatVector(Utility::splitString(dataPointsStrings[i], ' '));
+
+			// If data point is the right length, add it to the right position in the dataPoints vector (sorted by percent match)
 			if (currentDataPoint.size() == UDP::DataCount)
 				for (unsigned int j = 0; j <= dataPoints.size(); j++)
 					if (j >= dataPoints.size() || dataPoints[j][UDP::Index::PercentMatch] > currentDataPoint[UDP::Index::PercentMatch])
@@ -121,19 +122,12 @@ void UDP_Receiver::checkUDP()
 					}
 		}
 
-		if (0 < dataPoints.size() && dataPoints.size() < 2)
-		{
-			// Use only match
-			for (unsigned int i = 0; i < UDP::DataCount; i++)
-				newestUDPData[i] += dataPoints[0][i];
-			udpAgeTimer.Reset();
-			isRealData = true;
-		}
-		else if (dataPoints.size() > 0)
+		if (dataPoints.size() > 1)
 		{
 			// Average two best matches
 			for (unsigned int i = 0; i < UDP::DataCount; i++)
-				newestUDPData[i] += (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
+				newestUDPData[i] = (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
+
 			udpAgeTimer.Reset();
 			isRealData = true;
 		}

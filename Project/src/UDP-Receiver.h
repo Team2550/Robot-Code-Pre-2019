@@ -24,7 +24,7 @@ private:
 	char buffer[BUFSIZE];
 
 	bool isRealData = false;
-	float newestUDPData[UDP::DataCount] = {-1, -1, -1, -1, -1};
+	float newestUDPData[UDP::DataCount] = {-1, -1, -1, -1, -1, -1};
 
 	Timer udpAgeTimer;
 

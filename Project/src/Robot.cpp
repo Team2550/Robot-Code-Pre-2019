@@ -26,32 +26,24 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	scenarioChooser.AddDefault("Far Left", &farLeftScenario);
+	scenarioChooser.AddDefault("Left", &leftScenario);
 	scenarioChooser.AddObject("Middle", &middleScenario);
-	scenarioChooser.AddObject("Middle Right", &midRightScenario);
-	scenarioChooser.AddObject("Far Right", &farRightScenario);
+	scenarioChooser.AddObject("Right", &rightScenario);
 	scenarioChooser.AddObject("Test Scenario", &testScenario);
 	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
 
-	SmartDashboard::PutNumber("Robot Speed Inches Per Second",
-	                          SmartDashboard::GetNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond));
-	SmartDashboard::PutNumber("Full Rotation Time",
-	                          SmartDashboard::GetNumber("Full Rotation Time", Autonomous::FullRotationTime));
+	SmartDashboard::SetDefaultNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
+	SmartDashboard::SetDefaultNumber("Full Rotation Time", Autonomous::FullRotationTime);
 
 	// Default value to set smart dashboard item to is it's current value, unless it doesn't exist.
-	SmartDashboard::PutNumber("Left Forwards Ratio",
-			                  SmartDashboard::GetNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards));
-	SmartDashboard::PutNumber("Right Forwards Ratio",
-			                  SmartDashboard::GetNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards));
-	SmartDashboard::PutNumber("Left Backwards Ratio",
-			                  SmartDashboard::GetNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards));
-	SmartDashboard::PutNumber("Right Backwards Ratio",
-			                  SmartDashboard::GetNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards));
+	SmartDashboard::SetDefaultNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
+	SmartDashboard::SetDefaultNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
+	SmartDashboard::SetDefaultNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
+	SmartDashboard::SetDefaultNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
 
-	SmartDashboard::PutBoolean("Is camera tracking ready",
-	                           SmartDashboard::GetBoolean("Is camera tracking ready", false));
-	SmartDashboard::PutBoolean("Safe mode",
-	                           SmartDashboard::GetBoolean("Safe mode", true));
+	SmartDashboard::SetDefaultBoolean("Camera Tracking", false);
+	SmartDashboard::SetDefaultBoolean("Safe mode", true);
+	SmartDashboard::SetDefaultNumber("Blind time multiplier", 1);
 }
 
 void Robot::AutonomousInit()
@@ -69,17 +61,14 @@ void Robot::AutonomousInit()
 		printf("No scenario found\n");
 		switch (Autonomous::DefaultScenario)
 		{
-		case Autonomous::FarLeft:
-			autoPosScenario = &farLeftScenario;
+		case Autonomous::Left:
+			autoPosScenario = &leftScenario;
 			break;
 		case Autonomous::Middle:
 			autoPosScenario = &middleScenario;
 			break;
-		case Autonomous::MidRight:
-			autoPosScenario = &midRightScenario;
-			break;
-		case Autonomous::FarRight:
-			autoPosScenario = &farRightScenario;
+		case Autonomous::Right:
+			autoPosScenario = &rightScenario;
 			break;
 		case Autonomous::Test:
 			autoPosScenario = &testScenario;
@@ -88,58 +77,49 @@ void Robot::AutonomousInit()
 	}
 
 	// Get dynamic fine-tuning values from smart dashboard
-	float speedInchesPerSecond = SmartDashboard::GetNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
-	float fullRotationTime = SmartDashboard::GetNumber("Full Rotation Time", Autonomous::FullRotationTime);
+	float blindTimeMultiplier = SmartDashboard::GetNumber("Blind time multiplier",1);
 
 	// Set the timetable of the choreographer to the appropriate scenario
 	// Currently, the lines that would be used in production are commented out
 	// The functions being used are from the dynamic blind scenarios namespace.
 	// They take the speed and rotation time values and use them to update the array passed to them with the appropriate timetable values
 	//                                                                                                      (time, leftSpeed, rightSpeed)
-	if (autoPosScenario == &farLeftScenario)
+	if (autoPosScenario == &leftScenario)
 	{
-		printf("Far Left\n");
-		float timetable[Autonomous::DynamicBlindScenarios::FarLeftPos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::FarLeftPos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
+		printf("Left\n");
+		float timetable[Autonomous::DynamicBlindScenarios::LeftPos::PeriodCount][3];
+		Autonomous::DynamicBlindScenarios::LeftPos::getTimetable(blindTimeMultiplier, timetable);
 
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::FarLeftPos::PeriodCount, timetable);
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::LeftPos::PeriodCount, timetable);
 	}
 	else if (autoPosScenario == &middleScenario)
 	{
 		printf("Middle\n");
 		float timetable[Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::MiddlePos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
+		Autonomous::DynamicBlindScenarios::MiddlePos::getTimetable(blindTimeMultiplier, timetable);
 
 		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
 	}
-	else if (autoPosScenario == &midRightScenario)
+	else if (autoPosScenario == &rightScenario)
 	{
-		printf("Mid Right\n");
-		float timetable[Autonomous::DynamicBlindScenarios::MidRightPos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::MidRightPos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
+		printf("Right\n");
+		float timetable[Autonomous::DynamicBlindScenarios::RightPos::PeriodCount][3];
+		Autonomous::DynamicBlindScenarios::RightPos::getTimetable(blindTimeMultiplier, timetable);
 
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MidRightPos::PeriodCount, timetable);
-	}
-	else if (autoPosScenario == &farRightScenario)
-	{
-		printf("Far Right\n");
-		float timetable[Autonomous::DynamicBlindScenarios::FarRightPos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::FarRightPos::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
-
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::FarRightPos::PeriodCount, timetable);
+		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::RightPos::PeriodCount, timetable);
 	}
 	else if (autoPosScenario == &testScenario)
 	{
 		printf("Test\n");
 		float timetable[Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::TestScenario::getTimetable(speedInchesPerSecond, fullRotationTime, timetable);
+		Autonomous::DynamicBlindScenarios::TestScenario::getTimetable(blindTimeMultiplier, timetable);
 
 		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount, timetable);
 	}
 
-	canAutoAim = SmartDashboard::GetBoolean("Is camera tracking ready", false);
+	canAutoAim = SmartDashboard::GetBoolean("Camera Tracking", false);
 
-	driveBase.setReversed(false);
+	driveBase.setReversed(true);
 
 	autoTimer.Reset();
 	autoTimer.Start();
@@ -150,18 +130,27 @@ void Robot::AutonomousPeriodic()
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
+	float data[UDP::DataCount];
+	udpReceiver.getUDPData(data);
+
+	printf("X Offset:");
+	printf(std::to_string(data[UDP::Index::XOffset]).c_str());
+	printf(", Dist:");
+	printf(std::to_string(data[UDP::Index::Distance]).c_str());
+	printf("\n");
+
 	/* ========== DriveBase ========== */
 	// Run choreographer script until end of second to last step, unless can't auto aim
 	if (autoSafeMode)
 	{
-		if (autoTimer.Get() < 2.5)
-			driveBase.drive(0.8);
+		if (autoTimer.Get() < 4)
+			driveBase.drive(Speeds::DriveBase::Turtle);
 		else
 			driveBase.stop();
 	}
 	else
 	{
-		if (!canAutoAim || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 2).time)
+		if (!canAutoAim || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 1).time - 3.0)
 		{
 			choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
 		}
@@ -190,17 +179,54 @@ void Robot::TeleopPeriodic()
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
+	float data[UDP::DataCount];
+	udpReceiver.getUDPData(data);
+
+	printf("X Offset:");
+	printf(std::to_string(data[UDP::Index::XOffset]).c_str());
+	printf(", Dist:");
+	printf(std::to_string(data[UDP::Index::Distance]).c_str());
+	printf("\n");
+
 	/* ========== DriveBase ========== */
-	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
-	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
+	canAutoAim = SmartDashboard::GetBoolean("Camera Tracking", false);
+	/*int vibrationLevel = data[UDP::Index::XOffset] * .5;
 
-	bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
-	bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
+	if(!canAutoAim){
+		Utility::setRumble(driveController, Utility::both, 0);
+	}
+	else if (data[UDP::Index::XOffset] <= 10 && data[UDP::Index::XOffset] >= 1 )
+	{
+		Utility::setRumble(driveController, Utility::left, vibrationLevel);
+		Utility::setRumble(driveController, Utility::right, 0);
+	}
+	else if (data[UDP::Index::XOffset] >= -10 && data[UDP::Index::XOffset] <= -1 )
+	{
+		Utility::setRumble(driveController, Utility::right, vibrationLevel);
+		Utility::setRumble(driveController, Utility::left, 0);
+	}
+	else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
+	{
+		Utility::setRumble(driveController, Utility::both, 1);
+	}*/
 
-	float speed = turtle ? Speeds::DriveBase::Turtle : (boost ? Speeds::DriveBase::Boost : Speeds::DriveBase::Normal);
+	if (canAutoAim && driveController.GetRawButton(Controls::TankDrive::AutoAim))
+	{
+		autoAim();
+	}
+	else
+	{
+		float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
+		float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
 
-	driveBase.drive(leftSpeed * speed,
-					rightSpeed * speed);
+		bool boost = driveController.GetRawButton(Controls::TankDrive::Boost);
+		bool turtle = driveController.GetRawButton(Controls::TankDrive::Turtle);
+
+		float speed = turtle ? Speeds::DriveBase::Turtle : (boost ? Speeds::DriveBase::Boost : Speeds::DriveBase::Normal);
+
+		driveBase.drive(leftSpeed * speed,
+						rightSpeed * speed);
+	}
 
 	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
@@ -270,23 +296,38 @@ void Robot::TeleopPeriodic()
 		lift.raise(perifController.GetRawAxis(Controls::Peripherals::Climb));
 	else
 		lift.stop();
+
+	/* ========== ========== */
+	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
+			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+
+	printf("Amps: ");
+	printf(std::to_string(amps).c_str());
+	printf("\n");
 }
 
 void Robot::autoAim()
 {
 	printf("Aiming...\n");
 
+	float baseSpeed = driveBase.getReversed() ? Speeds::DriveBase::Turtle : -Speeds::DriveBase::Turtle;
+
 	// Get data
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	if (udpReceiver.getUDPDataAge() > 1.5)
+	if (udpReceiver.getUDPDataAge() > 1)
 	{
 		printf("Cannot see target! ");
-		if (!udpReceiver.getUDPDataIsReal() || data[UDP::Index::Distance] > 15)
+
+		double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
+				       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+
+		// Stop moving forward if motors are no longer spinning
+		if (true)
 		{
-			printf("Rotating...\n");
-			driveBase.drive(0.4, -0.4);
+			printf("Moving forward...\n");
+			driveBase.drive(baseSpeed * 0.75, baseSpeed * 0.75);
 		}
 		else
 		{
@@ -299,32 +340,38 @@ void Robot::autoAim()
 		if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
 		{
 			printf("Target is far left\n");
-			driveBase.drive(0.4, -0.4);
+
+			driveBase.drive(baseSpeed * 1.5, -baseSpeed * 1.5);
 		}
 		else if (data[UDP::Index::XOffset] > 2) // Move while rotating
 		{
 			printf("Target is slight right\n");
-			driveBase.drive(0.4, 0);
+
+			driveBase.drive(baseSpeed, 0);
 		}
 		else if (data[UDP::Index::XOffset] < -10)
 		{
 			printf("Target is far left\n");
-			driveBase.drive(-0.4, 0.4);
+
+			driveBase.drive(-baseSpeed * 1.5, baseSpeed * 1.5);
 		}
 		else if (data[UDP::Index::XOffset] < -2)
 		{
 			printf("Target is slight left\n");
-			driveBase.drive(0, 0.4);
+
+			driveBase.drive(0, baseSpeed);
 		}
 		else if (data[UDP::Index::Distance] > 20)
 		{
 			printf("Target is distant\n");
-			driveBase.drive(0.6);
+
+			driveBase.drive(baseSpeed);
 		}
-		else if (data[UDP::Index::Distance] > 10)
+		else if (data[UDP::Index::Distance] > 7.5f)
 		{
 			printf("Target is near\n");
-			driveBase.drive(0.3);
+
+			driveBase.drive(baseSpeed * 0.75);
 		}
 		else
 		{
