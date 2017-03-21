@@ -58,6 +58,7 @@ void Robot::RobotInit()
 
 	SmartDashboard::SetPersistent("Camera Tracking");
 	SmartDashboard::SetPersistent("Safe mode");
+	SmartDashboard::SetPersistent("Rumble Active");
 	SmartDashboard::SetPersistent("Blind time multiplier");
 }
 
