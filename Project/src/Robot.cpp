@@ -191,6 +191,8 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
 	/* ========== udpReceiver ========== */
+	/*
+
 	udpReceiver.checkUDP();
 
 	float data[UDP::DataCount];
@@ -202,8 +204,9 @@ void Robot::TeleopPeriodic()
 	//printf(std::to_string(data[UDP::Index::Distance]).c_str());
 	//printf("\n");
 
+	*/
 	/* ========== DriveBase ========== */
-	canAutoAim = SmartDashboard::GetBoolean("Camera Tracking", false);
+	canAutoAim = false; //SmartDashboard::GetBoolean("Camera Tracking", false);
 
 	if (canAutoAim && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
