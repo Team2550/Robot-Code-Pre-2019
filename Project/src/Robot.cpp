@@ -392,12 +392,12 @@ void Robot::autoAim()
 		else
 		{
 			//if no target is found for over 3 seconds, the robot will slowly start turning in the direction it last found a target until new target is found
-			if (udpReceiver.getUDPDataAge() > 3 && udpReceiver.xOffsetBackup > 1){
+			if (udpReceiver.getUDPDataAge() > 3 && udpReceiver.xOffsetBackup > 5){
 				printf("Re-searching for target...\n");
 				printf("target last seen on right.. \n");
 				driveBase.drive(baseSpeed * .75, 0);
 			}
-			if (udpReceiver.getUDPDataAge() > 3 && udpReceiver.xOffsetBackup < -1){
+			if (udpReceiver.getUDPDataAge() > 3 && udpReceiver.xOffsetBackup < -5){
 				printf("Re-searching for target...\n");
 				printf("target last seen on left.. \n");
 				driveBase.drive(0, baseSpeed * .75);
