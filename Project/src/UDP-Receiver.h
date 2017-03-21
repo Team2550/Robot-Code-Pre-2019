@@ -22,9 +22,9 @@ private:
 	socklen_t addressLength = sizeof(remoteAddress);
 	int bytesRecievedCount;
 	char buffer[BUFSIZE];
-	float newestUDPData[UDP::DataCount] = {-1, -1, -1, -1, -1, -1};
-	bool isRealData = false;
 
+	bool isRealData = false;
+	float newestUDPData[UDP::DataCount] = {-1, -1, -1, -1, -1, -1};
 
 	Timer udpAgeTimer;
 
@@ -37,9 +37,6 @@ public:
 	void getUDPData(float data[]);
 	double getUDPDataAge();
 	bool getUDPDataIsReal();
-	//A quick method to hold the x-offset value as newestUDPData[2], but intended to be used publicly
-	float xOffsetBackup;
 };
-
 
 #endif
