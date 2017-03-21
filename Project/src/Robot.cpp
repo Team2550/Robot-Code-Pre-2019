@@ -190,25 +190,6 @@ void Robot::TeleopPeriodic()
 
 	/* ========== DriveBase ========== */
 	canAutoAim = SmartDashboard::GetBoolean("Camera Tracking", false);
-	/*int vibrationLevel = data[UDP::Index::XOffset] * .5;
-
-	if(!canAutoAim){
-		Utility::setRumble(driveController, Utility::both, 0);
-	}
-	else if (data[UDP::Index::XOffset] <= 10 && data[UDP::Index::XOffset] >= 1 )
-	{
-		Utility::setRumble(driveController, Utility::left, vibrationLevel);
-		Utility::setRumble(driveController, Utility::right, 0);
-	}
-	else if (data[UDP::Index::XOffset] >= -10 && data[UDP::Index::XOffset] <= -1 )
-	{
-		Utility::setRumble(driveController, Utility::right, vibrationLevel);
-		Utility::setRumble(driveController, Utility::left, 0);
-	}
-	else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
-	{
-		Utility::setRumble(driveController, Utility::both, 1);
-	}*/
 
 	if (canAutoAim && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
@@ -310,74 +291,74 @@ void Robot::autoAim()
 {
 	printf("Aiming...\n");
 
+	// Get amps for checking if against wall
+	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
+			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+
 	float baseSpeed = driveBase.getReversed() ? Speeds::DriveBase::Turtle : -Speeds::DriveBase::Turtle;
 
 	// Get data
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	if (udpReceiver.getUDPDataAge() > 1)
+	// Stop moving forward if motors are no longer spinning (amp limit = 16)
+	if (amps < 20)
 	{
-		printf("Cannot see target! ");
-
-		double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
-				       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
-
-		// Stop moving forward if motors are no longer spinning
-		if (true)
+		if (udpReceiver.getUDPDataAge() > 1)
 		{
+			printf("Cannot see target! ");
 			printf("Moving forward...\n");
-			driveBase.drive(baseSpeed * 0.75, baseSpeed * 0.75);
-		}
-		else
-		{
-			printf("Stopping...\n");
-			driveBase.stop();
-		}
-	}
-	else
-	{
-		if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
-		{
-			printf("Target is far left\n");
-
-			driveBase.drive(baseSpeed * 1.5, -baseSpeed * 1.5);
-		}
-		else if (data[UDP::Index::XOffset] > 2) // Move while rotating
-		{
-			printf("Target is slight right\n");
-
-			driveBase.drive(baseSpeed, 0);
-		}
-		else if (data[UDP::Index::XOffset] < -10)
-		{
-			printf("Target is far left\n");
-
-			driveBase.drive(-baseSpeed * 1.5, baseSpeed * 1.5);
-		}
-		else if (data[UDP::Index::XOffset] < -2)
-		{
-			printf("Target is slight left\n");
-
-			driveBase.drive(0, baseSpeed);
-		}
-		else if (data[UDP::Index::Distance] > 20)
-		{
-			printf("Target is distant\n");
-
-			driveBase.drive(baseSpeed);
-		}
-		else if (data[UDP::Index::Distance] > 7.5f)
-		{
-			printf("Target is near\n");
-
 			driveBase.drive(baseSpeed * 0.75);
 		}
 		else
 		{
-			printf("At target\n");
-			driveBase.stop();
+			if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
+			{
+				printf("Target is far left\n");
+
+				driveBase.drive(baseSpeed * 1.25, -baseSpeed * 1.25);
+			}
+			else if (data[UDP::Index::XOffset] > 2) // Move while rotating
+			{
+				printf("Target is slight right\n");
+
+				driveBase.drive(baseSpeed, 0);
+			}
+			else if (data[UDP::Index::XOffset] < -10)
+			{
+				printf("Target is far left\n");
+
+				driveBase.drive(-baseSpeed * 1.25, baseSpeed * 1.25);
+			}
+			else if (data[UDP::Index::XOffset] < -2)
+			{
+				printf("Target is slight left\n");
+
+				driveBase.drive(0, baseSpeed);
+			}
+			else if (data[UDP::Index::Distance] > 30)
+			{
+				printf("Target is distant\n");
+
+				driveBase.drive(baseSpeed);
+			}
+			else if (data[UDP::Index::Distance] > 15)
+			{
+				printf("Target is near\n");
+
+				driveBase.drive(baseSpeed * 0.6);
+			}
+			else
+			{
+				printf("At target\n");
+				driveBase.stop();
+			}
 		}
+	}
+	else
+	{
+		printf("Amps too high! Stopping...\n");
+		driveBase.stop();
 	}
 }
 
