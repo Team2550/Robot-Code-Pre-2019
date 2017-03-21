@@ -206,7 +206,7 @@ void Robot::TeleopPeriodic()
 
 	*/
 	/* ========== DriveBase ========== */
-	canAutoAim = false; //SmartDashboard::GetBoolean("Camera Tracking", false);
+	SmartDashboard::GetBoolean("Camera Tracking", false);
 
 	if (canAutoAim && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
