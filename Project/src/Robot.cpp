@@ -53,6 +53,7 @@ void Robot::RobotInit()
 	// Safety settings
 	SmartDashboard::SetDefaultBoolean("Camera Tracking", false);
 	SmartDashboard::SetDefaultBoolean("Safe mode", true);
+	SmartDashboard::SetDefaultBoolean("Rumble Active", false);
 	SmartDashboard::SetDefaultNumber("Blind time multiplier", 1);
 
 	SmartDashboard::SetPersistent("Camera Tracking");
@@ -304,70 +305,22 @@ void Robot::TeleopPeriodic()
 	printf("\n");
 
 	/* ============ Rumble Feedback =========== */
-	rumbleScenarioChooser.AddDefault("Off", &offScenario);
-	rumbleScenarioChooser.AddObject("Low", &lowScenario);
-	rumbleScenarioChooser.AddObject("High", &highScenario);
-	SmartDashboard::PutData("Rumble Intensity", &rumbleScenarioChooser);
+	if (canAutoAim)
+	{
+		bool doRumble = SmartDashboard::GetBoolean("Rumble Active", false);
 
-	RumbleFeedback::RumbleScenario *intensityRumbleScenario = rumbleScenarioChooser.GetSelected();
+		float data[UDP::DataCount];
+		udpReceiver.getUDPData(data);
 
-	float data[UDP::DataCount];
-	udpReceiver.getUDPData(data);
+		float vibrationLevel = data[UDP::Index::XOffset] * .05;
 
-	int vibrationLevel = data[UDP::Index::XOffset] * .05;
-	if(intensityRumbleScenario == nullptr)
-		{
-			printf("No scenario found\n");
-			switch (RumbleFeedback::DefaultScenario)
-			{
-			case RumbleFeedback::off:
-				intensityRumbleScenario = &offScenario;
-				break;
-			case RumbleFeedback::low:
-				intensityRumbleScenario = &lowScenario;
-				break;
-			case RumbleFeedback::high:
-				intensityRumbleScenario = &highScenario;
-				break;
-			}
-		}
+		vibrationLevel = fmin(1, fmax(-1, vibrationLevel));
 
-	if(intensityRumbleScenario == &offScenario){
-		printf("rumble off \n");
-		Utility::setRumble(driveController, Utility::both, 0);
-	}
-
-	else if(intensityRumbleScenario == &lowScenario){
-		printf("rumble low \n");
-		if(!canAutoAim){
-		Utility::setRumble(driveController, Utility::both, 0);
-		}
-		else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
-		{
-		Utility::setRumble(driveController, Utility::both, 1);
-		}
-	}
-
-	else if(intensityRumbleScenario == &highScenario){
-		printf("rumble high \n");
-		if(!canAutoAim){
-			Utility::setRumble(driveController, Utility::both, 0);
-		}
-		else if (data[UDP::Index::XOffset] <= 15 && data[UDP::Index::XOffset] >= 1 )
-		{
-			Utility::setRumble(driveController, Utility::left, vibrationLevel);
-			Utility::setRumble(driveController, Utility::right, 0);
-		}
-		else if (data[UDP::Index::XOffset] >= -15 && data[UDP::Index::XOffset] <= -1 )
-		{
-			Utility::setRumble(driveController, Utility::right, vibrationLevel);
-			Utility::setRumble(driveController, Utility::left, 0);
-		}
-		else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
-		{
-			Utility::setRumble(driveController, Utility::both, 1);
-		}
-
+		Utility::setRumble(driveController, Utility::RumbleSide::both, 0);
+		if (vibrationLevel < -0.1)
+			Utility::setRumble(driveController, Utility::RumbleSide::left, -vibrationLevel);
+		else if (vibrationLevel > 0.1)
+			Utility::setRumble(driveController, Utility::RumbleSide::right, vibrationLevel);
 	}
 }
 
