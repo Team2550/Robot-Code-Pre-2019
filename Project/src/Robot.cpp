@@ -321,7 +321,8 @@ void Robot::autoAim()
 	// Stop moving forward if motors are no longer spinning (amp limit = 16)
 	if (amps < 20)
 	{
-		if (udpReceiver.getUDPDataAge() > 1)
+		//if no target is found for over 1 second and under 3 seconds the robot will drive forward either until new target is found or until time is more than 3 seconds
+		if (udpReceiver.getUDPDataAge() > 1 && udpReceiver.getUDPDataAge() < 3)
 		{
 			printf("Cannot see target! ");
 			printf("Moving forward...\n");
@@ -329,7 +330,18 @@ void Robot::autoAim()
 		}
 		else
 		{
-			if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
+			//if no target is found for over 3 seconds, the robot will slowly start turning in the direction it last found a target until new target is found
+			if (udpReceiver.getUDPDataAge() > 3 && udpReceiver.xOffsetBackup > 1){
+				printf("Re-searching for target...\n");
+				printf("target last seen on right.. \n");
+				driveBase.drive(baseSpeed * .75, 0);
+			}
+			if (udpReceiver.getUDPDataAge() > 3 && udpReceiver.xOffsetBackup < -1){
+				printf("Re-searching for target...\n");
+				printf("target last seen on left.. \n");
+				driveBase.drive(0, baseSpeed * .75);
+				}
+			else if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
 			{
 				printf("Target is far left\n");
 
