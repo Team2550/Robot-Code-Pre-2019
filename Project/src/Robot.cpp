@@ -317,7 +317,7 @@ void Robot::TeleopPeriodic()
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	int vibrationLevel = data[UDP::Index::XOffset] * .5;
+	int vibrationLevel = data[UDP::Index::XOffset] * .1;
 	if(intensityRumbleScenario == nullptr)
 		{
 			printf("No scenario found\n");
@@ -356,12 +356,12 @@ void Robot::TeleopPeriodic()
 		if(!canAutoAim){
 			Utility::setRumble(driveController, Utility::both, 0);
 		}
-		else if (data[UDP::Index::XOffset] <= 10 && data[UDP::Index::XOffset] >= 1 )
+		else if (data[UDP::Index::XOffset] <= 15 && data[UDP::Index::XOffset] >= 1 )
 		{
 			Utility::setRumble(driveController, Utility::left, vibrationLevel);
 			Utility::setRumble(driveController, Utility::right, 0);
 		}
-		else if (data[UDP::Index::XOffset] >= -10 && data[UDP::Index::XOffset] <= -1 )
+		else if (data[UDP::Index::XOffset] >= -15 && data[UDP::Index::XOffset] <= -1 )
 		{
 			Utility::setRumble(driveController, Utility::right, vibrationLevel);
 			Utility::setRumble(driveController, Utility::left, 0);
