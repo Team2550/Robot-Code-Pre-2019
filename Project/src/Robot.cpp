@@ -311,6 +311,8 @@ void Robot::TeleopPeriodic()
 	rumbleScenarioChooser.AddObject("Low", &lowScenario);
 	rumbleScenarioChooser.AddObject("High", &highScenario);
 
+	float data[UDP::DataCount];
+	udpReceiver.getUDPData(data);
 
 	int vibrationLevel = data[UDP::Index::XOffset] * .5;
 	if(rumbleScenarioChooser == nullptr)
