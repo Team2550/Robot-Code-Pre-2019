@@ -32,18 +32,32 @@ void Robot::RobotInit()
 	scenarioChooser.AddObject("Test Scenario", &testScenario);
 	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
 
+	// Auto speeds
 	SmartDashboard::SetDefaultNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
 	SmartDashboard::SetDefaultNumber("Full Rotation Time", Autonomous::FullRotationTime);
 
-	// Default value to set smart dashboard item to is it's current value, unless it doesn't exist.
+	SmartDashboard::SetPersistent("Robot Speed Inches Per Second");
+	SmartDashboard::SetPersistent("Full Rotation Time");
+
+	// Motor trim
 	SmartDashboard::SetDefaultNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
 	SmartDashboard::SetDefaultNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
 	SmartDashboard::SetDefaultNumber("Left Backwards Ratio", Speeds::DriveBase::LeftPowerRatioBackwards);
 	SmartDashboard::SetDefaultNumber("Right Backwards Ratio", Speeds::DriveBase::RightPowerRatioBackwards);
 
+	SmartDashboard::SetPersistent("Left Forwards Ratio");
+	SmartDashboard::SetPersistent("Right Forwards Ratio");
+	SmartDashboard::SetPersistent("Left Backwards Ratio");
+	SmartDashboard::SetPersistent("Right Backwards Ratio");
+
+	// Safety settings
 	SmartDashboard::SetDefaultBoolean("Camera Tracking", false);
 	SmartDashboard::SetDefaultBoolean("Safe mode", true);
 	SmartDashboard::SetDefaultNumber("Blind time multiplier", 1);
+
+	SmartDashboard::SetPersistent("Camera Tracking");
+	SmartDashboard::SetPersistent("Safe mode");
+	SmartDashboard::SetPersistent("Blind time multiplier");
 }
 
 void Robot::AutonomousInit()
@@ -182,11 +196,11 @@ void Robot::TeleopPeriodic()
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	printf("X Offset:");
-	printf(std::to_string(data[UDP::Index::XOffset]).c_str());
-	printf(", Dist:");
-	printf(std::to_string(data[UDP::Index::Distance]).c_str());
-	printf("\n");
+	//printf("X Offset:");
+	//printf(std::to_string(data[UDP::Index::XOffset]).c_str());
+	//printf(", Dist:");
+	//printf(std::to_string(data[UDP::Index::Distance]).c_str());
+	//printf("\n");
 
 	/* ========== DriveBase ========== */
 	canAutoAim = SmartDashboard::GetBoolean("Camera Tracking", false);
@@ -278,13 +292,13 @@ void Robot::TeleopPeriodic()
 	else
 		lift.stop();
 
-	/* ========== ========== */
-	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
-			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+	/* ========== Amps feedback ========== */
+	//double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
+	//		       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
 
-	printf("Amps: ");
-	printf(std::to_string(amps).c_str());
-	printf("\n");
+	//printf("Amps: ");
+	//printf(std::to_string(amps).c_str());
+	//printf("\n");
 }
 
 void Robot::autoAim()
