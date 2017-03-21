@@ -30,7 +30,7 @@ void Robot::RobotInit()
 	autoScenarioChooser.AddObject("Middle", &middleScenario);
 	autoScenarioChooser.AddObject("Right", &rightScenario);
 	autoScenarioChooser.AddObject("Test Scenario", &testScenario);
-	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
+	SmartDashboard::PutData("Auto Scenario", &autoScenarioChooser);
 
 	// Auto speeds
 	SmartDashboard::SetDefaultNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
@@ -64,7 +64,7 @@ void Robot::AutonomousInit()
 {
 	// Initialize choreographer to selected position scenario
 	// Get scenario from smart dashboard
-	Autonomous::PosScenario *autoPosScenario = scenarioChooser.GetSelected();
+	Autonomous::PosScenario *autoPosScenario = autoScenarioChooser.GetSelected();
 	autoSafeMode = SmartDashboard::GetBoolean("Safe mode", true);
 	printf(autoSafeMode ? "Safe mode\n" : "Not safe mode\n");
 
@@ -100,7 +100,7 @@ void Robot::AutonomousInit()
 	//                                                                                                      (time, leftSpeed, rightSpeed)
 	if (autoPosScenario == &leftScenario)
 	{
-		printf("Left\n");
+		printf("Pos Left\n");
 		float timetable[Autonomous::DynamicBlindScenarios::LeftPos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::LeftPos::getTimetable(blindTimeMultiplier, timetable);
 
@@ -108,7 +108,7 @@ void Robot::AutonomousInit()
 	}
 	else if (autoPosScenario == &middleScenario)
 	{
-		printf("Middle\n");
+		printf("Pos Middle\n");
 		float timetable[Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::MiddlePos::getTimetable(blindTimeMultiplier, timetable);
 
@@ -116,7 +116,7 @@ void Robot::AutonomousInit()
 	}
 	else if (autoPosScenario == &rightScenario)
 	{
-		printf("Right\n");
+		printf("Pos Right\n");
 		float timetable[Autonomous::DynamicBlindScenarios::RightPos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::RightPos::getTimetable(blindTimeMultiplier, timetable);
 
@@ -124,7 +124,7 @@ void Robot::AutonomousInit()
 	}
 	else if (autoPosScenario == &testScenario)
 	{
-		printf("Test\n");
+		printf("Test Mode \n");
 		float timetable[Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::TestScenario::getTimetable(blindTimeMultiplier, timetable);
 
@@ -310,41 +310,49 @@ void Robot::TeleopPeriodic()
 	rumbleScenarioChooser.AddDefault("Off", &offScenario);
 	rumbleScenarioChooser.AddObject("Low", &lowScenario);
 	rumbleScenarioChooser.AddObject("High", &highScenario);
+	SmartDashboard::PutData("Rumble Intensity", &rumbleScenarioChooser);
+
+	RumbleFeedback::RumbleScenario *intensityRumbleScenario = rumbleScenarioChooser.GetSelected();
 
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
 	int vibrationLevel = data[UDP::Index::XOffset] * .5;
-	if(rumbleScenarioChooser == nullptr)
+	if(intensityRumbleScenario == nullptr)
 		{
 			printf("No scenario found\n");
 			switch (RumbleFeedback::DefaultScenario)
 			{
 			case RumbleFeedback::off:
-				rumbleScenarioChooser = &offScenario;
+				intensityRumbleScenario = &offScenario;
 				break;
 			case RumbleFeedback::low:
-				rumbleScenarioChooser = &lowScenario;
+				intensityRumbleScenario = &lowScenario;
 				break;
 			case RumbleFeedback::high:
-				rumbleScenarioChooser = &highScenario;
+				intensityRumbleScenario = &highScenario;
 				break;
 			}
 		}
-if(offScenario){
-	Utility::setRumble(driveController, Utility::both, 0);
-}
-if(lowScenario){
-	if(!canAutoAim){
+
+	if(intensityRumbleScenario == &offScenario){
+		printf("rumble off \n");
 		Utility::setRumble(driveController, Utility::both, 0);
 	}
-	else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
-	{
-		Utility::setRumble(driveController, Utility::both, 1);
-	}
-}
 
-if(highScenario){
+	else if(intensityRumbleScenario == &lowScenario){
+		printf("rumble low \n");
+		if(!canAutoAim){
+		Utility::setRumble(driveController, Utility::both, 0);
+		}
+		else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
+		{
+		Utility::setRumble(driveController, Utility::both, 1);
+		}
+	}
+
+	else if(intensityRumbleScenario == &highScenario){
+		printf("rumble high \n");
 		if(!canAutoAim){
 			Utility::setRumble(driveController, Utility::both, 0);
 		}
@@ -365,6 +373,7 @@ if(highScenario){
 
 	}
 }
+
 void Robot::autoAim()
 {
 	printf("Aiming...\n");
@@ -437,6 +446,13 @@ void Robot::autoAim()
 				printf("Target is near\n");
 
 				driveBase.drive(baseSpeed * 0.6);
+			}
+			else if (data[UDP::Index::Distance] < 10 && data[UDP::Index::XOffset] > 5){
+				printf("Too Close! \n");
+				printf("Backing Up... \n");
+
+				driveBase.drive(baseSpeed * -0.6);
+
 			}
 			else
 			{
