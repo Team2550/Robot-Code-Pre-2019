@@ -317,7 +317,7 @@ void Robot::TeleopPeriodic()
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	int vibrationLevel = data[UDP::Index::XOffset] * .1;
+	int vibrationLevel = data[UDP::Index::XOffset] * .05;
 	if(intensityRumbleScenario == nullptr)
 		{
 			printf("No scenario found\n");
