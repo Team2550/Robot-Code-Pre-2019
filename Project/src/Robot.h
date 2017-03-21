@@ -29,7 +29,11 @@ private:
 	Autonomous::PosScenario middleScenario = Autonomous::Middle;
 	Autonomous::PosScenario rightScenario = Autonomous::Right;
 	Autonomous::PosScenario testScenario = Autonomous::Test;
-	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
+	SendableChooser<Autonomous::PosScenario*> autoScenarioChooser;
+	RumbleFeedback::RumbleScenario offScenario = RumbleFeedback::off;
+	RumbleFeedback::RumbleScenario lowScenario = RumbleFeedback::low;
+	RumbleFeedback::RumbleScenario highScenario = RumbleFeedback::high;
+	SendableChooser<RumbleFeedback::RumbleScenario*> rumbleScenarioChooser;
 
 	bool climbToggleHold;
 	bool climbToggle;
