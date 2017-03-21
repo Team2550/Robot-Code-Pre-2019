@@ -26,11 +26,11 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	scenarioChooser.AddDefault("Left", &leftScenario);
-	scenarioChooser.AddObject("Middle", &middleScenario);
-	scenarioChooser.AddObject("Right", &rightScenario);
-	scenarioChooser.AddObject("Test Scenario", &testScenario);
-	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
+	autoScenarioChooser.AddDefault("Left", &leftScenario);
+	autoScenarioChooser.AddObject("Middle", &middleScenario);
+	autoScenarioChooser.AddObject("Right", &rightScenario);
+	autoScenarioChooser.AddObject("Test Scenario", &testScenario);
+	SmartDashboard::PutData("Auto Scenario", &autoScenarioChooser);
 
 	// Auto speeds
 	SmartDashboard::SetDefaultNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
@@ -64,7 +64,7 @@ void Robot::AutonomousInit()
 {
 	// Initialize choreographer to selected position scenario
 	// Get scenario from smart dashboard
-	Autonomous::PosScenario *autoPosScenario = scenarioChooser.GetSelected();
+	Autonomous::PosScenario *autoPosScenario = autoScenarioChooser.GetSelected();
 	autoSafeMode = SmartDashboard::GetBoolean("Safe mode", true);
 	printf(autoSafeMode ? "Safe mode\n" : "Not safe mode\n");
 
@@ -100,7 +100,7 @@ void Robot::AutonomousInit()
 	//                                                                                                      (time, leftSpeed, rightSpeed)
 	if (autoPosScenario == &leftScenario)
 	{
-		printf("Left\n");
+		printf("Pos Left\n");
 		float timetable[Autonomous::DynamicBlindScenarios::LeftPos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::LeftPos::getTimetable(blindTimeMultiplier, timetable);
 
@@ -108,7 +108,7 @@ void Robot::AutonomousInit()
 	}
 	else if (autoPosScenario == &middleScenario)
 	{
-		printf("Middle\n");
+		printf("Pos Middle\n");
 		float timetable[Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::MiddlePos::getTimetable(blindTimeMultiplier, timetable);
 
@@ -116,7 +116,7 @@ void Robot::AutonomousInit()
 	}
 	else if (autoPosScenario == &rightScenario)
 	{
-		printf("Right\n");
+		printf("Pos Right\n");
 		float timetable[Autonomous::DynamicBlindScenarios::RightPos::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::RightPos::getTimetable(blindTimeMultiplier, timetable);
 
@@ -124,7 +124,7 @@ void Robot::AutonomousInit()
 	}
 	else if (autoPosScenario == &testScenario)
 	{
-		printf("Test\n");
+		printf("Test Mode \n");
 		float timetable[Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount][3];
 		Autonomous::DynamicBlindScenarios::TestScenario::getTimetable(blindTimeMultiplier, timetable);
 
@@ -206,7 +206,7 @@ void Robot::TeleopPeriodic()
 
 	*/
 	/* ========== DriveBase ========== */
-	canAutoAim = false; //SmartDashboard::GetBoolean("Camera Tracking", false);
+	SmartDashboard::GetBoolean("Camera Tracking", false);
 
 	if (canAutoAim && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
@@ -296,12 +296,79 @@ void Robot::TeleopPeriodic()
 		lift.stop();
 
 	/* ========== Amps feedback ========== */
-	//double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
-	//		       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
+			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
 
-	//printf("Amps: ");
-	//printf(std::to_string(amps).c_str());
-	//printf("\n");
+	printf("Amps: ");
+	printf(std::to_string(amps).c_str());
+	printf("\n");
+
+	/* ============ Rumble Feedback =========== */
+	rumbleScenarioChooser.AddDefault("Off", &offScenario);
+	rumbleScenarioChooser.AddObject("Low", &lowScenario);
+	rumbleScenarioChooser.AddObject("High", &highScenario);
+	SmartDashboard::PutData("Rumble Intensity", &rumbleScenarioChooser);
+
+	RumbleFeedback::RumbleScenario *intensityRumbleScenario = rumbleScenarioChooser.GetSelected();
+
+	float data[UDP::DataCount];
+	udpReceiver.getUDPData(data);
+
+	int vibrationLevel = data[UDP::Index::XOffset] * .05;
+	if(intensityRumbleScenario == nullptr)
+		{
+			printf("No scenario found\n");
+			switch (RumbleFeedback::DefaultScenario)
+			{
+			case RumbleFeedback::off:
+				intensityRumbleScenario = &offScenario;
+				break;
+			case RumbleFeedback::low:
+				intensityRumbleScenario = &lowScenario;
+				break;
+			case RumbleFeedback::high:
+				intensityRumbleScenario = &highScenario;
+				break;
+			}
+		}
+
+	if(intensityRumbleScenario == &offScenario){
+		printf("rumble off \n");
+		Utility::setRumble(driveController, Utility::both, 0);
+	}
+
+	else if(intensityRumbleScenario == &lowScenario){
+		printf("rumble low \n");
+		if(!canAutoAim){
+		Utility::setRumble(driveController, Utility::both, 0);
+		}
+		else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
+		{
+		Utility::setRumble(driveController, Utility::both, 1);
+		}
+	}
+
+	else if(intensityRumbleScenario == &highScenario){
+		printf("rumble high \n");
+		if(!canAutoAim){
+			Utility::setRumble(driveController, Utility::both, 0);
+		}
+		else if (data[UDP::Index::XOffset] <= 15 && data[UDP::Index::XOffset] >= 1 )
+		{
+			Utility::setRumble(driveController, Utility::left, vibrationLevel);
+			Utility::setRumble(driveController, Utility::right, 0);
+		}
+		else if (data[UDP::Index::XOffset] >= -15 && data[UDP::Index::XOffset] <= -1 )
+		{
+			Utility::setRumble(driveController, Utility::right, vibrationLevel);
+			Utility::setRumble(driveController, Utility::left, 0);
+		}
+		else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
+		{
+			Utility::setRumble(driveController, Utility::both, 1);
+		}
+
+	}
 }
 
 void Robot::autoAim()
@@ -321,37 +388,58 @@ void Robot::autoAim()
 	// Stop moving forward if motors are no longer spinning (amp limit = 16)
 	if (amps < 20)
 	{
-		if (udpReceiver.getUDPDataAge() > 1)
+		if (!udpReceiver.getUDPDataIsReal() || udpReceiver.getUDPDataAge() > 2)
 		{
 			printf("Cannot see target! ");
-			printf("Moving forward...\n");
-			driveBase.drive(baseSpeed * 0.75);
+
+			if (!udpReceiver.getUDPDataIsReal())
+			{
+				printf("Target never seen, moving forward...\n");
+				driveBase.drive(baseSpeed * 0.75);
+			}
+			else if (data[UDP::Index::XOffset] > 5)
+			{
+				printf("Target last seen on right, rotating right. \n");
+				driveBase.drive(baseSpeed * .75, -baseSpeed * .75);
+			}
+			else if (data[UDP::Index::XOffset] < -5)
+			{
+				printf("Target last seen on left, rotating left. \n");
+				driveBase.drive(-baseSpeed * .75, baseSpeed * .75);
+			}
+			else
+			{
+				printf("Target last seen centered, moving forward...\n");
+				driveBase.drive(baseSpeed * 0.75);
+			}
+
 		}
 		else
 		{
+			//if no target is found for over 3 seconds, the robot will slowly start turning in the direction it last found a target until new target is found
 			if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
 			{
 				printf("Target is far left\n");
 
-				driveBase.drive(baseSpeed * 1.25, -baseSpeed * 1.25);
+				driveBase.drive(baseSpeed, -baseSpeed);
 			}
 			else if (data[UDP::Index::XOffset] > 2) // Move while rotating
 			{
 				printf("Target is slight right\n");
 
-				driveBase.drive(baseSpeed, 0);
+				driveBase.drive(baseSpeed * 0.75, 0);
 			}
 			else if (data[UDP::Index::XOffset] < -10)
 			{
 				printf("Target is far left\n");
 
-				driveBase.drive(-baseSpeed * 1.25, baseSpeed * 1.25);
+				driveBase.drive(-baseSpeed, baseSpeed);
 			}
 			else if (data[UDP::Index::XOffset] < -2)
 			{
 				printf("Target is slight left\n");
 
-				driveBase.drive(0, baseSpeed);
+				driveBase.drive(0, baseSpeed * 0.75);
 			}
 			else if (data[UDP::Index::Distance] > 30)
 			{
@@ -365,6 +453,13 @@ void Robot::autoAim()
 
 				driveBase.drive(baseSpeed * 0.6);
 			}
+			/*else if (data[UDP::Index::Distance] < 10 && data[UDP::Index::XOffset] > 5){
+				printf("Too Close! \n");
+				printf("Backing Up... \n");
+
+				driveBase.drive(baseSpeed * -0.6);
+
+			}*/
 			else
 			{
 				printf("At target\n");

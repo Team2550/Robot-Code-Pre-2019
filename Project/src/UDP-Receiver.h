@@ -22,9 +22,9 @@ private:
 	socklen_t addressLength = sizeof(remoteAddress);
 	int bytesRecievedCount;
 	char buffer[BUFSIZE];
-
-	bool isRealData = false;
 	float newestUDPData[UDP::DataCount] = {-1, -1, -1, -1, -1, -1};
+	bool isRealData = false;
+
 
 	Timer udpAgeTimer;
 
@@ -38,5 +38,6 @@ public:
 	double getUDPDataAge();
 	bool getUDPDataIsReal();
 };
+
 
 #endif
