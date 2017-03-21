@@ -26,10 +26,10 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	scenarioChooser.AddDefault("Left", &leftScenario);
-	scenarioChooser.AddObject("Middle", &middleScenario);
-	scenarioChooser.AddObject("Right", &rightScenario);
-	scenarioChooser.AddObject("Test Scenario", &testScenario);
+	autoScenarioChooser.AddDefault("Left", &leftScenario);
+	autoScenarioChooser.AddObject("Middle", &middleScenario);
+	autoScenarioChooser.AddObject("Right", &rightScenario);
+	autoScenarioChooser.AddObject("Test Scenario", &testScenario);
 	SmartDashboard::PutData("Auto Scenario", &scenarioChooser);
 
 	// Auto speeds
@@ -302,8 +302,67 @@ void Robot::TeleopPeriodic()
 	//printf("Amps: ");
 	//printf(std::to_string(amps).c_str());
 	//printf("\n");
+	printf("Amps: ");
+	printf(std::to_string(amps).c_str());
+	printf("\n");
+
+	/* ============ Rumble Feedback =========== */
+	rumbleScenarioChooser.AddDefault("Off", &offScenario);
+	rumbleScenarioChooser.AddObject("Low", &lowScenario);
+	rumbleScenarioChooser.AddObject("High", &highScenario);
+
+
+	int vibrationLevel = data[UDP::Index::XOffset] * .5;
+	if(rumbleScenarioChooser == nullptr)
+		{
+			printf("No scenario found\n");
+			switch (RumbleFeedback::DefaultScenario)
+			{
+			case RumbleFeedback::off:
+				rumbleScenarioChooser = &offScenario;
+				break;
+			case RumbleFeedback::low:
+				rumbleScenarioChooser = &lowScenario;
+				break;
+			case RumbleFeedback::high:
+				rumbleScenarioChooser = &highScenario;
+				break;
+			}
+		}
+if(offScenario){
+	Utility::setRumble(driveController, Utility::both, 0);
+}
+if(lowScenario){
+	if(!canAutoAim){
+		Utility::setRumble(driveController, Utility::both, 0);
+	}
+	else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
+	{
+		Utility::setRumble(driveController, Utility::both, 1);
+	}
 }
 
+if(highScenario){
+		if(!canAutoAim){
+			Utility::setRumble(driveController, Utility::both, 0);
+		}
+		else if (data[UDP::Index::XOffset] <= 10 && data[UDP::Index::XOffset] >= 1 )
+		{
+			Utility::setRumble(driveController, Utility::left, vibrationLevel);
+			Utility::setRumble(driveController, Utility::right, 0);
+		}
+		else if (data[UDP::Index::XOffset] >= -10 && data[UDP::Index::XOffset] <= -1 )
+		{
+			Utility::setRumble(driveController, Utility::right, vibrationLevel);
+			Utility::setRumble(driveController, Utility::left, 0);
+		}
+		else if (data[UDP::Index::XOffset] < 1 && data[UDP::Index::XOffset] > -1)
+		{
+			Utility::setRumble(driveController, Utility::both, 1);
+		}
+
+	}
+}
 void Robot::autoAim()
 {
 	printf("Aiming...\n");
