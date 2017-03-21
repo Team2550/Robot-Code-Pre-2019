@@ -308,10 +308,10 @@ void Robot::TeleopPeriodic()
 	printf("\n");
 
 	/* ============ Rumble Feedback =========== */
-	if (canAutoAim)
-	{
-		bool doRumble = SmartDashboard::GetBoolean("Rumble Active", false);
+	bool doRumble = SmartDashboard::GetBoolean("Rumble Active", false);
 
+	if (doRumble && canAutoAim)
+	{
 		float data[UDP::DataCount];
 		udpReceiver.getUDPData(data);
 
