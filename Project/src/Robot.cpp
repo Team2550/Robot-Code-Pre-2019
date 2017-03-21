@@ -207,7 +207,7 @@ void Robot::TeleopPeriodic()
 
 	*/
 	/* ========== DriveBase ========== */
-	canAutoAim = false; //SmartDashboard::GetBoolean("Camera Tracking", false);
+	SmartDashboard::GetBoolean("Camera Tracking", false);
 
 	if (canAutoAim && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
@@ -297,12 +297,9 @@ void Robot::TeleopPeriodic()
 		lift.stop();
 
 	/* ========== Amps feedback ========== */
-	//double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
-	//		       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
+			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
 
-	//printf("Amps: ");
-	//printf(std::to_string(amps).c_str());
-	//printf("\n");
 	printf("Amps: ");
 	printf(std::to_string(amps).c_str());
 	printf("\n");
@@ -344,49 +341,58 @@ void Robot::autoAim()
 	// Stop moving forward if motors are no longer spinning (amp limit = 16)
 	if (amps < 20)
 	{
-		//if no target is found for over 1 second and under 3 seconds the robot will drive forward either until new target is found or until time is more than 3 seconds
-		if (udpReceiver.getUDPDataAge() > 1 && udpReceiver.getUDPDataAge() < 3)
+		if (!udpReceiver.getUDPDataIsReal() || udpReceiver.getUDPDataAge() > 2)
 		{
 			printf("Cannot see target! ");
-			printf("Moving forward...\n");
-			driveBase.drive(baseSpeed * 0.75);
+
+			if (!udpReceiver.getUDPDataIsReal())
+			{
+				printf("Target never seen, moving forward...\n");
+				driveBase.drive(baseSpeed * 0.75);
+			}
+			else if (data[UDP::Index::XOffset] > 5)
+			{
+				printf("Target last seen on right, rotating right. \n");
+				driveBase.drive(baseSpeed * .75, -baseSpeed * .75);
+			}
+			else if (data[UDP::Index::XOffset] < -5)
+			{
+				printf("Target last seen on left, rotating left. \n");
+				driveBase.drive(-baseSpeed * .75, baseSpeed * .75);
+			}
+			else
+			{
+				printf("Target last seen centered, moving forward...\n");
+				driveBase.drive(baseSpeed * 0.75);
+			}
+
 		}
 		else
 		{
 			//if no target is found for over 3 seconds, the robot will slowly start turning in the direction it last found a target until new target is found
-			if (udpReceiver.getUDPDataAge() > 3 && udpReceiver.xOffsetBackup > 5){
-				printf("Re-searching for target...\n");
-				printf("target last seen on right.. \n");
-				driveBase.drive(baseSpeed * .75, 0);
-			}
-			if (udpReceiver.getUDPDataAge() > 3 && udpReceiver.xOffsetBackup < -5){
-				printf("Re-searching for target...\n");
-				printf("target last seen on left.. \n");
-				driveBase.drive(0, baseSpeed * .75);
-				}
-			else if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
+			if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
 			{
 				printf("Target is far left\n");
 
-				driveBase.drive(baseSpeed * 1.25, -baseSpeed * 1.25);
+				driveBase.drive(baseSpeed, -baseSpeed);
 			}
 			else if (data[UDP::Index::XOffset] > 2) // Move while rotating
 			{
 				printf("Target is slight right\n");
 
-				driveBase.drive(baseSpeed, 0);
+				driveBase.drive(baseSpeed * 0.75, 0);
 			}
 			else if (data[UDP::Index::XOffset] < -10)
 			{
 				printf("Target is far left\n");
 
-				driveBase.drive(-baseSpeed * 1.25, baseSpeed * 1.25);
+				driveBase.drive(-baseSpeed, baseSpeed);
 			}
 			else if (data[UDP::Index::XOffset] < -2)
 			{
 				printf("Target is slight left\n");
 
-				driveBase.drive(0, baseSpeed);
+				driveBase.drive(0, baseSpeed * 0.75);
 			}
 			else if (data[UDP::Index::Distance] > 30)
 			{
@@ -400,13 +406,13 @@ void Robot::autoAim()
 
 				driveBase.drive(baseSpeed * 0.6);
 			}
-			else if (data[UDP::Index::Distance] < 10 && data[UDP::Index::XOffset] > 5){
+			/*else if (data[UDP::Index::Distance] < 10 && data[UDP::Index::XOffset] > 5){
 				printf("Too Close! \n");
 				printf("Backing Up... \n");
 
 				driveBase.drive(baseSpeed * -0.6);
 
-			}
+			}*/
 			else
 			{
 				printf("At target\n");

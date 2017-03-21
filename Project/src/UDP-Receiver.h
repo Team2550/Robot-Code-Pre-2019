@@ -37,8 +37,6 @@ public:
 	void getUDPData(float data[]);
 	double getUDPDataAge();
 	bool getUDPDataIsReal();
-	//A quick method to hold the x-offset value as newestUDPData[2], but intended to be used publicly
-	float xOffsetBackup;
 };
 
 

@@ -127,7 +127,6 @@ void UDP_Receiver::checkUDP()
 			// Average two best matches
 			for (unsigned int i = 0; i < UDP::DataCount; i++)
 				newestUDPData[i] = (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
-				xOffsetBackup = newestUDPData[2];
 			udpAgeTimer.Reset();
 			isRealData = true;
 		}
