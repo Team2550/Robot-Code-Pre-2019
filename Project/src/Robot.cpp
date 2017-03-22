@@ -185,7 +185,7 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
-	driveBase.setReversed(true);
+	driveBase.setReversed(false);
 	driveBase.stop();
 }
 
@@ -323,111 +323,126 @@ void Robot::TeleopPeriodic()
 
 void Robot::autoAim()
 {
-	// Backup value of reversal to restore when finished
-	bool isReversed = driveBase.getReversed();
+	// Backup value of reversal to restore when finished. Set motor reversal to true (front = camera)
+	bool wasReversed = driveBase.getReversed();
 	driveBase.setReversed(true);
-
-	printf("Aiming...\n");
 
 	// Get amps for checking if against wall
 	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
 			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
 
+	// Initialize base speed
 	float baseSpeed = 0.3;
 
-	// Get data
+	// Get vision data
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	// Stop moving forward if motors are no longer spinning (amp limit = 16)
-	if (amps < 20)
+	printf("Aiming...\n");
+
+	// Stop moving forward if motors are no longer spinning (amp limit = 20)
+	if (amps > 20)
+	{
+		printf("Amps too high! Stopping...\n");
+		driveBase.stop();
+	}
+	else
 	{
 		if (!udpReceiver.getUDPDataIsReal() || udpReceiver.getUDPDataAge() > 2)
 		{
 			printf("Cannot see target! ");
 
+			// If data is not real, than target was never seen. Move forward blindly.
 			if (!udpReceiver.getUDPDataIsReal())
 			{
 				printf("Target never seen, moving forward...\n");
+
 				driveBase.drive(baseSpeed * 0.75);
 			}
+			// If xOffset is greater than 15, than target was last seen to the right. Rotate right.
 			else if (data[UDP::Index::XOffset] > 15)
 			{
 				printf("Target last seen on right, rotating right. \n");
+
 				driveBase.drive(baseSpeed * 0.75, -baseSpeed * 0.75);
 			}
+			// If xOffset is less than -15, than target was last seen to the left. Rotate left.
 			else if (data[UDP::Index::XOffset] < -15)
 			{
 				printf("Target last seen on left, rotating left. \n");
+
 				driveBase.drive(-baseSpeed * 0.75, baseSpeed * 0.75);
 			}
+			// If nothing else applies, than target was last seen in front. Move forward.
 			else
 			{
 				printf("Target last seen centered, moving forward...\n");
+
 				driveBase.drive(baseSpeed * 0.75);
 			}
 
 		}
 		else
 		{
-			//if no target is found for over 3 seconds, the robot will slowly start turning in the direction it last found a target until new target is found
-			if (data[UDP::Index::HorizAngle] > 15) // Max offset of 10, rotates in place
+			// Target is more than 15 degrees to the right. Rotate right.
+			if (data[UDP::Index::HorizAngle] > 15)
 			{
 				printf("Target is far right\n");
 
 				driveBase.drive(baseSpeed, -baseSpeed);
 			}
+			// Target is more than 5 degrees to the right. Rotate right and move forward.
 			else if (data[UDP::Index::HorizAngle] > 5) // Move while rotating
 			{
 				printf("Target is slight right\n");
 
-				driveBase.drive(baseSpeed, 0);
+				driveBase.drive(baseSpeed, baseSpeed * 0.25);
 			}
+			// Target is more than 15 degrees to the left. Rotate left.
 			else if (data[UDP::Index::HorizAngle] < -15)
 			{
 				printf("Target is far left\n");
 
 				driveBase.drive(-baseSpeed, baseSpeed);
 			}
+			// Target is more than 5 degrees to the left. Rotate left and move forward.
 			else if (data[UDP::Index::HorizAngle] < -5)
 			{
 				printf("Target is slight left\n");
 
 				driveBase.drive(0, baseSpeed);
 			}
+			// Target is about centered but is distant. Move forward.
 			else if (data[UDP::Index::Distance] > 30)
 			{
 				printf("Target is distant\n");
 
 				driveBase.drive(baseSpeed);
 			}
-			else if (data[UDP::Index::Distance] > 10)
+			// Target is about centered and close. Move forward slowly.
+			else if (data[UDP::Index::Distance] > 7)
 			{
 				printf("Target is near\n");
 
 				driveBase.drive(baseSpeed * 0.8);
 			}
-			/*else if (data[UDP::Index::Distance] < 10 && fabs(data[UDP::Index::XOffset]) > 5){
-				printf("Too Close! \n");
-				printf("Backing Up... \n");
-
-				driveBase.drive(baseSpeed * -0.6);
-
-			}*/
+			// Robot is at target. Stop.
 			else
 			{
 				printf("At target\n");
+
 				driveBase.stop();
 			}
 		}
 	}
-	else
-	{
-		printf("Amps too high! Stopping...\n");
-		driveBase.stop();
-	}
 
-	driveBase.setReversed(isReversed);
+	printf("Set motors: left = ");
+	printf(std::to_string(driveBase.getLeftSpeed()).c_str());
+	printf(", right = ");
+	printf(std::to_string(driveBase.getRightSpeed()).c_str());
+	printf("\n");
+
+	driveBase.setReversed(wasReversed);
 }
 
 START_ROBOT_CLASS(Robot)
