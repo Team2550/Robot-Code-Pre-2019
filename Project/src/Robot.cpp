@@ -229,6 +229,12 @@ void Robot::TeleopPeriodic()
 	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
 						SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 
+	printf("Set motors: left = ");
+	printf(std::to_string(driveBase.getLeftSpeed()).c_str());
+	printf(", right = ");
+	printf(std::to_string(driveBase.getRightSpeed()).c_str());
+	printf("\n");
+
 	/* ========== Shooter ========== */
 	SmartDashboard::PutNumber("shooterCurrent", pdp.GetCurrent(Ports::PDP::Shooter));
 
@@ -433,12 +439,6 @@ void Robot::autoAim()
 			}
 		}
 	}
-
-	printf("Set motors: left = ");
-	printf(std::to_string(driveBase.getLeftSpeed()).c_str());
-	printf(", right = ");
-	printf(std::to_string(driveBase.getRightSpeed()).c_str());
-	printf("\n");
 
 	driveBase.setReversed(wasReversed);
 }
