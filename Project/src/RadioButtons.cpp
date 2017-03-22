@@ -2,9 +2,9 @@
 #include <iostream>
 
 template<class E>
-RadioButtons<E>::RadioButtons(std::string name) : sendableChooser(name)
+RadioButtons<E>::RadioButtons(std::string name)
 {
-
+	this->name = name;
 }
 
 template<class E>
@@ -41,6 +41,12 @@ void RadioButtons<E>::AddDefault(std::string name, E enumValue)
 		enumPointers.insert(name, new E(enumValue));
 		sendableChooser.AddDefault(name, enumPointers.at(name));
 	}
+}
+
+template<class E>
+void RadioButtons<E>::sendToDashboard()
+{
+	SmartDashboard::PutData(name, sendableChooser);
 }
 
 template<class E>
