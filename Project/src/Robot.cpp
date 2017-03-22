@@ -300,6 +300,25 @@ void Robot::TeleopPeriodic()
 	printf("Amps: ");
 	printf(std::to_string(amps).c_str());
 	printf("\n");
+
+	/* ============ Rumble Feedback =========== */
+	bool doRumble = SmartDashboard::GetBoolean("Rumble Active", false);
+
+	if (doRumble && canAutoAim)
+	{
+		float data[UDP::DataCount];
+		udpReceiver.getUDPData(data);
+
+		float vibrationLevel = data[UDP::Index::XOffset] * .05;
+
+		vibrationLevel = fmin(1, fmax(-1, vibrationLevel));
+
+		Utility::setRumble(driveController, Utility::RumbleSide::both, 0);
+		if (vibrationLevel < -0.1)
+			Utility::setRumble(driveController, Utility::RumbleSide::left, -vibrationLevel);
+		else if (vibrationLevel > 0.1)
+			Utility::setRumble(driveController, Utility::RumbleSide::right, vibrationLevel);
+	}
 }
 
 void Robot::autoAim()
