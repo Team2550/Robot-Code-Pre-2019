@@ -294,8 +294,7 @@ void Robot::TeleopPeriodic()
 		lift.stop();
 
 	/* ========== Amps feedback ========== */
-	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
-			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+	double amps = driveBase.getAmps(pdp);
 
 	printf("Amps: ");
 	printf(std::to_string(amps).c_str());
@@ -328,8 +327,7 @@ void Robot::autoAim()
 	driveBase.setReversed(true);
 
 	// Get amps for checking if against wall
-	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
-			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+	double amps = driveBase.getAmps(pdp);
 
 	// Initialize base speed
 	float baseSpeed = 0.3;
