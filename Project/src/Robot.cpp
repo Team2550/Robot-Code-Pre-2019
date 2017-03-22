@@ -148,8 +148,8 @@ void Robot::AutonomousPeriodic()
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	printf("X Offset:");
-	printf(std::to_string(data[UDP::Index::XOffset]).c_str());
+	printf("X Angle:");
+	printf(std::to_string(data[UDP::Index::HorizAngle]).c_str());
 	printf(", Dist:");
 	printf(std::to_string(data[UDP::Index::Distance]).c_str());
 	printf("\n");
@@ -185,29 +185,26 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit()
 {
 	/* ========== DriveBase ========== */
-	driveBase.setReversed(false);
+	driveBase.setReversed(true);
 	driveBase.stop();
 }
 
 void Robot::TeleopPeriodic()
 {
 	/* ========== udpReceiver ========== */
-	/*
-
 	udpReceiver.checkUDP();
 
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	//printf("X Offset:");
-	//printf(std::to_string(data[UDP::Index::XOffset]).c_str());
-	//printf(", Dist:");
-	//printf(std::to_string(data[UDP::Index::Distance]).c_str());
-	//printf("\n");
+	printf("X Angle:");
+	printf(std::to_string(data[UDP::Index::HorizAngle]).c_str());
+	printf(", Dist:");
+	printf(std::to_string(data[UDP::Index::Distance]).c_str());
+	printf("\n");
 
-	*/
 	/* ========== DriveBase ========== */
-	SmartDashboard::GetBoolean("Camera Tracking", false);
+	canAutoAim = SmartDashboard::GetBoolean("Camera Tracking", false);
 
 	if (canAutoAim && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
@@ -303,36 +300,21 @@ void Robot::TeleopPeriodic()
 	printf("Amps: ");
 	printf(std::to_string(amps).c_str());
 	printf("\n");
-
-	/* ============ Rumble Feedback =========== */
-	bool doRumble = SmartDashboard::GetBoolean("Rumble Active", false);
-
-	if (doRumble && canAutoAim)
-	{
-		float data[UDP::DataCount];
-		udpReceiver.getUDPData(data);
-
-		float vibrationLevel = data[UDP::Index::XOffset] * .05;
-
-		vibrationLevel = fmin(1, fmax(-1, vibrationLevel));
-
-		Utility::setRumble(driveController, Utility::RumbleSide::both, 0);
-		if (vibrationLevel < -0.1)
-			Utility::setRumble(driveController, Utility::RumbleSide::left, -vibrationLevel);
-		else if (vibrationLevel > 0.1)
-			Utility::setRumble(driveController, Utility::RumbleSide::right, vibrationLevel);
-	}
 }
 
 void Robot::autoAim()
 {
+	// Backup value of reversal to restore when finished
+	bool isReversed = driveBase.getReversed();
+	driveBase.setReversed(true);
+
 	printf("Aiming...\n");
 
 	// Get amps for checking if against wall
 	double amps = (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
 			       pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
 
-	float baseSpeed = driveBase.getReversed() ? Speeds::DriveBase::Turtle : -Speeds::DriveBase::Turtle;
+	float baseSpeed = 0.3;
 
 	// Get data
 	float data[UDP::DataCount];
@@ -350,15 +332,15 @@ void Robot::autoAim()
 				printf("Target never seen, moving forward...\n");
 				driveBase.drive(baseSpeed * 0.75);
 			}
-			else if (data[UDP::Index::XOffset] > 5)
+			else if (data[UDP::Index::XOffset] > 15)
 			{
 				printf("Target last seen on right, rotating right. \n");
-				driveBase.drive(baseSpeed * .75, -baseSpeed * .75);
+				driveBase.drive(baseSpeed * 0.75, -baseSpeed * 0.75);
 			}
-			else if (data[UDP::Index::XOffset] < -5)
+			else if (data[UDP::Index::XOffset] < -15)
 			{
 				printf("Target last seen on left, rotating left. \n");
-				driveBase.drive(-baseSpeed * .75, baseSpeed * .75);
+				driveBase.drive(-baseSpeed * 0.75, baseSpeed * 0.75);
 			}
 			else
 			{
@@ -370,29 +352,29 @@ void Robot::autoAim()
 		else
 		{
 			//if no target is found for over 3 seconds, the robot will slowly start turning in the direction it last found a target until new target is found
-			if (data[UDP::Index::XOffset] > 10) // Max offset of 10, rotates in place
+			if (data[UDP::Index::HorizAngle] > 15) // Max offset of 10, rotates in place
 			{
-				printf("Target is far left\n");
+				printf("Target is far right\n");
 
 				driveBase.drive(baseSpeed, -baseSpeed);
 			}
-			else if (data[UDP::Index::XOffset] > 2) // Move while rotating
+			else if (data[UDP::Index::HorizAngle] > 5) // Move while rotating
 			{
 				printf("Target is slight right\n");
 
-				driveBase.drive(baseSpeed * 0.75, 0);
+				driveBase.drive(baseSpeed, 0);
 			}
-			else if (data[UDP::Index::XOffset] < -10)
+			else if (data[UDP::Index::HorizAngle] < -15)
 			{
 				printf("Target is far left\n");
 
 				driveBase.drive(-baseSpeed, baseSpeed);
 			}
-			else if (data[UDP::Index::XOffset] < -2)
+			else if (data[UDP::Index::HorizAngle] < -5)
 			{
 				printf("Target is slight left\n");
 
-				driveBase.drive(0, baseSpeed * 0.75);
+				driveBase.drive(0, baseSpeed);
 			}
 			else if (data[UDP::Index::Distance] > 30)
 			{
@@ -400,13 +382,13 @@ void Robot::autoAim()
 
 				driveBase.drive(baseSpeed);
 			}
-			else if (data[UDP::Index::Distance] > 15)
+			else if (data[UDP::Index::Distance] > 10)
 			{
 				printf("Target is near\n");
 
-				driveBase.drive(baseSpeed * 0.6);
+				driveBase.drive(baseSpeed * 0.8);
 			}
-			/*else if (data[UDP::Index::Distance] < 10 && data[UDP::Index::XOffset] > 5){
+			/*else if (data[UDP::Index::Distance] < 10 && fabs(data[UDP::Index::XOffset]) > 5){
 				printf("Too Close! \n");
 				printf("Backing Up... \n");
 
@@ -425,6 +407,8 @@ void Robot::autoAim()
 		printf("Amps too high! Stopping...\n");
 		driveBase.stop();
 	}
+
+	driveBase.setReversed(isReversed);
 }
 
 START_ROBOT_CLASS(Robot)

@@ -6,7 +6,7 @@ import math
 
 #################################################################################################################
 
-IS_TEST = True
+IS_TEST = False
 
 TARGET_RECT_SIZE_INCHES = (2, 5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
@@ -70,7 +70,7 @@ def processCamera(camCapture):
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
     lowerBound = np.array([0, 0, 200])
-    upperBound = np.array([255, 120, 255])
+    upperBound = np.array([255, 200, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
     maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
