@@ -28,6 +28,7 @@ public:
 	void setSpeedOffset(float speedOffset);
 	void addSpeedOffset(float speedOffset);
 	float getSpeedOffset();
+	float getAmps(PowerDistributionPanel& pdp);
 };
 
 #endif

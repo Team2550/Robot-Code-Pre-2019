@@ -61,3 +61,8 @@ float Shooter::getSpeedOffset()
 {
 	return shooterSpeedOffset;
 }
+
+float Shooter::getAmps(PowerDistributionPanel& pdp)
+{
+	return pdp.GetCurrent(Ports::PDP::Shooter);
+}

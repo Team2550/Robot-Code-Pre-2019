@@ -208,10 +208,10 @@ void Robot::TeleopPeriodic()
 						SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 
 	/* ========== Shooter ========== */
-	SmartDashboard::PutNumber("shooterCurrent", pdp.GetCurrent(Ports::PDP::Shooter));
+	SmartDashboard::PutNumber("shooterCurrent", shooter.getAmps(pdp));
 
 	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
-		shooter.shoot(pdp.GetCurrent(Ports::PDP::Shooter));
+		shooter.shoot(shooter.getAmps(pdp));
 	else
 		shooter.stop();
 
