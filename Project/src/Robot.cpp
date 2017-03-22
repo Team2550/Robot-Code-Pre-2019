@@ -15,8 +15,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	increaseShooterSpeedDown = false;
 	climbToggleHold = false;
 	climbToggle = false;
-	canAutoAim = false;
-	autoSafeMode = true;
+	autoReady = &safeReady;
 }
 
 Robot::~Robot()
@@ -26,18 +25,18 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	autoScenarioChooser.AddDefault("Left", &leftScenario);
+	// Autonomous readiness
+	autoReadyChooser.AddObject("Go past baseline", &safeReady);
+	autoReadyChooser.AddObject("Place gear blind", &blindReady);
+	autoReadyChooser.AddObject("Place gear vision", &visionReady);
+	SmartDashboard::PutData("Autonomous Readiness", &autoReadyChooser);
+
+	SmartDashboard::SetPersistent("Autonomous Readiness");
+
+	// Autonomous position
 	autoScenarioChooser.AddObject("Middle", &middleScenario);
-	autoScenarioChooser.AddObject("Right", &rightScenario);
-	autoScenarioChooser.AddObject("Test Scenario", &testScenario);
+	autoScenarioChooser.AddObject("Side", &sideScenario);
 	SmartDashboard::PutData("Auto Scenario", &autoScenarioChooser);
-
-	// Auto speeds
-	SmartDashboard::SetDefaultNumber("Robot Speed Inches Per Second", Autonomous::SpeedInchesPerSecond);
-	SmartDashboard::SetDefaultNumber("Full Rotation Time", Autonomous::FullRotationTime);
-
-	SmartDashboard::SetPersistent("Robot Speed Inches Per Second");
-	SmartDashboard::SetPersistent("Full Rotation Time");
 
 	// Motor trim
 	SmartDashboard::SetDefaultNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
@@ -50,91 +49,63 @@ void Robot::RobotInit()
 	SmartDashboard::SetPersistent("Left Backwards Ratio");
 	SmartDashboard::SetPersistent("Right Backwards Ratio");
 
-	// Safety settings
-	SmartDashboard::SetDefaultBoolean("Camera Tracking", false);
-	SmartDashboard::SetDefaultBoolean("Safe mode", true);
+	// Rumble settings
 	SmartDashboard::SetDefaultBoolean("Rumble Active", false);
-	SmartDashboard::SetDefaultNumber("Blind time multiplier", 1);
 
-	SmartDashboard::SetPersistent("Camera Tracking");
-	SmartDashboard::SetPersistent("Safe mode");
 	SmartDashboard::SetPersistent("Rumble Active");
-	SmartDashboard::SetPersistent("Blind time multiplier");
 }
 
 void Robot::AutonomousInit()
 {
-	// Initialize choreographer to selected position scenario
-	// Get scenario from smart dashboard
-	Autonomous::PosScenario *autoPosScenario = autoScenarioChooser.GetSelected();
-	autoSafeMode = SmartDashboard::GetBoolean("Safe mode", true);
-	printf(autoSafeMode ? "Safe mode\n" : "Not safe mode\n");
+	// Get auto ready from smart dashboard.
+	autoReady = autoReadyChooser.GetSelected();
 
-	//if value could not be retrieved, default to the value stored in the default scenario constant.
-	// The pointers that autoPosScenario is being set to are the same that would have been retrieved by the function above.
-	if(autoPosScenario == nullptr)
+	printf(autoReady == &safeReady ? "Safe mode\n" : "Not safe mode\n");
+
+	if (autoReady != &safeReady)
 	{
-		printf("No scenario found\n");
-		switch (Autonomous::DefaultScenario)
+		// Get auto scenario from smart dashboard.
+		Autonomous::PosScenario *autoPosScenario = autoScenarioChooser.GetSelected();
+
+		// If value could not be retrieved, default to the value stored in the default scenario constant.
+		// The pointers that autoPosScenario is being set to are the same that would have been retrieved by the function above.
+		if(autoPosScenario == nullptr)
 		{
-		case Autonomous::Left:
-			autoPosScenario = &leftScenario;
-			break;
-		case Autonomous::Middle:
-			autoPosScenario = &middleScenario;
-			break;
-		case Autonomous::Right:
-			autoPosScenario = &rightScenario;
-			break;
-		case Autonomous::Test:
-			autoPosScenario = &testScenario;
-			break;
+			printf("No scenario found\n");
+			switch (Autonomous::DefaultScenario)
+			{
+			case Autonomous::Middle:
+				autoPosScenario = &middleScenario;
+				break;
+			case Autonomous::Side:
+				autoPosScenario = &sideScenario;
+				break;
+			}
+		}
+
+		// Get dynamic fine-tuning values from smart dashboard
+		float blindTimeMultiplier = SmartDashboard::GetNumber("Blind time multiplier",1);
+
+		// Set the timetable of the choreographer to the appropriate scenario
+		if (autoPosScenario == &middleScenario)
+		{
+			printf("Pos Middle\n");
+			float timetable[Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount][3];
+			Autonomous::DynamicBlindScenarios::MiddlePos::getTimetable(blindTimeMultiplier, timetable);
+
+			choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
+		}
+		else if (autoPosScenario == &sideScenario)
+		{
+			printf("Pos Right\n");
+			float timetable[Autonomous::DynamicBlindScenarios::SidePos::PeriodCount][3];
+			Autonomous::DynamicBlindScenarios::SidePos::getTimetable(blindTimeMultiplier, timetable);
+
+			choreographer.setTimetable(Autonomous::DynamicBlindScenarios::SidePos::PeriodCount, timetable);
 		}
 	}
 
-	// Get dynamic fine-tuning values from smart dashboard
-	float blindTimeMultiplier = SmartDashboard::GetNumber("Blind time multiplier",1);
-
-	// Set the timetable of the choreographer to the appropriate scenario
-	// Currently, the lines that would be used in production are commented out
-	// The functions being used are from the dynamic blind scenarios namespace.
-	// They take the speed and rotation time values and use them to update the array passed to them with the appropriate timetable values
-	//                                                                                                      (time, leftSpeed, rightSpeed)
-	if (autoPosScenario == &leftScenario)
-	{
-		printf("Pos Left\n");
-		float timetable[Autonomous::DynamicBlindScenarios::LeftPos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::LeftPos::getTimetable(blindTimeMultiplier, timetable);
-
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::LeftPos::PeriodCount, timetable);
-	}
-	else if (autoPosScenario == &middleScenario)
-	{
-		printf("Pos Middle\n");
-		float timetable[Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::MiddlePos::getTimetable(blindTimeMultiplier, timetable);
-
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
-	}
-	else if (autoPosScenario == &rightScenario)
-	{
-		printf("Pos Right\n");
-		float timetable[Autonomous::DynamicBlindScenarios::RightPos::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::RightPos::getTimetable(blindTimeMultiplier, timetable);
-
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::RightPos::PeriodCount, timetable);
-	}
-	else if (autoPosScenario == &testScenario)
-	{
-		printf("Test Mode \n");
-		float timetable[Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount][3];
-		Autonomous::DynamicBlindScenarios::TestScenario::getTimetable(blindTimeMultiplier, timetable);
-
-		choreographer.setTimetable(Autonomous::DynamicBlindScenarios::TestScenario::PeriodCount, timetable);
-	}
-
-	canAutoAim = SmartDashboard::GetBoolean("Camera Tracking", false);
-
+	// Set motor reversal and reset timer
 	driveBase.setReversed(true);
 
 	autoTimer.Reset();
@@ -157,7 +128,7 @@ void Robot::AutonomousPeriodic()
 
 	/* ========== DriveBase ========== */
 	// Run choreographer script until end of second to last step, unless can't auto aim
-	if (autoSafeMode)
+	if (autoReady == &safeReady)
 	{
 		if (autoTimer.Get() < 4)
 			driveBase.drive(Speeds::DriveBase::Turtle);
@@ -166,7 +137,7 @@ void Robot::AutonomousPeriodic()
 	}
 	else
 	{
-		if (!canAutoAim || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 1).time - 3.0)
+		if (autoReady != &visionReady || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 1).time - 3.0)
 		{
 			choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
 		}
@@ -192,6 +163,8 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+	autoReady = autoReadyChooser.GetSelected();
+
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
 
@@ -205,9 +178,7 @@ void Robot::TeleopPeriodic()
 	printf("\n");
 
 	/* ========== DriveBase ========== */
-	canAutoAim = SmartDashboard::GetBoolean("Camera Tracking", false);
-
-	if (canAutoAim && driveController.GetRawButton(Controls::TankDrive::AutoAim))
+	if (autoReady == &visionReady && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
 		autoAim();
 	}
@@ -229,12 +200,6 @@ void Robot::TeleopPeriodic()
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
 						SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
-
-	printf("Set motors: left = ");
-	printf(std::to_string(driveBase.getLeftSpeed()).c_str());
-	printf(", right = ");
-	printf(std::to_string(driveBase.getRightSpeed()).c_str());
-	printf("\n");
 
 	/* ========== Shooter ========== */
 	SmartDashboard::PutNumber("shooterCurrent", pdp.GetCurrent(Ports::PDP::Shooter));
@@ -300,7 +265,7 @@ void Robot::TeleopPeriodic()
 	else
 		lift.stop();
 
-	/* ========== Amps feedback ========== */
+	/* ========== Amps Feedback ========== */
 	double amps = driveBase.getAmps(pdp);
 
 	printf("Amps: ");
@@ -310,7 +275,7 @@ void Robot::TeleopPeriodic()
 	/* ============ Rumble Feedback =========== */
 	bool doRumble = SmartDashboard::GetBoolean("Rumble Active", false);
 
-	if (doRumble && canAutoAim)
+	if (doRumble && autoReady == &visionReady)
 	{
 		float data[UDP::DataCount];
 		udpReceiver.getUDPData(data);

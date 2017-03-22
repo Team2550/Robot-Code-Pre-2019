@@ -114,15 +114,17 @@ namespace Speeds
 
 namespace Autonomous
 {
-	const float SpeedInchesPerSecond = 100;
-	const float FullRotationTime = .5;
+	enum Ready // What auto functions are ready
+	{
+		Safe, // Safe mode (pass baseline) is ready
+		Blind, // Putting gear on peg blindly is ready
+		Vision // Putting gear on peg with vision is ready
+	};
 
 	enum PosScenario
 	{
-		Left,
 		Middle,
-		Right,
-		Test
+		Side
 	};
 
 	const PosScenario DefaultScenario = Middle;
@@ -132,21 +134,16 @@ namespace Autonomous
 		// Timetable format is an array of arrays, each of which is three floats long
 		//                                                  (timeLength, leftSpeed, rightSpeed)
 		// Namespaces here denote different starting positions
-		namespace LeftPos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{4.6,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-		}
 		namespace MiddlePos
 		{
 			const int PeriodCount = 1;
 			const float Timetable[PeriodCount][3] = {{4.6,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
 
 		}
-		namespace RightPos
+		namespace SidePos
 		{
 			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{4.6,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
+			const float Timetable[PeriodCount][3] = {{6.9,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
 		}
 	}
 
@@ -164,15 +161,6 @@ namespace Autonomous
 			Return:
 				none
 		=================================================*/
-		namespace LeftPos
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float timeMult, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{4.6f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
 		namespace MiddlePos
 		{
 			const int PeriodCount = 1;
@@ -183,21 +171,12 @@ namespace Autonomous
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}
-		namespace RightPos
+		namespace SidePos
 		{
 			const int PeriodCount = 1;
 			inline void getTimetable(float timeMult, float _timetable[PeriodCount][3])
 			{
-				float tt[PeriodCount][3] = {{4.6f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace TestScenario
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float timeMult, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{4.6f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
+				const float tt[PeriodCount][3] = {{6.9f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
 				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
 			}
 		}

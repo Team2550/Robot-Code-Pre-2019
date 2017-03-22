@@ -25,18 +25,21 @@ private:
 	Shooter shooter;
 	Lift lift;
 
-	Autonomous::PosScenario leftScenario = Autonomous::Left;
+	Autonomous::Ready safeReady = Autonomous::Safe;
+	Autonomous::Ready blindReady = Autonomous::Blind;
+	Autonomous::Ready visionReady = Autonomous::Vision;
+	SendableChooser<Autonomous::Ready*> autoReadyChooser;
+
 	Autonomous::PosScenario middleScenario = Autonomous::Middle;
-	Autonomous::PosScenario rightScenario = Autonomous::Right;
-	Autonomous::PosScenario testScenario = Autonomous::Test;
+	Autonomous::PosScenario sideScenario = Autonomous::Side;
 	SendableChooser<Autonomous::PosScenario*> autoScenarioChooser;
+
+	Autonomous::Ready *autoReady;
 
 	bool climbToggleHold;
 	bool climbToggle;
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
-	bool canAutoAim;
-	bool autoSafeMode;
 
 public:
 	Robot();
