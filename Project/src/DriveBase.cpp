@@ -30,15 +30,16 @@ void DriveBase::drive(float speed)
 
 void DriveBase::drive(float leftSpeed, float rightSpeed)
 {
-	if(isReversed)
+	if (isReversed)
 	{
-		float temp = leftSpeed;
-		leftSpeed = -rightSpeed;
-		rightSpeed = -temp;
+		leftMotor.Set(-rightSpeed);
+		rightMotor.Set(-leftSpeed);
 	}
-
-	leftMotor.Set(leftSpeed);
-	rightMotor.Set(rightSpeed);
+	else
+	{
+		leftMotor.Set(leftSpeed);
+		rightMotor.Set(rightSpeed);
+	}
 }
 
 void DriveBase::stop()
@@ -49,16 +50,22 @@ void DriveBase::stop()
 void DriveBase::applyTrim(float leftForwardsRatio, float rightForwardsRatio,
     		              float leftBackwardsRatio, float rightBackwardsRatio)
 {
-	float leftSpeed = getLeftSpeed();
-	float rightSpeed = getRightSpeed();
+	float leftSpeed = leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
+	float rightSpeed = rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
 
 	leftSpeed *= (leftSpeed > 0) ? leftForwardsRatio : leftBackwardsRatio;
 	rightSpeed *= (rightSpeed > 0) ? rightForwardsRatio : rightBackwardsRatio;
 
-	drive(leftSpeed, rightSpeed);
+	leftMotor.Set(leftSpeed);
+	rightMotor.Set(rightSpeed);
 }
 
 void DriveBase::setReversed(bool reverse)
 {
 	isReversed = reverse;
+}
+
+bool DriveBase::getReversed()
+{
+	return isReversed;
 }
