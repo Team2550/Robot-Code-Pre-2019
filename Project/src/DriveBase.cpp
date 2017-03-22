@@ -58,12 +58,6 @@ void DriveBase::applyTrim(float leftForwardsRatio, float rightForwardsRatio,
 
 	leftMotor.Set(leftSpeed);
 	rightMotor.Set(rightSpeed);
-
-	printf("Set motors: left = ");
-	printf(std::to_string(leftMotor.Get()).c_str());
-	printf(", right = ");
-	printf(std::to_string(rightMotor.Get()).c_str());
-	printf("\n");
 }
 
 void DriveBase::setReversed(bool reverse)

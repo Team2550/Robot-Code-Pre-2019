@@ -84,7 +84,7 @@ Arguments:
 Return:
 	none
 ================================================*/
-void UDP_Receiver::checkUDP()
+bool UDP_Receiver::checkUDP()
 {
 	int bytesRecievedCount = 0;
 
@@ -115,7 +115,7 @@ void UDP_Receiver::checkUDP()
 			// If data point is the right length, add it to the right position in the dataPoints vector (sorted by percent match)
 			if (currentDataPoint.size() == UDP::DataCount)
 				for (unsigned int j = 0; j <= dataPoints.size(); j++)
-					if (j >= dataPoints.size() || dataPoints[j][UDP::Index::PercentMatch] > currentDataPoint[UDP::Index::PercentMatch])
+					if (j >= dataPoints.size() || currentDataPoint[UDP::Index::PercentMatch] > dataPoints[j][UDP::Index::PercentMatch])
 					{
 						dataPoints.insert(dataPoints.begin() + j, currentDataPoint);
 						j = dataPoints.size() + 1;
@@ -124,11 +124,19 @@ void UDP_Receiver::checkUDP()
 
 		if (dataPoints.size() > 1)
 		{
-			// Average two best matches
-			for (unsigned int i = 0; i < UDP::DataCount; i++)
-				newestUDPData[i] = (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
-			udpAgeTimer.Reset();
-			isRealData = true;
+			// If one target is a much worse match than the other, ignore the data
+			if (dataPoints[1][UDP::Index::PercentMatch] / dataPoints[0][UDP::Index::PercentMatch] > 0.75)
+			{
+				// Average two best matches
+				for (unsigned int i = 0; i < UDP::DataCount; i++)
+					newestUDPData[i] = (dataPoints[0][i] + dataPoints[1][i]) / 2;
+				udpAgeTimer.Reset();
+				isRealData = true;
+
+				return true;
+			}
 		}
 	}
+
+	return false;
 }

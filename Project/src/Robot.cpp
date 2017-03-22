@@ -117,7 +117,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	/* ========== udpReceiver ========== */
-	udpReceiver.checkUDP();
+	while (udpReceiver.checkUDP()) {}
 
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
@@ -313,6 +313,10 @@ void Robot::autoAim()
 
 	printf("Aiming...\n");
 
+	printf("X Angle: ");
+	printf(std::to_string(data[UDP::Index::HorizAngle]).c_str());
+	printf("\n");
+
 	// Stop moving forward if motors are no longer spinning (amp limit = 20)
 	if (amps > 20)
 	{
@@ -333,18 +337,18 @@ void Robot::autoAim()
 				driveBase.drive(baseSpeed * 0.8);
 			}
 			// If xOffset is greater than 15, than target was last seen to the right. Rotate right.
-			else if (data[UDP::Index::HorizAngle] > 15)
+			else if (data[UDP::Index::HorizAngle] > 10)
 			{
 				printf("Target last seen on right, rotating right. \n");
 
-				driveBase.drive(baseSpeed * 0.8, -baseSpeed * 0.8);
+				driveBase.drive(baseSpeed, -baseSpeed);
 			}
 			// If xOffset is less than -15, than target was last seen to the left. Rotate left.
-			else if (data[UDP::Index::HorizAngle] < -15)
+			else if (data[UDP::Index::HorizAngle] < -10)
 			{
 				printf("Target last seen on left, rotating left. \n");
 
-				driveBase.drive(-baseSpeed * 0.8, baseSpeed * 0.8);
+				driveBase.drive(-baseSpeed, baseSpeed);
 			}
 			// If nothing else applies, than target was last seen in front. Move forward.
 			else

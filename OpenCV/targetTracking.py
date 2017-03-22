@@ -3,10 +3,11 @@ import numpy as np
 import os
 import socket
 import math
+import time
 
 #################################################################################################################
 
-IS_TEST = False
+IS_TEST = True
 
 TARGET_RECT_SIZE_INCHES = (2, 5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
@@ -171,10 +172,11 @@ def main():
 
     try:
         while (running and cv2.waitKey(1) != 27 and camCapture.isOpened()):
+            startTime = time.time()
             try:            
                 data = processCamera(camCapture)
 
-                if (data is not None and len(data) > 0):
+                if (data is not None and len(data) > 1):
                     print("Found", len(data), "targets")
 
                     for d in data:
@@ -195,6 +197,8 @@ def main():
                 camCapture.release()
                 
                 raise
+            
+            time.sleep(max(1./10 - (time.time() - startTime), 0))
             
     except KeyboardInterrupt: # Catch exit by Ctrl-C
         print("\nTerminating script...")
