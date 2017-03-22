@@ -33,6 +33,7 @@ public:
 
     void setReversed(bool reverse);
     bool getReversed();
+    float getAmps(PowerDistributionPanel& pdp);
 };
 
 #endif

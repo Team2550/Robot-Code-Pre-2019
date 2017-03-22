@@ -69,3 +69,9 @@ bool DriveBase::getReversed()
 {
 	return isReversed;
 }
+
+float DriveBase::getAmps(PowerDistributionPanel& pdp)
+{
+	return (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
+		    pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+}

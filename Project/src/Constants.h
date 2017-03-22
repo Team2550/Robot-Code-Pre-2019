@@ -26,6 +26,10 @@ namespace Ports
 	namespace PDP
 	{
 		const int Shooter = 2;
+		const int LeftMotor1 = 12;
+		const int LeftMotor2 = 13;
+		const int RightMotor1 = 14;
+		const int RightMotor2 = 15;
 	}
 #else
 	namespace TankDrive
@@ -48,6 +52,10 @@ namespace Ports
 	namespace PDP
 	{
 		const int Shooter = 2;
+		const int LeftMotor1 = 12;
+		const int LeftMotor2 = 13;
+		const int RightMotor1 = 14;
+		const int RightMotor2 = 15;
 	}
 #endif
 }
