@@ -30,15 +30,8 @@ void DriveBase::drive(float speed)
 
 void DriveBase::drive(float leftSpeed, float rightSpeed)
 {
-	if(isReversed)
-	{
-		float temp = leftSpeed;
-		leftSpeed = -rightSpeed;
-		rightSpeed = -temp;
-	}
-
-	leftMotor.Set(leftSpeed);
-	rightMotor.Set(rightSpeed);
+	leftMotor.Set(isReversed ? -rightSpeed : leftSpeed);
+	rightMotor.Set(isReversed ? -leftSpeed : rightSpeed);
 }
 
 void DriveBase::stop()
