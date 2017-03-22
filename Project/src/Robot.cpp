@@ -414,7 +414,7 @@ void Robot::autoAim()
 			{
 				printf("Target is slight left\n");
 
-				driveBase.drive(0, baseSpeed);
+				driveBase.drive(baseSpeed * 0.25, baseSpeed);
 			}
 			// Target is about centered but is distant. Move forward.
 			else if (data[UDP::Index::Distance] > 30)
