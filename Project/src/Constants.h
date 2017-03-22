@@ -112,17 +112,6 @@ namespace Speeds
 	}
 }
 
-namespace RumbleFeedback
-{
-enum RumbleScenario
-	{
-	off,
-	low,
-	high
-	};
-
-	const RumbleScenario DefaultScenario = off;
-}
 namespace Autonomous
 {
 	const float SpeedInchesPerSecond = 100;
