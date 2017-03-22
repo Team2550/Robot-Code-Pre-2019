@@ -99,7 +99,7 @@ void Robot::AutonomousInit()
 		}
 		else if (autoPosScenario == &sideScenario)
 		{
-			printf("Pos Right\n");
+			printf("Pos Side\n");
 			float timetable[Autonomous::DynamicBlindScenarios::SidePos::PeriodCount][3];
 			Autonomous::DynamicBlindScenarios::SidePos::getTimetable(blindTimeMultiplier, timetable);
 
@@ -173,12 +173,13 @@ void Robot::TeleopPeriodic()
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
+	/*
 	printf("X Angle:");
 	printf(std::to_string(data[UDP::Index::HorizAngle]).c_str());
 	printf(", Dist:");
 	printf(std::to_string(data[UDP::Index::Distance]).c_str());
 	printf("\n");
-
+	*/
 	/* ========== DriveBase ========== */
 	if (autoReady == &visionReady && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
@@ -211,7 +212,7 @@ void Robot::TeleopPeriodic()
 	else
 		shooter.stop();
 
-	if(perifController.GetRawButton(Controls::Peripherals::Blender))
+	if (perifController.GetRawButton(Controls::Peripherals::Blender))
 		shooter.blend(perifController.GetRawAxis(Controls::Peripherals::ReverseBlender) > 0.3);
 	else
 		shooter.stopBlend();
@@ -270,9 +271,9 @@ void Robot::TeleopPeriodic()
 	/* ========== Amps Feedback ========== */
 	double amps = driveBase.getAmps(pdp);
 
-	printf("Amps: ");
-	printf(std::to_string(amps).c_str());
-	printf("\n");
+	//printf("Amps: ");
+	//printf(std::to_string(amps).c_str());
+	//printf("\n");
 
 	/* ============ Rumble Feedback =========== */
 	bool doRumble = SmartDashboard::GetBoolean("Rumble Active", false);
