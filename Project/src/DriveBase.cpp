@@ -40,12 +40,6 @@ void DriveBase::drive(float leftSpeed, float rightSpeed)
 		leftMotor.Set(leftSpeed);
 		rightMotor.Set(rightSpeed);
 	}
-
-	printf("Set motors: left = ");
-	printf(std::to_string(leftMotor.Get()).c_str());
-	printf(", right = ");
-	printf(std::to_string(rightMotor.Get()).c_str());
-	printf("\n");
 }
 
 void DriveBase::stop()

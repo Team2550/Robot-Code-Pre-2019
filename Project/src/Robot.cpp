@@ -25,8 +25,10 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
+	clearSmartDashboard();
+
 	// Autonomous readiness
-	autoReadyChooser.AddObject("Go past baseline", &safeReady);
+	autoReadyChooser.AddDefault("Go past baseline", &safeReady);
 	autoReadyChooser.AddObject("Place gear blind", &blindReady);
 	autoReadyChooser.AddObject("Place gear vision", &visionReady);
 	SmartDashboard::PutData("Autonomous Readiness", &autoReadyChooser);
@@ -34,7 +36,7 @@ void Robot::RobotInit()
 	SmartDashboard::SetPersistent("Autonomous Readiness");
 
 	// Autonomous position
-	autoScenarioChooser.AddObject("Middle", &middleScenario);
+	autoScenarioChooser.AddDefault("Middle", &middleScenario);
 	autoScenarioChooser.AddObject("Side", &sideScenario);
 	SmartDashboard::PutData("Auto Scenario", &autoScenarioChooser);
 
@@ -84,7 +86,7 @@ void Robot::AutonomousInit()
 		}
 
 		// Get dynamic fine-tuning values from smart dashboard
-		float blindTimeMultiplier = SmartDashboard::GetNumber("Blind time multiplier",1);
+		float blindTimeMultiplier = 1; //SmartDashboard::GetNumber("Blind time multiplier",1);
 
 		// Set the timetable of the choreographer to the appropriate scenario
 		if (autoPosScenario == &middleScenario)
@@ -327,28 +329,28 @@ void Robot::autoAim()
 			{
 				printf("Target never seen, moving forward...\n");
 
-				driveBase.drive(baseSpeed * 0.75);
+				driveBase.drive(baseSpeed * 0.8);
 			}
 			// If xOffset is greater than 15, than target was last seen to the right. Rotate right.
-			else if (data[UDP::Index::XOffset] > 15)
+			else if (data[UDP::Index::HorizAngle] > 15)
 			{
 				printf("Target last seen on right, rotating right. \n");
 
-				driveBase.drive(baseSpeed * 0.75, -baseSpeed * 0.75);
+				driveBase.drive(baseSpeed * 0.8, -baseSpeed * 0.8);
 			}
 			// If xOffset is less than -15, than target was last seen to the left. Rotate left.
-			else if (data[UDP::Index::XOffset] < -15)
+			else if (data[UDP::Index::HorizAngle] < -15)
 			{
 				printf("Target last seen on left, rotating left. \n");
 
-				driveBase.drive(-baseSpeed * 0.75, baseSpeed * 0.75);
+				driveBase.drive(-baseSpeed * 0.8, baseSpeed * 0.8);
 			}
 			// If nothing else applies, than target was last seen in front. Move forward.
 			else
 			{
 				printf("Target last seen centered, moving forward...\n");
 
-				driveBase.drive(baseSpeed * 0.75);
+				driveBase.drive(baseSpeed * 0.8);
 			}
 
 		}
@@ -366,7 +368,7 @@ void Robot::autoAim()
 			{
 				printf("Target is slight right\n");
 
-				driveBase.drive(baseSpeed, baseSpeed * 0.25);
+				driveBase.drive(baseSpeed, baseSpeed * 0.8);
 			}
 			// Target is more than 15 degrees to the left. Rotate left.
 			else if (data[UDP::Index::HorizAngle] < -15)
@@ -380,7 +382,7 @@ void Robot::autoAim()
 			{
 				printf("Target is slight left\n");
 
-				driveBase.drive(baseSpeed * 0.25, baseSpeed);
+				driveBase.drive(baseSpeed * 0.8, baseSpeed);
 			}
 			// Target is about centered but is distant. Move forward.
 			else if (data[UDP::Index::Distance] > 30)
@@ -407,6 +409,15 @@ void Robot::autoAim()
 	}
 
 	driveBase.setReversed(wasReversed);
+}
+
+void Robot::clearSmartDashboard()
+{
+	SmartDashboard::ClearPersistent("Robot Speed Inches Per Second");
+	SmartDashboard::ClearPersistent("Camera Tracking");
+	SmartDashboard::ClearPersistent("Blind time multiplier");
+	SmartDashboard::ClearPersistent("Safe mode");
+	SmartDashboard::ClearPersistent("Full Rotation Time");
 }
 
 START_ROBOT_CLASS(Robot)

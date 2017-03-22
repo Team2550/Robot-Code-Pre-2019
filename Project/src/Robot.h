@@ -50,6 +50,7 @@ public:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void autoAim();
+	void clearSmartDashboard();
 };
 
 #endif

@@ -29,7 +29,6 @@ private:
 	Timer udpAgeTimer;
 
 	int createUDPSocket();
-	//void getNumsFromString(unsigned char str[], int length, float nums[]);
 public:
 	UDP_Receiver();
 
