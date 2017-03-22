@@ -3,7 +3,7 @@
 
 DriveBase::DriveBase() : leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
 {
-    leftMotor.SetInverted(true);
+    rightMotor.SetInverted(true);
     isReversed = false;
 }
 
