@@ -19,7 +19,8 @@ public:
 	Lift();
 
 	void raise(float speed = 1);
-	void lower(); //DEPRACATED; lowering is now physically impossible
+	[[deprecated("the Robot can no longer physically be lowered by code")]]
+	void lower();
 	void stop();
 };
 
