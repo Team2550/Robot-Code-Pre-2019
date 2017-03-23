@@ -16,6 +16,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	climbToggle = false;
 	autoReady = &safeReady;
 	autoScenario = &middleScenario;
+	targetRumble = &targetRumbleOff;
 }
 
 Robot::~Robot()
@@ -40,6 +41,13 @@ void Robot::RobotInit()
 	autoScenarioChooser.AddObject("Side", &sideScenario);
 	SmartDashboard::PutData("Auto Scenario", &autoScenarioChooser);
 
+	// Targeting Rumble Feedback
+	targetRumbleChooser.AddDefault("Off", &targetRumbleOff);
+	targetRumbleChooser.AddObject("On", &targetRumbleOn);
+	SmartDashboard::PutData("Targeting Rumble Feedback", &targetRumbleChooser);
+
+	SmartDashboard::SetPersistent("Autonomous Readiness");
+
 	// Motor trim
 	SmartDashboard::SetDefaultNumber("Left Forwards Ratio", Speeds::DriveBase::LeftPowerRatioForwards);
 	SmartDashboard::SetDefaultNumber("Right Forwards Ratio", Speeds::DriveBase::RightPowerRatioForwards);
@@ -50,11 +58,6 @@ void Robot::RobotInit()
 	SmartDashboard::SetPersistent("Right Forwards Ratio");
 	SmartDashboard::SetPersistent("Left Backwards Ratio");
 	SmartDashboard::SetPersistent("Right Backwards Ratio");
-
-	// Rumble settings
-	SmartDashboard::SetDefaultBoolean("Rumble Active", false);
-
-	SmartDashboard::SetPersistent("Rumble Active");
 }
 
 void Robot::AutonomousInit()
@@ -149,6 +152,12 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
 	autoReady = autoReadyChooser.GetSelected();
+
+	// Get rumble settings
+	targetRumble = targetRumbleChooser.GetSelected();
+
+	if(autoScenario == nullptr)
+		targetRumble = &targetRumbleOff;
 
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
@@ -259,13 +268,11 @@ void Robot::TeleopPeriodic()
 	//printf("\n");
 
 	/* ============ Rumble Feedback =========== */
-	bool doRumble = SmartDashboard::GetBoolean("Rumble Active", false);
-
 	Utility::setRumble(driveController, Utility::RumbleSide::both, 0);
 
-	if (doRumble && autoReady == &visionReady && udpReceiver.getUDPDataIsReal() && udpReceiver.getUDPDataAge() < 1)
+	if (targetRumble == &targetRumbleOn && autoReady == &visionReady && udpReceiver.getUDPDataIsReal() && udpReceiver.getUDPDataAge() < 1)
 	{
-		float vibrationLevel = data[UDP::Index::HorizAngle] * .1;
+		float vibrationLevel = data[UDP::Index::HorizAngle] / 35.0f;
 
 		vibrationLevel = fmin(0.8, fmax(-0.8, vibrationLevel));
 
@@ -409,6 +416,7 @@ void Robot::clearSmartDashboard()
 	SmartDashboard::ClearPersistent("Blind time multiplier");
 	SmartDashboard::ClearPersistent("Safe mode");
 	SmartDashboard::ClearPersistent("Full Rotation Time");
+	SmartDashboard::ClearPersistent("Rumble Active");
 }
 
 START_ROBOT_CLASS(Robot)
