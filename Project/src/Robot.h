@@ -48,6 +48,7 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
+	void DisabledInit();
 	void autoAim();
 	void clearSmartDashboard();
 };
