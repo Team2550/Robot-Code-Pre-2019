@@ -5,7 +5,6 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 choreographer(),
                  udpReceiver(),
 				 driveBase(),
 				 shooter(),
@@ -16,6 +15,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	climbToggleHold = false;
 	climbToggle = false;
 	autoReady = &safeReady;
+	autoScenario = &middleScenario;
 }
 
 Robot::~Robot()
@@ -67,43 +67,22 @@ void Robot::AutonomousInit()
 	if (autoReady != &safeReady)
 	{
 		// Get auto scenario from smart dashboard.
-		Autonomous::PosScenario *autoPosScenario = autoScenarioChooser.GetSelected();
+		autoScenario = autoScenarioChooser.GetSelected();
 
 		// If value could not be retrieved, default to the value stored in the default scenario constant.
 		// The pointers that autoPosScenario is being set to are the same that would have been retrieved by the function above.
-		if(autoPosScenario == nullptr)
+		if(autoScenario == nullptr)
 		{
 			printf("No scenario found\n");
 			switch (Autonomous::DefaultScenario)
 			{
 			case Autonomous::Middle:
-				autoPosScenario = &middleScenario;
+				autoScenario = &middleScenario;
 				break;
 			case Autonomous::Side:
-				autoPosScenario = &sideScenario;
+				autoScenario = &sideScenario;
 				break;
 			}
-		}
-
-		// Get dynamic fine-tuning values from smart dashboard
-		float blindTimeMultiplier = 1; //SmartDashboard::GetNumber("Blind time multiplier",1);
-
-		// Set the timetable of the choreographer to the appropriate scenario
-		if (autoPosScenario == &middleScenario)
-		{
-			printf("Pos Middle\n");
-			float timetable[Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount][3];
-			Autonomous::DynamicBlindScenarios::MiddlePos::getTimetable(blindTimeMultiplier, timetable);
-
-			choreographer.setTimetable(Autonomous::DynamicBlindScenarios::MiddlePos::PeriodCount, timetable);
-		}
-		else if (autoPosScenario == &sideScenario)
-		{
-			printf("Pos Side\n");
-			float timetable[Autonomous::DynamicBlindScenarios::SidePos::PeriodCount][3];
-			Autonomous::DynamicBlindScenarios::SidePos::getTimetable(blindTimeMultiplier, timetable);
-
-			choreographer.setTimetable(Autonomous::DynamicBlindScenarios::SidePos::PeriodCount, timetable);
 		}
 	}
 
@@ -129,24 +108,28 @@ void Robot::AutonomousPeriodic()
 	printf("\n");
 
 	/* ========== DriveBase ========== */
-	// Run choreographer script until end of second to last step, unless can't auto aim
-	if (autoReady == &safeReady)
+
+	float blindTime = 4;
+
+	if (autoReady != &safeReady)
 	{
-		if (autoTimer.Get() < 4)
+		if (autoScenario == &middleScenario)
+			blindTime = Autonomous::BlindTimes::Middle;
+		else if (autoScenario == &sideScenario)
+			blindTime = Autonomous::BlindTimes::Side;
+	}
+
+	// Run choreographer script until end of second to last step, unless can't auto aim
+	if (autoReady != &visionReady || autoTimer.Get() < blindTime - 2.5)
+	{
+		if (autoTimer.Get() < blindTime)
 			driveBase.drive(Speeds::DriveBase::Turtle);
 		else
 			driveBase.stop();
 	}
 	else
 	{
-		if (autoReady != &visionReady || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 1).time - 2.0)
-		{
-			choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
-		}
-		else
-		{
-			autoAim();
-		}
+		autoAim();
 	}
 
 	// Modify motor speeds based on trim from smartDashboard
@@ -269,7 +252,7 @@ void Robot::TeleopPeriodic()
 		lift.stop();
 
 	/* ========== Amps Feedback ========== */
-	double amps = driveBase.getAmps(pdp);
+	//double amps = driveBase.getAmps(pdp);
 
 	//printf("Amps: ");
 	//printf(std::to_string(amps).c_str());

@@ -4,7 +4,6 @@
 #include <WPILib.h>
 #include "Constants.h"
 #include "xBox.h"
-#include "Choreographer.h"
 #include "UDP-Receiver.h"
 #include "DriveBase.h"
 #include "Shooter.h"
@@ -15,7 +14,6 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	Choreographer choreographer;
 
 	Timer autoTimer;
 
@@ -30,11 +28,12 @@ private:
 	Autonomous::Ready visionReady = Autonomous::Vision;
 	SendableChooser<Autonomous::Ready*> autoReadyChooser;
 
-	Autonomous::PosScenario middleScenario = Autonomous::Middle;
-	Autonomous::PosScenario sideScenario = Autonomous::Side;
-	SendableChooser<Autonomous::PosScenario*> autoScenarioChooser;
+	Autonomous::Scenario middleScenario = Autonomous::Middle;
+	Autonomous::Scenario sideScenario = Autonomous::Side;
+	SendableChooser<Autonomous::Scenario*> autoScenarioChooser;
 
 	Autonomous::Ready *autoReady;
+	Autonomous::Scenario *autoScenario;
 
 	bool climbToggleHold;
 	bool climbToggle;

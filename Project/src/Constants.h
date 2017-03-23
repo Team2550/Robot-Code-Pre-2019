@@ -121,65 +121,18 @@ namespace Autonomous
 		Vision // Putting gear on peg with vision is ready
 	};
 
-	enum PosScenario
+	enum Scenario
 	{
 		Middle,
 		Side
 	};
 
-	const PosScenario DefaultScenario = Middle;
+	const Scenario DefaultScenario = Middle;
 
-	namespace BlindScenarios
+	namespace BlindTimes
 	{
-		// Timetable format is an array of arrays, each of which is three floats long
-		//                                                  (timeLength, leftSpeed, rightSpeed)
-		// Namespaces here denote different starting positions
-		namespace MiddlePos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{4.6,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-
-		}
-		namespace SidePos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{6.9,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-		}
-	}
-
-	namespace DynamicBlindScenarios
-	{
-		// These scenarios are mode of inline functions that are designed to generate the timetables based on variables that can be changed live.
-		// These should only be used when testing for figuring out values.
-		/*=================================================
-			Name: timetable
-			Desc: Initializes a timetable array to be used by a choreographer.
-			Arguments:
-				speedInchesPerSecond (I) : The max speed of the robot in inches per second
-				fullRotationTime (I)     : The amount of time in seconds it takes the robot to turn 180 degrees at full speed
-				_timetable (O)           : The array to initialize as a timetable
-			Return:
-				none
-		=================================================*/
-		namespace MiddlePos
-		{
-			const int PeriodCount = 1;
-
-			inline void getTimetable(float timeMult, float _timetable[PeriodCount][3])
-			{
-				const float tt[PeriodCount][3] = {{4.6f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace SidePos
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float timeMult, float _timetable[PeriodCount][3])
-			{
-				const float tt[PeriodCount][3] = {{6.9f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
+		const float Middle = 4.6;
+		const float Side = 6.9;
 	}
 }
 
