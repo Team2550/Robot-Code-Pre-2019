@@ -312,8 +312,8 @@ void Robot::autoAim()
 	printf(std::to_string(data[UDP::Index::Distance]).c_str());
 	printf("\n");
 
-	// Stop moving forward if motors are no longer spinning (amp limit = 20)
-	if (amps > 20)
+	// Stop moving forward if motors are no longer spinning
+	if (amps > Autonomous::AmpLimit)
 	{
 		printf("Amps too high! Stopping...\n");
 		driveBase.stop();

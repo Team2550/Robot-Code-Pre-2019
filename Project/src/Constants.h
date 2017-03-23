@@ -114,6 +114,8 @@ namespace Speeds
 
 namespace Autonomous
 {
+	const float AmpLimit = 20;
+
 	enum Ready // What auto functions are ready
 	{
 		Safe, // Safe mode (pass baseline) is ready
