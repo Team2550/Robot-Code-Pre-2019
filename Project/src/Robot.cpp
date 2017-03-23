@@ -261,21 +261,24 @@ void Robot::TeleopPeriodic()
 	/* ============ Rumble Feedback =========== */
 	bool doRumble = SmartDashboard::GetBoolean("Rumble Active", false);
 
-	if (doRumble && autoReady == &visionReady)
+	Utility::setRumble(driveController, Utility::RumbleSide::both, 0);
+
+	if (doRumble && autoReady == &visionReady && udpReceiver.getUDPDataIsReal() && udpReceiver.getUDPDataAge() < 1)
 	{
-		float data[UDP::DataCount];
-		udpReceiver.getUDPData(data);
+		float vibrationLevel = data[UDP::Index::HorizAngle] * .1;
 
-		float vibrationLevel = data[UDP::Index::XOffset] * .05;
+		vibrationLevel = fmin(0.8, fmax(-0.8, vibrationLevel));
 
-		vibrationLevel = fmin(1, fmax(-1, vibrationLevel));
-
-		Utility::setRumble(driveController, Utility::RumbleSide::both, 0);
 		if (vibrationLevel < -0.1)
 			Utility::setRumble(driveController, Utility::RumbleSide::left, -vibrationLevel);
 		else if (vibrationLevel > 0.1)
 			Utility::setRumble(driveController, Utility::RumbleSide::right, vibrationLevel);
 	}
+}
+
+void Robot::DisabledInit()
+{
+	Utility::setRumble(driveController, Utility::RumbleSide::both, 0);
 }
 
 void Robot::autoAim()
