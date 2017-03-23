@@ -32,8 +32,13 @@ private:
 	Autonomous::Scenario sideScenario = Autonomous::Side;
 	SendableChooser<Autonomous::Scenario*> autoScenarioChooser;
 
+	bool targetRumbleOff = false;
+	bool targetRumbleOn = true;
+	SendableChooser<bool*> targetRumbleChooser;
+
 	Autonomous::Ready *autoReady;
 	Autonomous::Scenario *autoScenario;
+	bool *targetRumble;
 
 	bool climbToggleHold;
 	bool climbToggle;
