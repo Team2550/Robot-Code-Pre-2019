@@ -8,8 +8,8 @@ namespace Ports
 #ifndef PRACTICE_2017_ROBOT
 	namespace TankDrive
 	{
-		const int Left = 0;
-		const int Right = 1;
+		const int Left = 1;
+		const int Right = 0;
 	}
 
 	namespace Shooter
@@ -114,93 +114,25 @@ namespace Speeds
 
 namespace Autonomous
 {
-	const float SpeedInchesPerSecond = 100;
-	const float FullRotationTime = .5;
-
-	enum PosScenario
+	enum Ready // What auto functions are ready
 	{
-		Left,
-		Middle,
-		Right,
-		Test
+		Safe, // Safe mode (pass baseline) is ready
+		Blind, // Putting gear on peg blindly is ready
+		Vision // Putting gear on peg with vision is ready
 	};
 
-	const PosScenario DefaultScenario = Middle;
-
-	namespace BlindScenarios
+	enum Scenario
 	{
-		// Timetable format is an array of arrays, each of which is three floats long
-		//                                                  (timeLength, leftSpeed, rightSpeed)
-		// Namespaces here denote different starting positions
-		namespace LeftPos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{4.6,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-		}
-		namespace MiddlePos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{4.6,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
+		Middle,
+		Side
+	};
 
-		}
-		namespace RightPos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{4.6,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-		}
-	}
+	const Scenario DefaultScenario = Middle;
 
-	namespace DynamicBlindScenarios
+	namespace BlindTimes
 	{
-		// These scenarios are mode of inline functions that are designed to generate the timetables based on variables that can be changed live.
-		// These should only be used when testing for figuring out values.
-		/*=================================================
-			Name: timetable
-			Desc: Initializes a timetable array to be used by a choreographer.
-			Arguments:
-				speedInchesPerSecond (I) : The max speed of the robot in inches per second
-				fullRotationTime (I)     : The amount of time in seconds it takes the robot to turn 180 degrees at full speed
-				_timetable (O)           : The array to initialize as a timetable
-			Return:
-				none
-		=================================================*/
-		namespace LeftPos
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float timeMult, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{4.6f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace MiddlePos
-		{
-			const int PeriodCount = 1;
-
-			inline void getTimetable(float timeMult, float _timetable[PeriodCount][3])
-			{
-				const float tt[PeriodCount][3] = {{4.6f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace RightPos
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float timeMult, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{4.6f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace TestScenario
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float timeMult, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{4.6f*timeMult,Speeds::DriveBase::Turtle,Speeds::DriveBase::Turtle}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
+		const float Middle = 4.6;
+		const float Side = 6.9;
 	}
 }
 

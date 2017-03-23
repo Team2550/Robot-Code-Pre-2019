@@ -4,7 +4,6 @@
 #include <WPILib.h>
 #include "Constants.h"
 #include "xBox.h"
-#include "Choreographer.h"
 #include "UDP-Receiver.h"
 #include "DriveBase.h"
 #include "Shooter.h"
@@ -15,7 +14,6 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	Choreographer choreographer;
 
 	Timer autoTimer;
 
@@ -25,18 +23,22 @@ private:
 	Shooter shooter;
 	Lift lift;
 
-	Autonomous::PosScenario leftScenario = Autonomous::Left;
-	Autonomous::PosScenario middleScenario = Autonomous::Middle;
-	Autonomous::PosScenario rightScenario = Autonomous::Right;
-	Autonomous::PosScenario testScenario = Autonomous::Test;
-	SendableChooser<Autonomous::PosScenario*> autoScenarioChooser;
+	Autonomous::Ready safeReady = Autonomous::Safe;
+	Autonomous::Ready blindReady = Autonomous::Blind;
+	Autonomous::Ready visionReady = Autonomous::Vision;
+	SendableChooser<Autonomous::Ready*> autoReadyChooser;
+
+	Autonomous::Scenario middleScenario = Autonomous::Middle;
+	Autonomous::Scenario sideScenario = Autonomous::Side;
+	SendableChooser<Autonomous::Scenario*> autoScenarioChooser;
+
+	Autonomous::Ready *autoReady;
+	Autonomous::Scenario *autoScenario;
 
 	bool climbToggleHold;
 	bool climbToggle;
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
-	bool canAutoAim;
-	bool autoSafeMode;
 
 public:
 	Robot();
@@ -47,6 +49,7 @@ public:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void autoAim();
+	void clearSmartDashboard();
 };
 
 #endif

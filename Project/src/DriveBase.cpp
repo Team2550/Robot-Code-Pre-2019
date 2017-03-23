@@ -3,7 +3,7 @@
 
 DriveBase::DriveBase() : leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
 {
-    leftMotor.SetInverted(true);
+    rightMotor.SetInverted(true);
     isReversed = false;
 }
 
@@ -30,15 +30,16 @@ void DriveBase::drive(float speed)
 
 void DriveBase::drive(float leftSpeed, float rightSpeed)
 {
-	if(isReversed)
+	if (isReversed)
 	{
-		float temp = leftSpeed;
-		leftSpeed = -rightSpeed;
-		rightSpeed = -temp;
+		leftMotor.Set(-rightSpeed);
+		rightMotor.Set(-leftSpeed);
 	}
-
-	leftMotor.Set(leftSpeed);
-	rightMotor.Set(rightSpeed);
+	else
+	{
+		leftMotor.Set(leftSpeed);
+		rightMotor.Set(rightSpeed);
+	}
 }
 
 void DriveBase::stop()
@@ -49,13 +50,14 @@ void DriveBase::stop()
 void DriveBase::applyTrim(float leftForwardsRatio, float rightForwardsRatio,
     		              float leftBackwardsRatio, float rightBackwardsRatio)
 {
-	float leftSpeed = getLeftSpeed();
-	float rightSpeed = getRightSpeed();
+	float leftSpeed = leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
+	float rightSpeed = rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
 
 	leftSpeed *= (leftSpeed > 0) ? leftForwardsRatio : leftBackwardsRatio;
 	rightSpeed *= (rightSpeed > 0) ? rightForwardsRatio : rightBackwardsRatio;
 
-	drive(leftSpeed, rightSpeed);
+	leftMotor.Set(leftSpeed);
+	rightMotor.Set(rightSpeed);
 }
 
 void DriveBase::setReversed(bool reverse)
@@ -66,4 +68,10 @@ void DriveBase::setReversed(bool reverse)
 bool DriveBase::getReversed()
 {
 	return isReversed;
+}
+
+float DriveBase::getAmps(PowerDistributionPanel& pdp)
+{
+	return (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
+		    pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
 }
