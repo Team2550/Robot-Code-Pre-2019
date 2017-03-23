@@ -109,7 +109,7 @@ void Robot::AutonomousPeriodic()
 
 	/* ========== DriveBase ========== */
 
-	float blindTime = 4;
+	float blindTime = 6;
 
 	if (autoReady != &safeReady)
 	{
