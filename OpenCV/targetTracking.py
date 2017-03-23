@@ -7,7 +7,7 @@ import time
 
 #################################################################################################################
 
-IS_TEST = True
+OPEN_WINDOWS = True
 
 TARGET_RECT_SIZE_INCHES = (2, 5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
@@ -16,6 +16,8 @@ TARGET_MAX_YOFFSET = 20
 
 TARGET_ASPECT_RATIO = min(TARGET_RECT_SIZE_INCHES) / max(TARGET_RECT_SIZE_INCHES) # Always less than one
 TARGET_ASPECT_MARGIN_OF_ERROR = 0.40 # Percentage that any rectangles seen can defer from the known aspect ratio
+
+SHAPE_BOUNDINGBOX_ASPECT_RATIO_MAX_DIFF = 0.40 # Maximum difference between a shapes aspect ratio and its bounding box's aspect ratio (percentage)
 
 ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5
 
@@ -70,8 +72,8 @@ def processCamera(camCapture):
 
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
-    lowerBound = np.array([0, 0, 200])
-    upperBound = np.array([255, 200, 255])
+    lowerBound = np.array([42, 50, 200])
+    upperBound = np.array([165, 200, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
     maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
@@ -100,6 +102,17 @@ def processCamera(camCapture):
 
             shortSide = min(width, height)
             longSide = max(width, height)
+
+            # Find corners of bounding box
+            maxX = max(approx[0][0][0],approx[1][0][0],approx[2][0][0],approx[3][0][0])
+            maxY = max(approx[0][0][1],approx[1][0][1],approx[2][0][1],approx[3][0][1])
+            minX = min(approx[0][0][0],approx[1][0][0],approx[2][0][0],approx[3][0][0])
+            minY = min(approx[0][0][1],approx[1][0][1],approx[2][0][1],approx[3][0][1])
+
+            # Calculate width, height, and aspect ratio of bounding box. 
+            boundboxWidth = maxX - minX
+            boundboxHeight = maxY - minY
+            boundboxAR = boundboxWidth / boundboxHeight
             
             size = width * height
             ar = shortSide / longSide # Aspect ratio: will always be less than one
@@ -107,7 +120,8 @@ def processCamera(camCapture):
             if (size > 250 and ar >= TARGET_ASPECT_RATIO * (1 - TARGET_ASPECT_MARGIN_OF_ERROR) and
                                ar <= TARGET_ASPECT_RATIO * (1 + TARGET_ASPECT_MARGIN_OF_ERROR) and
                                widthSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE and
-                               heightSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE):
+                               heightSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE and
+                               abs(boundboxAR / ar - 1) < SHAPE_BOUNDINGBOX_ASPECT_RATIO_MAX_DIFF):
                                   
                 diagonal = (dist(approx[0][0][0],approx[0][0][1],
                                  approx[2][0][0],approx[2][0][1]) +
@@ -130,16 +144,26 @@ def processCamera(camCapture):
                     xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
                     yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
 
-                    percentMatch = 1 - (abs(ar - TARGET_ASPECT_RATIO)) / TARGET_ASPECT_RATIO
+                    percentMatch = 1 - abs(ar / TARGET_ASPECT_RATIO - 1)
+                    percentMatch *= 1 - abs(boundboxAR / ar - 1)
                     percentMatch *= 1 - ((objectYOffset - TARGET_YOFFSET) / (TARGET_MAX_YOFFSET))**2
 
-                    if (IS_TEST):
+                    if (OPEN_WINDOWS):
                         cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
                         cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
+                        cv2.putText(imgOriginal, "{0:.1f}".format(percentMatch * 100) + "% match, " + "{0:.2f}".format(objectDist) + " inches",
+                                    (maxX, minY), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,0,0))
                     
                     dataPoints += [(percentMatch, objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Test values
 
-    if (IS_TEST):
+            else:
+                if (OPEN_WINDOWS):
+                    cv2.drawContours(imgOriginal, [approx], -1, (255,0,0), 1)
+                    cv2.drawContours(maskDraw, [approx], -1, (255,0,0), 1)
+                    cv2.putText(imgOriginal, "{0:.1f}".format(abs(ar / TARGET_ASPECT_RATIO - 1) * 100) + "% AR mismatch",
+                                (maxX, minY), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0,0,255))
+
+    if (OPEN_WINDOWS):
         cv2.imshow('Original', imgOriginal)
         cv2.imshow('Mask', maskDraw)
     
@@ -171,23 +195,24 @@ def main():
     running = True
 
     try:
+        print("Beginning image processing...")
         while (running and cv2.waitKey(1) != 27 and camCapture.isOpened()):
             startTime = time.time()
             try:            
                 data = processCamera(camCapture)
 
                 if (data is not None and len(data) > 1):
-                    print("Found", len(data), "targets")
+                    #print("Found", len(data), "targets")
 
-                    for d in data:
-                        percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle = d
-                        print("Found target (percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle):", percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle)
+                    #for d in data:
+                        #percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle = d
+                        #print("Found target (percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle):", percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle)
                     
                     data = ','.join(' '.join("{0:.5f}".format(y) for y in x) for x in data)
                     sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
-                    print("Sent data to RoboRIO!")
-                else:
-                    print("No target found.")
+                    #print("Sent data to RoboRIO!")
+                #else:
+                    #print("No target found.")
 
             except Exception:
                 running = False
