@@ -308,6 +308,8 @@ void Robot::autoAim()
 
 	printf("X Angle: ");
 	printf(std::to_string(data[UDP::Index::HorizAngle]).c_str());
+	printf(", Dist: ");
+	printf(std::to_string(data[UDP::Index::Distance]).c_str());
 	printf("\n");
 
 	// Stop moving forward if motors are no longer spinning (amp limit = 20)

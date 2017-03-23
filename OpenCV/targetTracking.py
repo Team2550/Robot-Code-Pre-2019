@@ -213,7 +213,8 @@ def main():
                             #print("Found target (percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle):", percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle)
                             #print("Found target: ", horizAngle)
                         
-                        data = ','.join(' '.join("{0:.5f}".format(y) for y in x) for x in data)
+                        data = ','.join(' '.join("{0:.3f}".format(y) for y in x) for x in data)
+
                         sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
                         #print("Sent data to RoboRIO!")
                     #else:
