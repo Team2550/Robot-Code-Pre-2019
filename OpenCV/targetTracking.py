@@ -7,6 +7,8 @@ import time
 
 #################################################################################################################
 
+MAX_FRAMERATE = 15
+
 OPEN_WINDOWS = False
 
 TARGET_RECT_SIZE_INCHES = (2, 5)
@@ -62,18 +64,11 @@ UDP_PORT = 8890
 def dist(x1, y1, x2, y2):
     return ((x1 - x2)*(x1 - x2)+(y1 - y2)*(y1 - y2))**(0.5)
 
-def processCamera(camCapture):
-    blnFrameReadSuccessfully, imgOriginal = camCapture.read()            # read next frame
-
-    if (not blnFrameReadSuccessfully) or (imgOriginal is None):             # if frame was not read successfully
-        print("Error: frame not read from webcam\n")                     # print error message to std out
-
-        return None
-
+def processCamera(imgOriginal):
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
     lowerBound = np.array([42, 50, 200])
-    upperBound = np.array([165, 200, 255])
+    upperBound = np.array([165, 230, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
     maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
@@ -151,8 +146,9 @@ def processCamera(camCapture):
                     if (OPEN_WINDOWS):
                         cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
                         cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
-                        cv2.putText(imgOriginal, "{0:.1f}".format(percentMatch * 100) + "% match, " + "{0:.2f}".format(objectDist) + " inches",
-                                    (maxX, minY), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,0,0))
+                        cv2.putText(imgOriginal, "{0:.1f}".format(percentMatch * 100) + "% match, " + "{0:.2f}".format(objectDist) + " inches, " + 
+                                    "{0:.2f}".format(xAngle) + " degrees",
+                                    (minX, minY), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,0,0))
                     
                     dataPoints += [(percentMatch, objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Test values
 
@@ -164,8 +160,11 @@ def processCamera(camCapture):
                                 (maxX, minY), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0,0,255))
 
     if (OPEN_WINDOWS):
-        cv2.imshow('Original', imgOriginal)
-        cv2.imshow('Mask', maskDraw)
+        try:
+            cv2.imshow('Original', imgOriginal)
+            cv2.imshow('Mask', maskDraw)
+        except Exception:
+            print("Can't display window!")
     
     return dataPoints
 
@@ -198,21 +197,31 @@ def main():
         print("Beginning image processing...")
         while (running and cv2.waitKey(1) != 27 and camCapture.isOpened()):
             startTime = time.time()
-            try:            
-                data = processCamera(camCapture)
+            try:
+                blnFrameReadSuccessfully, imgOriginal = camCapture.read() # read next frame    
 
-                if (data is not None and len(data) > 1):
-                    #print("Found", len(data), "targets")
+                if (not blnFrameReadSuccessfully) or (imgOriginal is None):             # if frame was not read successfully
+                    print("Error: frame not read from webcam\n")                     # print error message to std out
+                else:
+                    data = processCamera(imgOriginal)
 
-                    #for d in data:
-                        #percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle = d
-                        #print("Found target (percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle):", percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle)
-                    
-                    data = ','.join(' '.join("{0:.5f}".format(y) for y in x) for x in data)
-                    sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
-                    #print("Sent data to RoboRIO!")
-                #else:
-                    #print("No target found.")
+                    if (data is not None and len(data) > 1):
+                        #print("Found", len(data), "targets")
+
+                        for d in data:
+                            percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle = d
+                            #print("Found target (percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle):", percentMatch, dist, xOffset, yOffset, horizAngle, vertAngle)
+                            #print("Found target: ", horizAngle)
+                        
+                        data = ','.join(' '.join("{0:.5f}".format(y) for y in x) for x in data)
+                        sendingSocket.sendto(bytes(data, 'utf-8'), (UDP_IP, UDP_PORT)) #sends array to socket
+                        #print("Sent data to RoboRIO!")
+                    #else:
+                        #print("No target found.")
+
+                # Keep buffer empty until next frame
+                while (time.time() - startTime < 1./MAX_FRAMERATE):
+                    blnFrameReadSuccessfully, imgOriginal = camCapture.read()
 
             except Exception:
                 running = False
@@ -222,8 +231,6 @@ def main():
                 camCapture.release()
                 
                 raise
-            
-            time.sleep(max(1./10 - (time.time() - startTime), 0))
             
     except KeyboardInterrupt: # Catch exit by Ctrl-C
         print("\nTerminating script...")

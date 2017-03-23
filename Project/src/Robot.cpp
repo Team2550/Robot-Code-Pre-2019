@@ -117,7 +117,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	/* ========== udpReceiver ========== */
-	while (udpReceiver.checkUDP()) {}
+	udpReceiver.checkUDP();
 
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
@@ -362,7 +362,7 @@ void Robot::autoAim()
 		else
 		{
 			// Target is more than 15 degrees to the right. Rotate right.
-			if (data[UDP::Index::HorizAngle] > 15)
+			if (data[UDP::Index::HorizAngle] > 10)
 			{
 				printf("Target is far right\n");
 
@@ -373,10 +373,10 @@ void Robot::autoAim()
 			{
 				printf("Target is slight right\n");
 
-				driveBase.drive(baseSpeed, baseSpeed * 0.8);
+				driveBase.drive(baseSpeed, baseSpeed * 0.7);
 			}
 			// Target is more than 15 degrees to the left. Rotate left.
-			else if (data[UDP::Index::HorizAngle] < -15)
+			else if (data[UDP::Index::HorizAngle] < -10)
 			{
 				printf("Target is far left\n");
 
@@ -387,7 +387,7 @@ void Robot::autoAim()
 			{
 				printf("Target is slight left\n");
 
-				driveBase.drive(baseSpeed * 0.8, baseSpeed);
+				driveBase.drive(baseSpeed * 0.7, baseSpeed);
 			}
 			// Target is about centered but is distant. Move forward.
 			else if (data[UDP::Index::Distance] > 30)
