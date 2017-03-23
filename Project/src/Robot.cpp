@@ -139,7 +139,7 @@ void Robot::AutonomousPeriodic()
 	}
 	else
 	{
-		if (autoReady != &visionReady || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 1).time - 3.0)
+		if (autoReady != &visionReady || autoTimer.Get() < choreographer.getPeriod(choreographer.getPeriodCount() - 1).time - 2.0)
 		{
 			choreographer.applyScheduleToRobot(autoTimer.Get(), driveBase);
 		}
@@ -369,28 +369,28 @@ void Robot::autoAim()
 				driveBase.drive(baseSpeed, -baseSpeed);
 			}
 			// Target is more than 5 degrees to the right. Rotate right and move forward.
-			else if (data[UDP::Index::HorizAngle] > 5) // Move while rotating
+			else if (data[UDP::Index::HorizAngle] > 3) // Move while rotating
 			{
 				printf("Target is slight right\n");
 
-				driveBase.drive(baseSpeed, baseSpeed * 0.7);
+				driveBase.drive(baseSpeed, baseSpeed * 0.5);
 			}
 			// Target is more than 15 degrees to the left. Rotate left.
-			else if (data[UDP::Index::HorizAngle] < -10)
+			else if (data[UDP::Index::HorizAngle] < -7)
 			{
 				printf("Target is far left\n");
 
 				driveBase.drive(-baseSpeed, baseSpeed);
 			}
 			// Target is more than 5 degrees to the left. Rotate left and move forward.
-			else if (data[UDP::Index::HorizAngle] < -5)
+			else if (data[UDP::Index::HorizAngle] < -3)
 			{
 				printf("Target is slight left\n");
 
-				driveBase.drive(baseSpeed * 0.7, baseSpeed);
+				driveBase.drive(baseSpeed * 0.5, baseSpeed);
 			}
 			// Target is about centered but is distant. Move forward.
-			else if (data[UDP::Index::Distance] > 30)
+			else if (data[UDP::Index::Distance] > 7)
 			{
 				printf("Target is distant\n");
 

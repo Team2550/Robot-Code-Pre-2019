@@ -7,7 +7,7 @@ import time
 
 #################################################################################################################
 
-MAX_FRAMERATE = 15
+MAX_FRAMERATE = 20
 
 OPEN_WINDOWS = False
 
@@ -220,7 +220,7 @@ def main():
                         #print("No target found.")
 
                 # Keep buffer empty until next frame
-                while (time.time() - startTime < 1./MAX_FRAMERATE):
+                while ((time.time() - startTime) < (1./MAX_FRAMERATE)):
                     blnFrameReadSuccessfully, imgOriginal = camCapture.read()
 
             except Exception:
