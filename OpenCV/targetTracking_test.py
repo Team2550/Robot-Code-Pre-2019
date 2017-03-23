@@ -7,7 +7,9 @@ import time
 
 #################################################################################################################
 
-OPEN_WINDOWS = False
+OPEN_WINDOWS = True
+
+TEST_IMAGE = 'test_image_ceiling_light.jpeg'
 
 TARGET_RECT_SIZE_INCHES = (2, 5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
@@ -63,7 +65,8 @@ def dist(x1, y1, x2, y2):
     return ((x1 - x2)*(x1 - x2)+(y1 - y2)*(y1 - y2))**(0.5)
 
 def processCamera(camCapture):
-    blnFrameReadSuccessfully, imgOriginal = camCapture.read()            # read next frame
+    blnFrameReadSuccessfully = True
+    imgOriginal = cv2.imread(TEST_IMAGE) #camCapture.read()            # read next frame
 
     if (not blnFrameReadSuccessfully) or (imgOriginal is None):             # if frame was not read successfully
         print("Error: frame not read from webcam\n")                     # print error message to std out
