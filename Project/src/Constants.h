@@ -114,7 +114,7 @@ namespace Speeds
 
 namespace Autonomous
 {
-	const float AmpLimit = 20;
+	const float AmpLimit = 15;
 
 	enum Ready // What auto functions are ready
 	{
@@ -134,18 +134,20 @@ namespace Autonomous
 	namespace BlindTimes
 	{
 		const float Middle = 4.6;
-		const float Side = 4.6;
+		const float Side = 6.9;
 	}
 
 	namespace BlindSpeeds
 	{
 		const float Middle = Speeds::DriveBase::Turtle;
-		const float Side = Speeds::DriveBase::Turtle * 1.5;
+		const float Side = Speeds::DriveBase::Turtle;
 	}
 }
 
 namespace UDP
 {
+	const int MaxPacketsFlush = 20;
+
 	const int DataCount = 6;
 
 	namespace Index

@@ -100,6 +100,7 @@ void Robot::AutonomousPeriodic()
 {
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
+	udpReceiver.clearUDPSocket();
 
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
@@ -168,6 +169,7 @@ void Robot::TeleopPeriodic()
 
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
+	udpReceiver.clearUDPSocket();
 
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
