@@ -68,7 +68,7 @@ def processCamera(imgOriginal):
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
     lowerBound = np.array([0, 0, 200])
-    upperBound = np.array([255, 100, 255])
+    upperBound = np.array([255, 105, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
     maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
