@@ -113,20 +113,27 @@ void Robot::AutonomousPeriodic()
 	/* ========== DriveBase ========== */
 
 	float blindTime = 6;
+	float blindSpeed = Speeds::DriveBase::Turtle;
 
 	if (autoReady != &safeReady)
 	{
 		if (autoScenario == &middleScenario)
+		{
 			blindTime = Autonomous::BlindTimes::Middle;
+			blindSpeed = Autonomous::BlindSpeeds::Middle;
+		}
 		else if (autoScenario == &sideScenario)
+		{
 			blindTime = Autonomous::BlindTimes::Side;
+			blindSpeed = Autonomous::BlindSpeeds::Side;
+		}
 	}
 
 	// Run choreographer script until end of second to last step, unless can't auto aim
 	if (autoReady != &visionReady || autoTimer.Get() < blindTime - 2.5)
 	{
 		if (autoTimer.Get() < blindTime)
-			driveBase.drive(Speeds::DriveBase::Turtle);
+			driveBase.drive(blindSpeed);
 		else
 			driveBase.stop();
 	}
