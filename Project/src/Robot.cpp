@@ -174,13 +174,13 @@ void Robot::TeleopPeriodic()
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	/*
 	printf("X Angle:");
 	printf(std::to_string(data[UDP::Index::HorizAngle]).c_str());
 	printf(", Dist:");
 	printf(std::to_string(data[UDP::Index::Distance]).c_str());
 	printf("\n");
-	*/
+
+
 	/* ========== DriveBase ========== */
 	if (autoReady == &visionReady && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
