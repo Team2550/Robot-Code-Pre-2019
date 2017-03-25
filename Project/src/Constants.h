@@ -114,7 +114,7 @@ namespace Speeds
 
 namespace Autonomous
 {
-	const float AmpLimit = 15;
+	const float AmpLimit = 2;
 
 	enum Ready // What auto functions are ready
 	{
@@ -133,8 +133,8 @@ namespace Autonomous
 
 	namespace BlindTimes
 	{
-		const float Middle = 4.6;
-		const float Side = 6.9;
+		const float Middle = 3.6;
+		const float Side = 5.4;
 	}
 
 	namespace BlindSpeeds

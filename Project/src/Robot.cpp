@@ -307,6 +307,8 @@ void Robot::autoAim()
 
 	// Get amps for checking if against wall
 	double amps = driveBase.getAmps(pdp);
+	printf(std::to_string(amps).c_str());
+	printf("\n");
 
 	// Initialize base speed
 	float baseSpeed = 0.2;
@@ -323,15 +325,15 @@ void Robot::autoAim()
 	printf(std::to_string(data[UDP::Index::Distance]).c_str());
 	printf("\n");
 
-	// Stop moving forward if motors are no longer spinning
-	if (amps > Autonomous::AmpLimit)
+	if (!udpReceiver.getUDPDataIsReal() || udpReceiver.getUDPDataAge() > 2)
 	{
-		printf("Amps too high! Stopping...\n");
-		driveBase.stop();
-	}
-	else
-	{
-		if (!udpReceiver.getUDPDataIsReal() || udpReceiver.getUDPDataAge() > 2)
+		// Stop moving forward if motors are no longer spinning
+		if (amps > Autonomous::AmpLimit)
+		{
+			printf("Amps too high! Stopping...\n");
+			driveBase.stop();
+		}
+		else
 		{
 			printf("Cannot see target! ");
 
@@ -363,59 +365,58 @@ void Robot::autoAim()
 
 				driveBase.drive(baseSpeed * 0.8);
 			}
-
 		}
+	}
+	else
+	{
+		// Target is more than 15 degrees to the right. Rotate right.
+		if (data[UDP::Index::HorizAngle] > 10)
+		{
+			printf("Target is far right\n");
+
+			driveBase.drive(baseSpeed * 1.5, -baseSpeed * 1.5);
+		}
+		// Target is more than 5 degrees to the right. Rotate right and move forward.
+		else if (data[UDP::Index::HorizAngle] > 3) // Move while rotating
+		{
+			printf("Target is slight right\n");
+
+			driveBase.drive(baseSpeed, baseSpeed * 0.5);
+		}
+		// Target is more than 15 degrees to the left. Rotate left.
+		else if (data[UDP::Index::HorizAngle] < -7)
+		{
+			printf("Target is far left\n");
+
+			driveBase.drive(-baseSpeed * 1.5, baseSpeed * 1.5);
+		}
+		// Target is more than 5 degrees to the left. Rotate left and move forward.
+		else if (data[UDP::Index::HorizAngle] < -3)
+		{
+			printf("Target is slight left\n");
+
+			driveBase.drive(baseSpeed * 0.5, baseSpeed);
+		}
+		// Target is about centered but is distant. Move forward.
+		else if (data[UDP::Index::Distance] > 7)
+		{
+			printf("Target is distant\n");
+
+			driveBase.drive(baseSpeed);
+		}
+		// Target is about centered and close. Move forward slowly.
+		else if (data[UDP::Index::Distance] > 7)
+		{
+			printf("Target is near\n");
+
+			driveBase.drive(baseSpeed * 0.8);
+		}
+		// Robot is at target. Stop.
 		else
 		{
-			// Target is more than 15 degrees to the right. Rotate right.
-			if (data[UDP::Index::HorizAngle] > 10)
-			{
-				printf("Target is far right\n");
+			printf("At target\n");
 
-				driveBase.drive(baseSpeed * 1.25, -baseSpeed * 1.25);
-			}
-			// Target is more than 5 degrees to the right. Rotate right and move forward.
-			else if (data[UDP::Index::HorizAngle] > 3) // Move while rotating
-			{
-				printf("Target is slight right\n");
-
-				driveBase.drive(baseSpeed, baseSpeed * 0.5);
-			}
-			// Target is more than 15 degrees to the left. Rotate left.
-			else if (data[UDP::Index::HorizAngle] < -7)
-			{
-				printf("Target is far left\n");
-
-				driveBase.drive(-baseSpeed * 1.25, baseSpeed * 1.25);
-			}
-			// Target is more than 5 degrees to the left. Rotate left and move forward.
-			else if (data[UDP::Index::HorizAngle] < -3)
-			{
-				printf("Target is slight left\n");
-
-				driveBase.drive(baseSpeed * 0.5, baseSpeed);
-			}
-			// Target is about centered but is distant. Move forward.
-			else if (data[UDP::Index::Distance] > 7)
-			{
-				printf("Target is distant\n");
-
-				driveBase.drive(baseSpeed);
-			}
-			// Target is about centered and close. Move forward slowly.
-			else if (data[UDP::Index::Distance] > 7)
-			{
-				printf("Target is near\n");
-
-				driveBase.drive(baseSpeed * 0.8);
-			}
-			// Robot is at target. Stop.
-			else
-			{
-				printf("At target\n");
-
-				driveBase.stop();
-			}
+			driveBase.stop();
 		}
 	}
 
