@@ -309,7 +309,7 @@ void Robot::autoAim()
 	double amps = driveBase.getAmps(pdp);
 
 	// Initialize base speed
-	float baseSpeed = 0.3;
+	float baseSpeed = 0.2;
 
 	// Get vision data
 	float data[UDP::DataCount];
@@ -372,7 +372,7 @@ void Robot::autoAim()
 			{
 				printf("Target is far right\n");
 
-				driveBase.drive(baseSpeed, -baseSpeed);
+				driveBase.drive(baseSpeed * 1.25, -baseSpeed * 1.25);
 			}
 			// Target is more than 5 degrees to the right. Rotate right and move forward.
 			else if (data[UDP::Index::HorizAngle] > 3) // Move while rotating
@@ -386,7 +386,7 @@ void Robot::autoAim()
 			{
 				printf("Target is far left\n");
 
-				driveBase.drive(-baseSpeed, baseSpeed);
+				driveBase.drive(-baseSpeed * 1.25, baseSpeed * 1.25);
 			}
 			// Target is more than 5 degrees to the left. Rotate left and move forward.
 			else if (data[UDP::Index::HorizAngle] < -3)
