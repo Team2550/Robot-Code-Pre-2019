@@ -67,8 +67,8 @@ def dist(x1, y1, x2, y2):
 def processCamera(imgOriginal):
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
-    lowerBound = np.array([0, 0, 200])
-    upperBound = np.array([255, 105, 255])
+    lowerBound = np.array([0, 0, 230])
+    upperBound = np.array([255, 100, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
     maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
