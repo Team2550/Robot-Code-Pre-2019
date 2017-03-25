@@ -135,6 +135,8 @@ void Robot::AutonomousPeriodic()
 	{
 		if (autoTimer.Get() < blindTime)
 			driveBase.drive(blindSpeed);
+		else if (autoTimer.Get() < blindTime + 0.1)
+			driveBase.drive(-blindSpeed * 0.75);
 		else
 			driveBase.stop();
 	}
