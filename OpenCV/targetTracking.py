@@ -56,7 +56,7 @@ try:
     UDP_IP = socket.gethostbyname("roboRIO-2550-FRC.local")    #declares udp ip and port
     print("Found roboRIO at", UDP_IP)
 except Exception:
-    UDP_IP = "10.25.50.20"
+    UDP_IP = "10.25.50.21"
     print("RoboRIO not found. Defaulting to static IP.")
     
 UDP_PORT = 8890

@@ -140,3 +140,23 @@ bool UDP_Receiver::checkUDP()
 
 	return false;
 }
+
+void UDP_Receiver::clearUDPSocket()
+{
+	int packetsCleared = 0;
+	int bytesRecievedCount = 1;
+
+	while (bytesRecievedCount > 0 && packetsCleared < UDP::MaxPacketsFlush)
+	{
+		try
+		{
+			bytesRecievedCount = recvfrom(ourSocket, buffer, BUFSIZE, MSG_DONTWAIT, (struct sockaddr *)&remoteAddress, &addressLength);
+		}
+		catch (const int e)
+		{
+			bytesRecievedCount = 0;
+		}
+
+		packetsCleared++;
+	}
+}

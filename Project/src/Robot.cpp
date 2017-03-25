@@ -100,6 +100,7 @@ void Robot::AutonomousPeriodic()
 {
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
+	udpReceiver.clearUDPSocket();
 
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
@@ -113,20 +114,27 @@ void Robot::AutonomousPeriodic()
 	/* ========== DriveBase ========== */
 
 	float blindTime = 6;
+	float blindSpeed = Speeds::DriveBase::Turtle;
 
 	if (autoReady != &safeReady)
 	{
 		if (autoScenario == &middleScenario)
+		{
 			blindTime = Autonomous::BlindTimes::Middle;
+			blindSpeed = Autonomous::BlindSpeeds::Middle;
+		}
 		else if (autoScenario == &sideScenario)
+		{
 			blindTime = Autonomous::BlindTimes::Side;
+			blindSpeed = Autonomous::BlindSpeeds::Side;
+		}
 	}
 
 	// Run choreographer script until end of second to last step, unless can't auto aim
 	if (autoReady != &visionReady || autoTimer.Get() < blindTime - 2.5)
 	{
 		if (autoTimer.Get() < blindTime)
-			driveBase.drive(Speeds::DriveBase::Turtle);
+			driveBase.drive(blindSpeed);
 		else
 			driveBase.stop();
 	}
@@ -161,17 +169,18 @@ void Robot::TeleopPeriodic()
 
 	/* ========== udpReceiver ========== */
 	udpReceiver.checkUDP();
+	udpReceiver.clearUDPSocket();
 
 	float data[UDP::DataCount];
 	udpReceiver.getUDPData(data);
 
-	/*
 	printf("X Angle:");
 	printf(std::to_string(data[UDP::Index::HorizAngle]).c_str());
 	printf(", Dist:");
 	printf(std::to_string(data[UDP::Index::Distance]).c_str());
 	printf("\n");
-	*/
+
+
 	/* ========== DriveBase ========== */
 	if (autoReady == &visionReady && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{

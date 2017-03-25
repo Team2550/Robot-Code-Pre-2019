@@ -24,7 +24,6 @@ private:
 	float newestUDPData[UDP::DataCount] = {-1, -1, -1, -1, -1, -1};
 	bool isRealData = false;
 
-
 	Timer udpAgeTimer;
 
 	int createUDPSocket();
@@ -35,6 +34,7 @@ public:
 	void getUDPData(float data[]);
 	double getUDPDataAge();
 	bool getUDPDataIsReal();
+	void clearUDPSocket();
 };
 
 
