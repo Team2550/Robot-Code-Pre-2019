@@ -4,7 +4,6 @@
 #include <WPILib.h>
 #include "Constants.h"
 #include "xBox.h"
-#include "Choreographer.h"
 #include "UDP-Receiver.h"
 #include "DriveBase.h"
 #include "Shooter.h"
@@ -15,7 +14,6 @@ class Robot: public IterativeRobot
 private:
 	Joystick driveController;
 	Joystick perifController;
-	Choreographer choreographer;
 
 	Timer autoTimer;
 
@@ -25,19 +23,27 @@ private:
 	Shooter shooter;
 	Lift lift;
 
-	Autonomous::PosScenario farLeftScenario = Autonomous::FarLeft;
-	Autonomous::PosScenario middleScenario = Autonomous::Middle;
-	Autonomous::PosScenario midRightScenario = Autonomous::MidRight;
-	Autonomous::PosScenario farRightScenario = Autonomous::FarRight;
-	Autonomous::PosScenario testScenario = Autonomous::Test;
-	SendableChooser<Autonomous::PosScenario*> scenarioChooser;
+	Autonomous::Ready safeReady = Autonomous::Safe;
+	Autonomous::Ready blindReady = Autonomous::Blind;
+	Autonomous::Ready visionReady = Autonomous::Vision;
+	SendableChooser<Autonomous::Ready*> autoReadyChooser;
+
+	Autonomous::Scenario middleScenario = Autonomous::Middle;
+	Autonomous::Scenario sideScenario = Autonomous::Side;
+	SendableChooser<Autonomous::Scenario*> autoScenarioChooser;
+
+	bool targetRumbleOff = false;
+	bool targetRumbleOn = true;
+	SendableChooser<bool*> targetRumbleChooser;
+
+	Autonomous::Ready *autoReady;
+	Autonomous::Scenario *autoScenario;
+	bool *targetRumble;
 
 	bool climbToggleHold;
 	bool climbToggle;
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
-	bool canAutoAim;
-	bool autoSafeMode;
 
 public:
 	Robot();
@@ -47,7 +53,9 @@ public:
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
+	void DisabledInit();
 	void autoAim();
+	void clearSmartDashboard();
 };
 
 #endif
