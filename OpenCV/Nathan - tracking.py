@@ -9,9 +9,9 @@ import time
 
 MAX_FRAMERATE = 20
 
-OPEN_WINDOWS = False
+OPEN_WINDOWS = True
 
-TARGET_RECT_SIZE_INCHES = (2, 5)
+TARGET_RECT_SIZE_INCHES = (2, 3.5)
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5)
 TARGET_YOFFSET = 2.5
 TARGET_MAX_YOFFSET = 20
@@ -26,7 +26,7 @@ ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5
 IMAGE_SIZE = (IMAGE_WIDTH, IMAGE_HEIGHT) = (640, 480)
 IMAGE_DIAGONAL = (IMAGE_SIZE[0]**2 + IMAGE_SIZE[1]**2)**(0.5)
 
-CAMERA_FOV = 68.5 # FOV of axis camera, needs to change for USB camera 
+CAMERA_FOV = 66 # FOV of axis camera, needs to change for USB camera 
 
 #################################################################################################################
 
@@ -67,8 +67,8 @@ def dist(x1, y1, x2, y2):
 def processCamera(imgOriginal):
     imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
     
-    lowerBound = np.array([0, 0, 230])
-    upperBound = np.array([255, 100, 255])
+    lowerBound = np.array([0, 0, 205])
+    upperBound = np.array([255, 20, 255])
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
     maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
