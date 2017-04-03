@@ -9,11 +9,7 @@
 class Lift {
 private:
 
-#ifndef PRACTICE_2017_ROBOT
     Spark liftMotor;
-#else
-    Talon liftMotor;
-#endif
 
 public:
 	Lift();
