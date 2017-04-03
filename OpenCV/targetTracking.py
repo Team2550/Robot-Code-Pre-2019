@@ -165,7 +165,7 @@ def processCamera(imgOriginal):
                     # Draw on image mask and original image if opening windows is enabled.
                     if (OPEN_WINDOWS):
                         cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
-                        cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
+                        cv2.drawContours(maskDrawable, [approx], -1, (0,255,0), 2)
                         cv2.putText(imgOriginal, "{0:.1f}".format(percentMatch * 100) + "% match, " + "{0:.2f}".format(objectDist) + " inches, " + 
                                     "{0:.2f}".format(xAngle) + " degrees",
                                     (minX, minY), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,0,0))
@@ -176,7 +176,7 @@ def processCamera(imgOriginal):
                 # Draw on image mask and original image if opening windows is enabled.
                 if (OPEN_WINDOWS):
                     cv2.drawContours(imgOriginal, [approx], -1, (255,0,0), 1)
-                    cv2.drawContours(maskDraw, [approx], -1, (255,0,0), 1)
+                    cv2.drawContours(maskDrawable, [approx], -1, (255,0,0), 1)
                     cv2.putText(imgOriginal, "{0:.1f}".format(abs(ar / TARGET_ASPECT_RATIO - 1) * 100) + "% AR mismatch",
                                 (maxX, minY), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0,0,255))
 
@@ -184,7 +184,7 @@ def processCamera(imgOriginal):
     if (OPEN_WINDOWS):
         try:
             cv2.imshow('Original', imgOriginal)
-            cv2.imshow('Mask', maskDraw)
+            cv2.imshow('Mask', maskDrawable)
         except Exception:
             print("Can't display window!")
     
