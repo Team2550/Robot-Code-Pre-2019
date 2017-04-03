@@ -73,36 +73,40 @@ def dist(x1, y1, x2, y2):
 
 # Process an image and find targets (Returns a list of tuples with 6 elements each).
 def processCamera(imgOriginal):
-    imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
-    
+    imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV) # Convert image to HSV format
+
+    # Filter image based on color range.
     lowerBound = np.array(MIN_HSV)
     upperBound = np.array(MAX_HSV)
 
     mask = cv2.inRange(imgHSV, lowerBound, upperBound)
-    maskDraw = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+    maskDrawable = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR) # Drawable version of mask (RGB rather than Black and White)
     
-    # find contours in the thresholded image
+    # Find contours in the thresholded image
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
                             cv2.CHAIN_APPROX_SIMPLE)[1]
 
     dataPoints = []
     
     for c in cnts:
-        peri = cv2.arcLength(c, True)
-        approx = cv2.approxPolyDP(c, 0.04 * peri, True)
+        peri = cv2.arcLength(c, True) # Perimeter of contour
+        approx = cv2.approxPolyDP(c, 0.04 * peri, True) # Simplified contour (should be a rectangle if the contour is a target).
 
         if len(approx) == 4:
+            # Get lengths of sides (Either clockwise or counterclockwise)
             sideLengths = [0, 0, 0, 0]
             for i in range(4):
                 sideLengths[i] = dist(approx[i][0][0], approx[i][0][1],
                                       approx[(i+1)%4][0][0], approx[(i+1)%4][0][1])
 
+            # Average opposing sides to find width and height (Not necessarly in the correct orientation. Width and height are reversable here).
             width = (sideLengths[0] + sideLengths[2])/2.0
             height = (sideLengths[1] + sideLengths[3])/2.0
 
             widthSideDiff = abs(sideLengths[0] - sideLengths[2]) / width # Difference in width-wise side lengths in percent
             heightSideDiff = abs(sideLengths[1] - sideLengths[3]) / height # Difference in hight-wise side lengths in percent
 
+            # Short and long sides
             shortSide = min(width, height)
             longSide = max(width, height)
 
@@ -116,24 +120,29 @@ def processCamera(imgOriginal):
             boundboxWidth = maxX - minX
             boundboxHeight = maxY - minY
             boundboxAR = boundboxWidth / boundboxHeight
-            
+
+            # Calculate area and aspect ratio of contour
             size = width * height
-            ar = shortSide / longSide # Aspect ratio: will always be less than one
+            ar = shortSide / longSide # Will always be less than one, as short side is divided by long side.
             
-            if (size > 250 and ar >= TARGET_ASPECT_RATIO * (1 - TARGET_ASPECT_MARGIN_OF_ERROR) and
-                               ar <= TARGET_ASPECT_RATIO * (1 + TARGET_ASPECT_MARGIN_OF_ERROR) and
-                               widthSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE and
-                               heightSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE and
-                               abs(boundboxAR / ar - 1) < SHAPE_BOUNDINGBOX_ASPECT_RATIO_MAX_DIFF):
-                                  
+            if (size > 250 and # Minimum area of 250 pixels
+                ar >= TARGET_ASPECT_RATIO * (1 - TARGET_ASPECT_MARGIN_OF_ERROR) and # Aspect ratio of shape is within specified range of the given aspect ratio.
+                ar <= TARGET_ASPECT_RATIO * (1 + TARGET_ASPECT_MARGIN_OF_ERROR) and
+                widthSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE and # Width and height side differences are acceptable (not stretched out/distorted)
+                heightSideDiff < ACCEPTABLE_SIDE_PERCENT_DIFFERENCE and
+                abs(boundboxAR / ar - 1) < SHAPE_BOUNDINGBOX_ASPECT_RATIO_MAX_DIFF): # Bounding box's aspect ratio and the actual shape's aspect ratio are close enough to each other.
+
+                # Calculate average diagonal of shape
                 diagonal = (dist(approx[0][0][0],approx[0][0][1],
                                  approx[2][0][0],approx[2][0][1]) +
                             dist(approx[1][0][0],approx[1][0][1],
                                  approx[3][0][0],approx[3][0][1])) / 2
 
+                # Find center of shape
                 avgCoordinates = (avgX, avgY) = ((approx[0][0][0]+approx[1][0][0]+approx[2][0][0]+approx[3][0][0])/4,
                                                  (approx[0][0][1]+approx[1][0][1]+approx[2][0][1]+approx[3][0][1])/4)
 
+                # Calculate distance, X Offset, and Y Offset of target
                 percentOfView = diagonal / IMAGE_DIAGONAL
                 diagonalOfObjectPlaneInches = TARGET_RECT_DIAGONAL_INCHES / percentOfView
                 widthOfObjectPlaneInches = (IMAGE_WIDTH / IMAGE_DIAGONAL) * diagonalOfObjectPlaneInches
@@ -143,14 +152,17 @@ def processCamera(imgOriginal):
                 objectXOffset = ((avgX / IMAGE_WIDTH) - (1/2)) * widthOfObjectPlaneInches
                 objectYOffset = -((avgY / IMAGE_HEIGHT) - (1/2)) * heightOfObjectPlaneInches
 
-                if (abs(objectYOffset - TARGET_YOFFSET) < TARGET_MAX_YOFFSET):
+                if (abs(objectYOffset - TARGET_YOFFSET) < TARGET_MAX_YOFFSET): # Shape is within Y Offset range
+                    # Calculate angles of target
                     xAngle = math.degrees(math.atan2(objectXOffset, objectDist))
                     yAngle = math.degrees(math.atan2(objectYOffset, objectDist))
 
+                    # Calculate the percent match, which is an arbitrary number that represents how closely the shape matches the target.
                     percentMatch = 1 - abs(ar / TARGET_ASPECT_RATIO - 1)
                     percentMatch *= 1 - abs(boundboxAR / ar - 1)
                     percentMatch *= 1 - ((objectYOffset - TARGET_YOFFSET) / (TARGET_MAX_YOFFSET))**2
 
+                    # Draw on image mask and original image if opening windows is enabled.
                     if (OPEN_WINDOWS):
                         cv2.drawContours(imgOriginal, [approx], -1, (0,255,0), 2)
                         cv2.drawContours(maskDraw, [approx], -1, (0,255,0), 2)
@@ -158,15 +170,17 @@ def processCamera(imgOriginal):
                                     "{0:.2f}".format(xAngle) + " degrees",
                                     (minX, minY), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,0,0))
                     
-                    dataPoints += [(percentMatch, objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Test values
+                    dataPoints += [(percentMatch, objectDist, objectXOffset, objectYOffset, xAngle, yAngle)] # Add data to list
 
             else:
+                # Draw on image mask and original image if opening windows is enabled.
                 if (OPEN_WINDOWS):
                     cv2.drawContours(imgOriginal, [approx], -1, (255,0,0), 1)
                     cv2.drawContours(maskDraw, [approx], -1, (255,0,0), 1)
                     cv2.putText(imgOriginal, "{0:.1f}".format(abs(ar / TARGET_ASPECT_RATIO - 1) * 100) + "% AR mismatch",
                                 (maxX, minY), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0,0,255))
 
+    # Display image and image mask.
     if (OPEN_WINDOWS):
         try:
             cv2.imshow('Original', imgOriginal)
