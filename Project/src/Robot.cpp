@@ -118,7 +118,11 @@ void Robot::AutonomousPeriodic()
 	/* ========== DriveBase ========== */
 
 	float blindTime = 6;
+#ifndef PRACTICE_2017_ROBOT
 	float blindSpeed = Speeds::DriveBase::Turtle;
+#else
+	float blindSpeed = Speeds::DriveBase::Turtle * 2;
+#endif
 
 	if (autoReady != &safeReady)
 	{
@@ -148,6 +152,8 @@ void Robot::AutonomousPeriodic()
 	{
 		if (autoTimer.Get() < reachedTargetTime + 0.15)
 			driveBase.drive(-blindSpeed * 0.75);
+		else
+			driveBase.stop();
 	}
 	else
 	{
@@ -324,7 +330,11 @@ bool Robot::autoAim()
 	printf("\n");
 
 	// Initialize base speed
+#ifndef PRACTICE_2017_ROBOT
 	float baseSpeed = 0.2;
+#else
+	float baseSpeed = 0.4;
+#endif
 
 	// Get vision data
 	float data[UDP::DataCount];
