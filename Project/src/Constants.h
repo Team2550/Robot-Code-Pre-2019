@@ -8,8 +8,8 @@ namespace Ports
 #ifndef PRACTICE_2017_ROBOT
 	namespace TankDrive
 	{
-		const int Left = 0;
-		const int Right = 1;
+		const int Left = 1;
+		const int Right = 0;
 	}
 
 	namespace Shooter
@@ -26,12 +26,16 @@ namespace Ports
 	namespace PDP
 	{
 		const int Shooter = 2;
+		const int LeftMotor1 = 12;
+		const int LeftMotor2 = 13;
+		const int RightMotor1 = 14;
+		const int RightMotor2 = 15;
 	}
 #else
 	namespace TankDrive
 	{
-		const int Left = 0;
-		const int Right = 1;
+		const int Left = 1;
+		const int Right = 0;
 	}
 
 	namespace Shooter
@@ -48,6 +52,10 @@ namespace Ports
 	namespace PDP
 	{
 		const int Shooter = 2;
+		const int LeftMotor1 = 12;
+		const int LeftMotor2 = 13;
+		const int RightMotor1 = 14;
+		const int RightMotor2 = 15;
 	}
 #endif
 }
@@ -60,6 +68,7 @@ namespace Controls
 		const int Right = xbox::axis::rightY;
 		const int Boost = xbox::btn::rb;
 		const int Turtle = xbox::btn::lb;
+		const int AutoAim = xbox::btn::a;
 	}
 
 	namespace Peripherals
@@ -72,7 +81,6 @@ namespace Controls
 		const int ReverseBlender = xbox::axis::RT;
 		const int IncreaseShootSpeed = xbox::btn::y;
 		const int DecreaseShootSpeed = xbox::btn::x;
-		const int AutoAim = xbox::btn::a;
 	}
 }
 
@@ -97,7 +105,7 @@ namespace Speeds
 
 	namespace Shooter
 	{
-		const float Shooter = 0.67;
+		const float Shooter = 0.65;
 		const float MaxShooter = 1;
 		const float CurrentThreshold = 3;
 		const float Blender = 0.75;
@@ -106,130 +114,41 @@ namespace Speeds
 
 namespace Autonomous
 {
-	const float SpeedInchesPerSecond = 100;
-	const float FullRotationTime = .5;
+	const float AmpLimit = 2;
 
-	enum PosScenario
+	enum Ready // What auto functions are ready
 	{
-		FarLeft,
-		Middle,
-		MidRight,
-		FarRight,
-		Test
+		Safe, // Safe mode (pass baseline) is ready
+		Blind, // Putting gear on peg blindly is ready
+		Vision // Putting gear on peg with vision is ready
 	};
 
-	const PosScenario DefaultScenario = FarLeft;
-
-	namespace BlindScenarios
+	enum Scenario
 	{
-		// Timetable format is an array of arrays, each of which is three floats long
-		//                                                  (timeLength, leftSpeed, rightSpeed)
-		// Namespaces here denote different starting positions
-		namespace FarLeftPos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{277 / SpeedInchesPerSecond,0.5,0.5}};
-		}
-		namespace MiddlePos
-		{
-			const int PeriodCount = 7;
-			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
-													 {3,0,0},
-													 {45 / SpeedInchesPerSecond,-0.5,-0.5},
-													 {FullRotationTime / 4.0f,-0.5,0.5},
-													 {45 / SpeedInchesPerSecond,0.5,0.5},
-													 {FullRotationTime / 4.0f,0.5,-0.5},
-													 {90 / SpeedInchesPerSecond,0.5,0.5}};
+		Middle,
+		Side
+	};
 
-		}
-		namespace MidRightPos
-		{
-			const int PeriodCount = 1;
-			const float Timetable[PeriodCount][3] = {{0,0,0}};
-		}
-		namespace FarRightPos
-		{
-			const int PeriodCount = 3;
-			const float Timetable[PeriodCount][3] = {{90 / SpeedInchesPerSecond,0.5,0.5},
-													 {FullRotationTime / 4.0f,-0.5,0.5},
-													 {277.4 / SpeedInchesPerSecond * 0.15625,0.5,0.5}};
-		}
+	const Scenario DefaultScenario = Middle;
+
+	namespace BlindTimes
+	{
+		const float Middle = 3.6;
+		const float Side = 5.4;
 	}
 
-	namespace DynamicBlindScenarios
+	namespace BlindSpeeds
 	{
-		// These scenarios are mode of inline functions that are designed to generate the timetables based on variables that can be changed live.
-		// These should only be used when testing for figuring out values.
-		/*=================================================
-			Name: timetable
-			Desc: Initializes a timetable array to be used by a choreographer.
-			Arguments:
-				speedInchesPerSecond (I) : The max speed of the robot in inches per second
-				fullRotationTime (I)     : The amount of time in seconds it takes the robot to turn 180 degrees at full speed
-				_timetable (O)           : The array to initialize as a timetable
-			Return:
-				none
-		=================================================*/
-		namespace FarLeftPos
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{277 / speedInchesPerSecond,0.5,0.5}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace MiddlePos
-		{
-			const int PeriodCount = 7;
-			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
-						 	 	 	 	 	{3,0,0},
-											{45 / speedInchesPerSecond,-0.5,-0.5},
-											{fullRotationTime / 4.0f,-0.5,0.5},
-											{45 / speedInchesPerSecond,0.5,0.5},
-											{fullRotationTime / 4.0f,0.5,-0.5},
-											{90 / speedInchesPerSecond,0.5,0.5}};
-
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace MidRightPos
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{0,0,0}};
-				std::copy(&tt[0][0], &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace FarRightPos
-		{
-			const int PeriodCount = 3;
-			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{90 / speedInchesPerSecond,0.5,0.5},
-			                                {fullRotationTime / 4.0f,0.5,-0.5},
-										    {277.4f / speedInchesPerSecond * 0.15625f,0.5,0.5}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
-		namespace TestScenario
-		{
-			const int PeriodCount = 1;
-			inline void getTimetable(float speedInchesPerSecond, float fullRotationTime, float _timetable[PeriodCount][3])
-			{
-				float tt[PeriodCount][3] = {{2, 1, 1}};
-				std::copy(&tt[0][0],  &tt[0][0] + PeriodCount * 3, &_timetable[0][0]);
-			}
-		}
+		const float Middle = Speeds::DriveBase::Turtle;
+		const float Side = Speeds::DriveBase::Turtle;
 	}
 }
 
 namespace UDP
 {
-	const int DataCount = 5;
+	const int MaxPacketsFlush = 20;
+
+	const int DataCount = 6;
 
 	namespace Index
 	{

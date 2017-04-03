@@ -84,7 +84,7 @@ Arguments:
 Return:
 	none
 ================================================*/
-void UDP_Receiver::checkUDP()
+bool UDP_Receiver::checkUDP()
 {
 	int bytesRecievedCount = 0;
 
@@ -100,7 +100,6 @@ void UDP_Receiver::checkUDP()
 	if (bytesRecievedCount > 0) {
 		buffer[bytesRecievedCount] = '\0';
 		std::string bufferString = buffer;
-		printf(("Got data: " + bufferString + '\n').c_str());
 
 		std::vector<std::string> dataPointsStrings = Utility::splitString(bufferString, ',');
 
@@ -112,69 +111,52 @@ void UDP_Receiver::checkUDP()
 		for (unsigned int i = 0; i < dataPointsStrings.size(); i++)
 		{
 			currentDataPoint = Utility::strVectorToFloatVector(Utility::splitString(dataPointsStrings[i], ' '));
+
+			// If data point is the right length, add it to the right position in the dataPoints vector (sorted by percent match)
 			if (currentDataPoint.size() == UDP::DataCount)
 				for (unsigned int j = 0; j <= dataPoints.size(); j++)
-					if (j >= dataPoints.size() || dataPoints[j][UDP::Index::PercentMatch] > currentDataPoint[UDP::Index::PercentMatch])
+					if (j >= dataPoints.size() || currentDataPoint[UDP::Index::PercentMatch] > dataPoints[j][UDP::Index::PercentMatch])
 					{
 						dataPoints.insert(dataPoints.begin() + j, currentDataPoint);
 						j = dataPoints.size() + 1;
 					}
 		}
 
-		if (0 < dataPoints.size() && dataPoints.size() < 2)
+		if (dataPoints.size() > 1)
 		{
-			// Use only match
-			for (unsigned int i = 0; i < UDP::DataCount; i++)
-				newestUDPData[i] += dataPoints[0][i];
-			udpAgeTimer.Reset();
-			isRealData = true;
-		}
-		else if (dataPoints.size() > 0)
-		{
-			// Average two best matches
-			for (unsigned int i = 0; i < UDP::DataCount; i++)
-				newestUDPData[i] += (dataPoints[dataPoints.size()-2][i] + dataPoints[dataPoints.size()-1][i]) / 2;
-			udpAgeTimer.Reset();
-			isRealData = true;
+			// If one target is a much worse match than the other, ignore the data
+			if (dataPoints[1][UDP::Index::PercentMatch] / dataPoints[0][UDP::Index::PercentMatch] > 0.75)
+			{
+				// Average two best matches
+				for (unsigned int i = 0; i < UDP::DataCount; i++)
+					newestUDPData[i] = (dataPoints[0][i] + dataPoints[1][i]) / 2;
+				udpAgeTimer.Reset();
+				isRealData = true;
+
+				return true;
+			}
 		}
 	}
+
+	return false;
 }
 
-/*================================================
-Name: getNums
-Desc: Converts UDP string to C++ array
-Arguments:
-	str (I)    : String to split
-	length (I) : Length of string
-	nums (O)   : Numbers from string
-Return:
-	none
-================================================*/
-/*void UDP_Receiver::getNumsFromString(std::string str, float nums[])
+void UDP_Receiver::clearUDPSocket()
 {
-	int start = 0;
-	int end = 0;
-	int i = 0;
+	int packetsCleared = 0;
+	int bytesRecievedCount = 1;
 
-	std::string currentNum;
-
-	while(i < str.length())
+	while (bytesRecievedCount > 0 && packetsCleared < UDP::MaxPacketsFlush)
 	{
-		currentNum = "";
-
-		while(str[end] != ' ' && end < BUFSIZE)
-			end++;
-
-		int j = 0;
-		for (; start < end; start++, j++)
+		try
 		{
-			currentNum[j] = str[start];
+			bytesRecievedCount = recvfrom(ourSocket, buffer, BUFSIZE, MSG_DONTWAIT, (struct sockaddr *)&remoteAddress, &addressLength);
+		}
+		catch (const int e)
+		{
+			bytesRecievedCount = 0;
 		}
 
-		currentNum[j] = '\0';
-
-		nums[i++] = atof(currentNum);
-
-		start = ++end;
+		packetsCleared++;
 	}
-}*/
+}
