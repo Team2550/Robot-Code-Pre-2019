@@ -2,6 +2,8 @@
 Project/.gitignore
 Project/*.properties
 Project/*.xml
+#ignore compiled documentation
+doc
 
 # Everything that follows this is from the github .gitignore for Eclipse
 .metadata

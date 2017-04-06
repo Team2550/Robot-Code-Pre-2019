@@ -1,20 +1,27 @@
 #include "Utility.h"
 #include <WPILib.h>
 
-/*================================================
-Name: deadzone
-Desc: Zeroes out values within a certain "deadzone"
-Arguments:
-	value (IO): value to deadzone
-	tolerance (I): deadzone
-Return:
-	none
-================================================*/
+
+/*!
+ * \brief Applies the specified deadzone to value
+ *
+ * \param[in] value     The value to apply the deadzone to
+ * \param[in] tolerance The deadzone to use
+ * \return 0 if the absolute value of the given value is smaller than or
+ * equal to tolerance; otherwise, the original value
+ */
 float Utility::deadzone(float value, float tolerance)
 {
 	return fabs(value) <= tolerance ? 0 : value;
 }
 
+/*!
+ * \brief Splits the given string where the delimiter is found
+ *
+ * \param[in] str       The string to split
+ * \param[in] delimiter The delimiter to use
+ * \return A vector containing the resulting strings
+ */
 std::vector<std::string> Utility::splitString(std::string str, char delimiter)
 {
 	std::vector<std::string> substrings;
@@ -35,6 +42,14 @@ std::vector<std::string> Utility::splitString(std::string str, char delimiter)
 	return substrings;
 }
 
+/*!
+ * \brief Converts a vector of strings to a vector of floats
+ *
+ * This works by calling stof() on every string in the vector. If for some
+ * reason the string cannot be converted to a float, it is silently skipped.
+ * \param[in] strs The strings to convert
+ * \return A vector containing the resulting floats
+ */
 std::vector<float> Utility::strVectorToFloatVector(std::vector<std::string> strs)
 {
 	std::vector<float> nums;
@@ -52,6 +67,15 @@ std::vector<float> Utility::strVectorToFloatVector(std::vector<std::string> strs
 	return nums;
 }
 
+/*!
+ * \brief Sets the the rumble of the given controller
+ *
+ * This allows setting a specific rumble value to a specific side
+ * of a specific controller
+ * \param[out] controller   The controller to set the rumble of
+ * \param[in] rumbleSide   Which side of the controller to rumble
+ * \param[in] rumbleAmount The intensity of the rumble, from 0 to 1
+ */
 void Utility::setRumble(Joystick& controller, Utility::RumbleSide rumbleSide, float rumbleAmount)
 {
 	switch (rumbleSide)
