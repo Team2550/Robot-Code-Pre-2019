@@ -9,7 +9,7 @@ import time
 
 MAX_FRAMERATE = 20 # Limits the framerate if image processing finishes early.
 
-OPEN_WINDOWS = False # Opens windows to view the mask created by the color range filters. DO NOT ENABLE ON PI.
+OPEN_WINDOWS = socket.gethostname() != "raspberrypi" # Opens windows to view the mask created by the color range filters. DO NOT ENABLE ON PI.
 
 # Range of colors to accept as target (Hue, Saturation, Value)
 # Values range from 0 to 255. If using an online color picker, make sure to
