@@ -29,7 +29,8 @@ private:
 	SendableChooser<Autonomous::Ready*> autoReadyChooser;
 
 	Autonomous::Scenario middleScenario = Autonomous::Middle;
-	Autonomous::Scenario sideScenario = Autonomous::Side;
+	Autonomous::Scenario sideLeftScenario = Autonomous::SideLeft;
+	Autonomous::Scenario sideRightScenario = Autonomous::SideRight;
 	SendableChooser<Autonomous::Scenario*> autoScenarioChooser;
 
 	bool targetRumbleOff = false;

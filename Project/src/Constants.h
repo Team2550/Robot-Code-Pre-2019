@@ -126,7 +126,8 @@ namespace Autonomous
 	enum Scenario
 	{
 		Middle,
-		Side
+		SideLeft,
+		SideRight
 	};
 
 	const Scenario DefaultScenario = Middle;
@@ -134,7 +135,7 @@ namespace Autonomous
 	namespace BlindTimes
 	{
 		const float Middle = 3.6;
-		const float Side = 3.6;
+		const float Side = 4.0;
 	}
 
 	namespace BlindSpeeds

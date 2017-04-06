@@ -40,7 +40,8 @@ void Robot::RobotInit()
 
 	// Autonomous position
 	autoScenarioChooser.AddDefault("Middle", &middleScenario);
-	autoScenarioChooser.AddObject("Side", &sideScenario);
+	autoScenarioChooser.AddObject("SideLeft", &sideLeftScenario);
+	autoScenarioChooser.AddObject("SideRight", &sideRightScenario);
 	SmartDashboard::PutData("Auto Scenario", &autoScenarioChooser);
 
 	// Targeting Rumble Feedback
@@ -84,8 +85,11 @@ void Robot::AutonomousInit()
 			case Autonomous::Middle:
 				autoScenario = &middleScenario;
 				break;
-			case Autonomous::Side:
-				autoScenario = &sideScenario;
+			case Autonomous::SideLeft:
+				autoScenario = &sideLeftScenario;
+				break;
+			case Autonomous::SideRight:
+				autoScenario = &sideRightScenario;
 				break;
 			}
 		}
@@ -131,7 +135,8 @@ void Robot::AutonomousPeriodic()
 			blindTime = Autonomous::BlindTimes::Middle;
 			blindSpeed = Autonomous::BlindSpeeds::Middle;
 		}
-		else if (autoScenario == &sideScenario)
+		else if (autoScenario == &sideLeftScenario
+		         || autoScenario == & sideRightScenario)
 		{
 			blindTime = Autonomous::BlindTimes::Side;
 			blindSpeed = Autonomous::BlindSpeeds::Side;
@@ -149,13 +154,14 @@ void Robot::AutonomousPeriodic()
 		else
 			driveBase.stop();
 	}
-	else if (autoScenario == &sideScenario
-	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 2.1))
+	else if ((autoScenario == &sideLeftScenario || autoScenario == &sideRightScenario)
+	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.7))
 	{
-		if (autoTimer.Get() < blindTime - 2.5)
+		if (autoTimer.Get() < blindTime - 2.4)
 			driveBase.drive(blindSpeed);
-		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 2.1)
-			driveBase.drive(blindSpeed * 1.5, 0/*blindSpeed*/);
+		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.7)
+			driveBase.drive(autoScenario == &sideLeftScenario ? blindSpeed * 1.5 : blindSpeed,
+			                autoScenario == &sideRightScenario ? blindSpeed * 1.5 : blindSpeed);
 		else
 			driveBase.stop();
 	}
