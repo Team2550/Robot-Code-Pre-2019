@@ -9,14 +9,14 @@ import time
 
 MAX_FRAMERATE = 20 # Limits the framerate if image processing finishes early.
 
-OPEN_WINDOWS = False # Opens windows to view the mask created by the color range filters. DO NOT ENABLE ON PI.
+OPEN_WINDOWS = True # Opens windows to view the mask created by the color range filters. DO NOT ENABLE ON PI.
 
 # Range of colors to accept as target (Hue, Saturation, Value)
 # Values range from 0 to 255. If using an online color picker, make sure to
 # adjust their values for this range. Most websites use 0 to 360 for hue,
 # and 0 to 100 for saturation and value.
-MIN_HSV = (MIN_HUE, MIN_SAT, MIN_VAL) = (0, 0, 230)
-MAX_HSV = (MAX_HUE, MAX_SAT, MAX_VAL) = (255, 100, 255)
+MIN_HSV = (MIN_HUE, MIN_SAT, MIN_VAL) = (0, 0, 75)
+MAX_HSV = (MAX_HUE, MAX_SAT, MAX_VAL) = (200, 255, 255)
 
 TARGET_RECT_SIZE_INCHES = (2, 5) # Target's size in inches (width, height).
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5) # Diagonal of the rectangle of the target.
