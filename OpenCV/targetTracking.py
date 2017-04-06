@@ -9,16 +9,14 @@ import time
 
 MAX_FRAMERATE = 20 # Limits the framerate if image processing finishes early.
 
-OPEN_WINDOWS = True # Opens windows to view the mask created by the color range filters. DO NOT ENABLE ON PI.
+OPEN_WINDOWS = False # Opens windows to view the mask created by the color range filters. DO NOT ENABLE ON PI.
 
 # Range of colors to accept as target (Hue, Saturation, Value)
 # Values range from 0 to 255. If using an online color picker, make sure to
 # adjust their values for this range. Most websites use 0 to 360 for hue,
 # and 0 to 100 for saturation and value.
-MIN_HSV = (MIN_HUE, MIN_SAT, MIN_VAL) = (0, 0, 75)
-MAX_HSV = (MAX_HUE, MAX_SAT, MAX_VAL) = (200, 255, 255)
-# Values to test: MIN_HSV = (MIN_HUE, MIN_SAT, MIN_VAL) = (75, 100, 75)
-#                 MAX_HSV = (MAX_HUE, MAX_SAT, MAX_VAL) = (180, 255, 180)
+MIN_HSV = (MIN_HUE, MIN_SAT, MIN_VAL) = (75, 100, 75)
+MAX_HSV = (MAX_HUE, MAX_SAT, MAX_VAL) = (180, 255, 180)
 
 TARGET_RECT_SIZE_INCHES = (2, 5) # Target's size in inches (width, height).
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5) # Diagonal of the rectangle of the target.
@@ -26,9 +24,9 @@ TARGET_YOFFSET = 2.5 # The vertical offset (in inches) where the target should b
 TARGET_MAX_YOFFSET = 20 # The max difference that the target may be from the specified Y-Offset.
 
 TARGET_ASPECT_RATIO = min(TARGET_RECT_SIZE_INCHES) / max(TARGET_RECT_SIZE_INCHES) # The aspect ratio of the target (short side divided by long side).
-TARGET_ASPECT_MARGIN_OF_ERROR = 0.40 # Percentage that any rectangles that are found may defer from the known aspect ratio
+TARGET_ASPECT_MARGIN_OF_ERROR = 0.60 # Percentage that any rectangles that are found may defer from the known aspect ratio
 
-SHAPE_BOUNDINGBOX_ASPECT_RATIO_MAX_DIFF = 0.40 # Maximum difference (in percent) between a shapes aspect ratio (based on distances between corners) and its bounding box's aspect ratio.
+SHAPE_BOUNDINGBOX_ASPECT_RATIO_MAX_DIFF = 0.60 # Maximum difference (in percent) between a shapes aspect ratio (based on distances between corners) and its bounding box's aspect ratio.
 
 ACCEPTABLE_SIDE_PERCENT_DIFFERENCE = 0.5 # Maximum difference between a rectangles opposing sides to be accepted (in percent).
 
