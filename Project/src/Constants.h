@@ -134,7 +134,7 @@ namespace Autonomous
 	namespace BlindTimes
 	{
 		const float Middle = 3.6;
-		const float Side = 5.4;
+		const float Side = 3.6;
 	}
 
 	namespace BlindSpeeds

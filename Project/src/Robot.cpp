@@ -139,12 +139,23 @@ void Robot::AutonomousPeriodic()
 	}
 
 	// Run choreographer script until end of second to last step, unless can't auto aim
-	if (autoReady != &visionReady || autoTimer.Get() < blindTime - 2.5)
+	if (autoScenario == &middleScenario
+	    && (autoReady != &visionReady || autoTimer.Get() < blindTime - 2.5))
 	{
 		if (autoTimer.Get() < blindTime)
 			driveBase.drive(blindSpeed);
 		else if (autoTimer.Get() < blindTime + 0.15)
 			driveBase.drive(-blindSpeed * 0.75);
+		else
+			driveBase.stop();
+	}
+	else if (autoScenario == &sideScenario
+	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 2.1))
+	{
+		if (autoTimer.Get() < blindTime - 2.5)
+			driveBase.drive(blindSpeed);
+		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 2.1)
+			driveBase.drive(blindSpeed * 1.5, 0/*blindSpeed*/);
 		else
 			driveBase.stop();
 	}
