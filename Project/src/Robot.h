@@ -40,6 +40,8 @@ private:
 	Autonomous::Scenario *autoScenario;
 	bool *targetRumble;
 
+	bool wasAtTarget;
+	float reachedTargetTime;
 	bool climbToggleHold;
 	bool climbToggle;
 	bool decreaseShooterSpeedDown;
@@ -54,7 +56,7 @@ public:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void DisabledInit();
-	void autoAim();
+	bool autoAim();
 	void clearSmartDashboard();
 };
 

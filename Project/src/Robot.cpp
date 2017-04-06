@@ -10,6 +10,8 @@ Robot::Robot() : driveController(0), perifController(1),
 				 shooter(),
 				 lift()
 {
+	wasAtTarget = false;
+	reachedTargetTime = 0;
 	decreaseShooterSpeedDown = false;
 	increaseShooterSpeedDown = false;
 	climbToggleHold = false;
@@ -89,6 +91,8 @@ void Robot::AutonomousInit()
 		}
 	}
 
+	wasAtTarget = false;
+
 	// Set motor reversal and reset timer
 	driveBase.setReversed(true);
 
@@ -114,7 +118,11 @@ void Robot::AutonomousPeriodic()
 	/* ========== DriveBase ========== */
 
 	float blindTime = 6;
+#ifndef PRACTICE_2017_ROBOT
 	float blindSpeed = Speeds::DriveBase::Turtle;
+#else
+	float blindSpeed = Speeds::DriveBase::Turtle * 2;
+#endif
 
 	if (autoReady != &safeReady)
 	{
@@ -140,9 +148,19 @@ void Robot::AutonomousPeriodic()
 		else
 			driveBase.stop();
 	}
+	else if (wasAtTarget)
+	{
+		if (autoTimer.Get() < reachedTargetTime + 0.15)
+			driveBase.drive(-blindSpeed * 0.75);
+		else
+			driveBase.stop();
+	}
 	else
 	{
-		autoAim();
+		wasAtTarget = autoAim();
+
+		if (wasAtTarget)
+			reachedTargetTime = autoTimer.Get();
 	}
 
 	// Modify motor speeds based on trim from smartDashboard
@@ -299,7 +317,8 @@ void Robot::DisabledInit()
 	Utility::setRumble(driveController, Utility::RumbleSide::both, 0);
 }
 
-void Robot::autoAim()
+// Returns true if at target
+bool Robot::autoAim()
 {
 	// Backup value of reversal to restore when finished. Set motor reversal to true (front = camera)
 	bool wasReversed = driveBase.getReversed();
@@ -311,7 +330,11 @@ void Robot::autoAim()
 	printf("\n");
 
 	// Initialize base speed
+#ifndef PRACTICE_2017_ROBOT
 	float baseSpeed = 0.2;
+#else
+	float baseSpeed = 0.4;
+#endif
 
 	// Get vision data
 	float data[UDP::DataCount];
@@ -325,44 +348,59 @@ void Robot::autoAim()
 	printf(std::to_string(data[UDP::Index::Distance]).c_str());
 	printf("\n");
 
+	bool atTarget = false;
+
 	if (!udpReceiver.getUDPDataIsReal() || udpReceiver.getUDPDataAge() > 2)
 	{
-		// Stop moving forward if motors are no longer spinning
-		if (amps > Autonomous::AmpLimit)
+		printf("Cannot see target! ");
+
+		// If data is not real, than target was never seen. Move forward blindly.
+		if (!udpReceiver.getUDPDataIsReal())
 		{
-			printf("Amps too high! Stopping...\n");
-			driveBase.stop();
-		}
-		else
-		{
-			printf("Cannot see target! ");
+			printf("Target never seen, moving forward...\n");
 
-			// If data is not real, than target was never seen. Move forward blindly.
-			if (!udpReceiver.getUDPDataIsReal())
+			// Stop moving forward if motors are no longer spinning
+			if (amps > Autonomous::AmpLimit)
 			{
-				printf("Target never seen, moving forward...\n");
+				printf("Amps too high! Stopping...\n");
+				driveBase.stop();
 
-				driveBase.drive(baseSpeed * 0.8);
+				atTarget = true;
 			}
-			// If xOffset is greater than 15, than target was last seen to the right. Rotate right.
-			else if (data[UDP::Index::HorizAngle] > 10)
-			{
-				printf("Target last seen on right, rotating right. \n");
-
-				driveBase.drive(baseSpeed, -baseSpeed);
-			}
-			// If xOffset is less than -15, than target was last seen to the left. Rotate left.
-			else if (data[UDP::Index::HorizAngle] < -10)
-			{
-				printf("Target last seen on left, rotating left. \n");
-
-				driveBase.drive(-baseSpeed, baseSpeed);
-			}
-			// If nothing else applies, than target was last seen in front. Move forward.
 			else
 			{
-				printf("Target last seen centered, moving forward...\n");
+				driveBase.drive(baseSpeed * 0.8);
+			}
+		}
+		// If xOffset is greater than 15, than target was last seen to the right. Rotate right.
+		else if (data[UDP::Index::HorizAngle] > 10)
+		{
+			printf("Target last seen on right, rotating right. \n");
 
+			driveBase.drive(baseSpeed, -baseSpeed);
+		}
+		// If xOffset is less than -15, than target was last seen to the left. Rotate left.
+		else if (data[UDP::Index::HorizAngle] < -10)
+		{
+			printf("Target last seen on left, rotating left. \n");
+
+			driveBase.drive(-baseSpeed, baseSpeed);
+		}
+		// If nothing else applies, than target was last seen in front. Move forward.
+		else
+		{
+			printf("Target last seen centered, moving forward...\n");
+
+			// Stop moving forward if motors are no longer spinning
+			if (amps > Autonomous::AmpLimit)
+			{
+				printf("Amps too high! Stopping...\n");
+				driveBase.stop();
+
+				atTarget = true;
+			}
+			else
+			{
 				driveBase.drive(baseSpeed * 0.8);
 			}
 		}
@@ -421,6 +459,8 @@ void Robot::autoAim()
 	}
 
 	driveBase.setReversed(wasReversed);
+
+	return atTarget;
 }
 
 void Robot::clearSmartDashboard()
