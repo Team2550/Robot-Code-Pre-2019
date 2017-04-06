@@ -155,18 +155,18 @@ void Robot::AutonomousPeriodic()
 			driveBase.stop();
 	}
 	else if ((autoScenario == &sideLeftScenario || autoScenario == &sideRightScenario)
-	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.5))
+	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.7))
 	{
-		if (autoTimer.Get() < blindTime - 2.275)
+		if (autoTimer.Get() < blindTime - 2.475)
 			driveBase.drive(blindSpeed);
-		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.5)
+		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.7)
 			driveBase.drive(autoScenario == &sideLeftScenario ? blindSpeed * 1.75 : -blindSpeed * 1.75,
 			                autoScenario == &sideRightScenario ? blindSpeed * 1.75 : -blindSpeed * 1.75);
 		else
 			driveBase.stop();
 	}
-	/*else if(autoTimer.Get() < blindTime)
-		driveBase.drive(blindSpeed);*/
+	else if(autoTimer.Get() < blindTime - 1.45)
+		driveBase.drive(blindSpeed);
 	else if (wasAtTarget)
 	{
 		if (autoTimer.Get() < reachedTargetTime + 0.25)
