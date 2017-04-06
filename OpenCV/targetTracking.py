@@ -15,8 +15,8 @@ OPEN_WINDOWS = socket.gethostname() != "raspberrypi" # Opens windows to view the
 # Values range from 0 to 255. If using an online color picker, make sure to
 # adjust their values for this range. Most websites use 0 to 360 for hue,
 # and 0 to 100 for saturation and value.
-MIN_HSV = (MIN_HUE, MIN_SAT, MIN_VAL) = (75, 100, 75)
-MAX_HSV = (MAX_HUE, MAX_SAT, MAX_VAL) = (180, 255, 180)
+MIN_HSV = (MIN_HUE, MIN_SAT, MIN_VAL) = (50, 100, 50)
+MAX_HSV = (MAX_HUE, MAX_SAT, MAX_VAL) = (170, 255, 180)
 
 TARGET_RECT_SIZE_INCHES = (2, 5) # Target's size in inches (width, height).
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5) # Diagonal of the rectangle of the target.
