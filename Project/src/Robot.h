@@ -57,7 +57,7 @@ public:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void DisabledInit();
-	bool autoAim();
+	bool autoAim(float driveTime = 0);
 	void clearSmartDashboard();
 };
 
