@@ -155,13 +155,13 @@ void Robot::AutonomousPeriodic()
 			driveBase.stop();
 	}
 	else if ((autoScenario == &sideLeftScenario || autoScenario == &sideRightScenario)
-	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.7))
+	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.45))
 	{
-		if (autoTimer.Get() < blindTime - 2.4)
+		if (autoTimer.Get() < blindTime - 2.15)
 			driveBase.drive(blindSpeed);
-		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.7)
-			driveBase.drive(autoScenario == &sideLeftScenario ? blindSpeed * 1.5 : -blindSpeed * 1.5,
-			                autoScenario == &sideRightScenario ? blindSpeed * 1.5 : -blindSpeed * 1.5);
+		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.45)
+			driveBase.drive(autoScenario == &sideLeftScenario ? blindSpeed * 1.75 : -blindSpeed * 1.75,
+			                autoScenario == &sideRightScenario ? blindSpeed * 1.75 : -blindSpeed * 1.75);
 		else
 			driveBase.stop();
 	}
@@ -348,7 +348,7 @@ bool Robot::autoAim(float blindTime)
 
 	// Initialize base speed
 #ifndef PRACTICE_2017_ROBOT
-	float baseSpeed = 0.2;
+	float baseSpeed = 0.35;
 #else
 	float baseSpeed = 0.4;
 #endif
