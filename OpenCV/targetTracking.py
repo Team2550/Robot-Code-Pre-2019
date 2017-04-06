@@ -17,6 +17,8 @@ OPEN_WINDOWS = True # Opens windows to view the mask created by the color range 
 # and 0 to 100 for saturation and value.
 MIN_HSV = (MIN_HUE, MIN_SAT, MIN_VAL) = (0, 0, 75)
 MAX_HSV = (MAX_HUE, MAX_SAT, MAX_VAL) = (200, 255, 255)
+# Values to test: MIN_HSV = (MIN_HUE, MIN_SAT, MIN_VAL) = (75, 100, 75)
+#                 MAX_HSV = (MAX_HUE, MAX_SAT, MAX_VAL) = (180, 255, 180)
 
 TARGET_RECT_SIZE_INCHES = (2, 5) # Target's size in inches (width, height).
 TARGET_RECT_DIAGONAL_INCHES = (TARGET_RECT_SIZE_INCHES[0]**2 + TARGET_RECT_SIZE_INCHES[1]**2)**(0.5) # Diagonal of the rectangle of the target.
