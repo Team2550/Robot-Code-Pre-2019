@@ -155,11 +155,11 @@ void Robot::AutonomousPeriodic()
 			driveBase.stop();
 	}
 	else if ((autoScenario == &sideLeftScenario || autoScenario == &sideRightScenario)
-	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.575))
+	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.5))
 	{
 		if (autoTimer.Get() < blindTime - 2.275)
 			driveBase.drive(blindSpeed);
-		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.575)
+		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.5)
 			driveBase.drive(autoScenario == &sideLeftScenario ? blindSpeed * 1.75 : -blindSpeed * 1.75,
 			                autoScenario == &sideRightScenario ? blindSpeed * 1.75 : -blindSpeed * 1.75);
 		else
@@ -176,7 +176,8 @@ void Robot::AutonomousPeriodic()
 	}
 	else
 	{
-		wasAtTarget = autoAim(blindTime);
+		wasAtTarget = autoAim(autoScenario == &sideLeftScenario
+		                      || autoScenario == &sideRightScenario, blindTime);
 
 		if (wasAtTarget)
 			reachedTargetTime = autoTimer.Get();
@@ -223,7 +224,7 @@ void Robot::TeleopPeriodic()
 	/* ========== DriveBase ========== */
 	if (autoReady == &visionReady && driveController.GetRawButton(Controls::TankDrive::AutoAim))
 	{
-		autoAim();
+		autoAim(false);
 	}
 	else
 	{
@@ -337,7 +338,7 @@ void Robot::DisabledInit()
 }
 
 // Returns true if at target
-bool Robot::autoAim(float blindTime)
+bool Robot::autoAim(bool side, float blindTime)
 {
 	// Backup value of reversal to restore when finished. Set motor reversal to true (front = camera)
 	bool wasReversed = driveBase.getReversed();
@@ -350,7 +351,7 @@ bool Robot::autoAim(float blindTime)
 
 	// Initialize base speed
 #ifndef PRACTICE_2017_ROBOT
-	float baseSpeed = 0.35;
+	float baseSpeed = side ? 0.35 : 0.2;
 #else
 	float baseSpeed = 0.4;
 #endif
