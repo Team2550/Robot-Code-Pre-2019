@@ -165,8 +165,9 @@ void Robot::AutonomousPeriodic()
 		else
 			driveBase.stop();
 	}
-	else if(autoTimer.Get() < blindTime - 1.25)
-		driveBase.stop();//driveBase.drive(blindSpeed); // Comment out to get a pause instead of a drive forward
+	else if(autoTimer.Get() < blindTime - 1.25 && (autoScenario == &sideLeftScenario
+	                                               || autoScenario == &sideRightScenario))
+		driveBase.stop();
 	else if (wasAtTarget)
 	{
 		if (autoTimer.Get() < reachedTargetTime + 0.25)
