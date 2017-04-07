@@ -165,7 +165,7 @@ void Robot::AutonomousPeriodic()
 		else
 			driveBase.stop();
 	}
-	else if(autoTimer.Get() < blindTime - 1.5)
+	else if(autoTimer.Get() < blindTime - 1.25)
 		driveBase.stop();//driveBase.drive(blindSpeed); // Comment out to get a pause instead of a drive forward
 	else if (wasAtTarget)
 	{
@@ -177,7 +177,7 @@ void Robot::AutonomousPeriodic()
 	else
 	{
 		wasAtTarget = autoAim(autoScenario == &sideLeftScenario
-		                      || autoScenario == &sideRightScenario, blindTime - 1.25);
+		                      || autoScenario == &sideRightScenario, blindTime - 1.00);
 
 		if (wasAtTarget)
 			reachedTargetTime = autoTimer.Get();
@@ -351,7 +351,7 @@ bool Robot::autoAim(bool side, float startCurrentSensingTime)
 
 	// Initialize base speed
 #ifndef PRACTICE_2017_ROBOT
-	float baseSpeed = side ? 0.3 : 0.2;
+	float baseSpeed = side ? 0.25 : 0.2;
 #else
 	float baseSpeed = 0.4;
 #endif
