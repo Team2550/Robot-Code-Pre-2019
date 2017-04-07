@@ -166,7 +166,7 @@ void Robot::AutonomousPeriodic()
 			driveBase.stop();
 	}
 	else if(autoTimer.Get() < blindTime - 1.5)
-		driveBase.drive(blindSpeed); // Comment out to get a pause instead of a drive forward
+		driveBase.stop();//driveBase.drive(blindSpeed); // Comment out to get a pause instead of a drive forward
 	else if (wasAtTarget)
 	{
 		if (autoTimer.Get() < reachedTargetTime + 0.25)
@@ -177,7 +177,7 @@ void Robot::AutonomousPeriodic()
 	else
 	{
 		wasAtTarget = autoAim(autoScenario == &sideLeftScenario
-		                      || autoScenario == &sideRightScenario, blindTime);
+		                      || autoScenario == &sideRightScenario, blindTime - 1.25);
 
 		if (wasAtTarget)
 			reachedTargetTime = autoTimer.Get();
@@ -338,7 +338,7 @@ void Robot::DisabledInit()
 }
 
 // Returns true if at target
-bool Robot::autoAim(bool side, float blindTime)
+bool Robot::autoAim(bool side, float startCurrentSensingTime)
 {
 	// Backup value of reversal to restore when finished. Set motor reversal to true (front = camera)
 	bool wasReversed = driveBase.getReversed();
@@ -380,7 +380,7 @@ bool Robot::autoAim(bool side, float blindTime)
 			printf("Target never seen, moving forward...\n");
 
 			// Stop moving forward if motors are no longer spinning
-			if (amps > Autonomous::AmpLimit && autoTimer.Get() >= blindTime)
+			if (amps > Autonomous::AmpLimit && autoTimer.Get() >= startCurrentSensingTime)
 			{
 				printf("Amps too high! Stopping...\n");
 				driveBase.stop();
@@ -412,7 +412,7 @@ bool Robot::autoAim(bool side, float blindTime)
 			printf("Target last seen centered, moving forward...\n");
 
 			// Stop moving forward if motors are no longer spinning
-			if (amps > Autonomous::AmpLimit && autoTimer.Get() >= blindTime)
+			if (amps > Autonomous::AmpLimit && autoTimer.Get() >= startCurrentSensingTime)
 			{
 				printf("Amps too high! Stopping...\n");
 				driveBase.stop();
