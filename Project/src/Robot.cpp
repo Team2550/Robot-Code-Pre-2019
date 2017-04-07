@@ -380,7 +380,7 @@ bool Robot::autoAim(bool side, float blindTime)
 			printf("Target never seen, moving forward...\n");
 
 			// Stop moving forward if motors are no longer spinning
-			if (amps > Autonomous::AmpLimit)
+			if (amps > Autonomous::AmpLimit && autoTimer.Get() >= blindTime)
 			{
 				printf("Amps too high! Stopping...\n");
 				driveBase.stop();
@@ -412,7 +412,7 @@ bool Robot::autoAim(bool side, float blindTime)
 			printf("Target last seen centered, moving forward...\n");
 
 			// Stop moving forward if motors are no longer spinning
-			if (amps > Autonomous::AmpLimit)
+			if (amps > Autonomous::AmpLimit && autoTimer.Get() >= blindTime)
 			{
 				printf("Amps too high! Stopping...\n");
 				driveBase.stop();
