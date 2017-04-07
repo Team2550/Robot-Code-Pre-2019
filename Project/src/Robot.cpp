@@ -155,23 +155,23 @@ void Robot::AutonomousPeriodic()
 			driveBase.stop();
 	}
 	else if ((autoScenario == &sideLeftScenario || autoScenario == &sideRightScenario)
-	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.75))
+	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.9))
 	{
 		const static float blindTurn = Autonomous::BlindSpeeds::SideTurn;
 		if (autoTimer.Get() < blindTime - 2.475)
 			driveBase.drive(blindSpeed);
-		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.75)
+		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.9)
 			driveBase.drive(autoScenario == &sideLeftScenario ? blindTurn : -blindTurn,
 			                autoScenario == &sideRightScenario ? blindTurn : -blindTurn);
 		else
 			driveBase.stop();
 	}
-	else if(autoTimer.Get() < blindTime - 1.25 && (autoScenario == &sideLeftScenario
+	else if(autoTimer.Get() < blindTime - 1.4 && (autoScenario == &sideLeftScenario
 	                                               || autoScenario == &sideRightScenario))
 		driveBase.stop();
 	else if (wasAtTarget)
 	{
-		if (autoTimer.Get() < reachedTargetTime + 0.375)
+		if (autoTimer.Get() < reachedTargetTime + 0.3)
 			driveBase.drive(-blindSpeed * 0.75);
 		else
 			driveBase.stop();
@@ -180,7 +180,7 @@ void Robot::AutonomousPeriodic()
 	{
 		wasAtTarget = autoAim(autoScenario == &sideLeftScenario
 		                      || autoScenario == &sideRightScenario,
-		                      autoTimer.Get() > blindTime - 0.75);
+		                      autoTimer.Get() > blindTime - 0.8);
 
 		if (wasAtTarget)
 			reachedTargetTime = autoTimer.Get();

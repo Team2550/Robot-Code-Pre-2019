@@ -142,7 +142,7 @@ namespace Autonomous
 	{
 		const float Middle = Speeds::DriveBase::Turtle;
 		const float Side = Speeds::DriveBase::Turtle;
-		const float SideTurn = Side * 2;
+		const float SideTurn = Side * 2.5;
 	}
 }
 
