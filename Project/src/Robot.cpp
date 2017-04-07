@@ -178,7 +178,7 @@ void Robot::AutonomousPeriodic()
 	{
 		wasAtTarget = autoAim(autoScenario == &sideLeftScenario
 		                      || autoScenario == &sideRightScenario,
-		                      autoTimer.Get() > blindTime - 1.0);
+		                      autoTimer.Get() > blindTime - 0.75);
 
 		if (wasAtTarget)
 			reachedTargetTime = autoTimer.Get();
