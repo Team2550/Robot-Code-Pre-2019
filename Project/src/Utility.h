@@ -9,7 +9,6 @@
 
 namespace Utility
 {
-
 	enum RumbleSide {left, right, both};
 
 	/*=================================================

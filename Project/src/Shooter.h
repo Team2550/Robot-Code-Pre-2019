@@ -7,16 +7,16 @@
 class Shooter {
 private:
 #ifndef PRACTICE_2017_ROBOT
-    VictorSP shooterMotor;
-    VictorSP blenderMotor;
+	VictorSP shooterMotor;
+	VictorSP blenderMotor;
 #else
-    Victor shooterMotor;
-    Talon blenderMotor;
+	Victor shooterMotor;
+	Talon blenderMotor;
 #endif
 
-    Timer timeSinceAdjustment;
+	Timer timeSinceAdjustment;
 
-    float shooterSpeedOffset;
+	float shooterSpeedOffset;
 public:
 	Shooter();
 

@@ -6,9 +6,9 @@
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
                  udpReceiver(),
-				 driveBase(),
-				 shooter(),
-				 lift()
+                 driveBase(),
+                 shooter(),
+                 lift()
 {
 	wasAtTarget = false;
 	reachedTargetTime = 0;
@@ -157,7 +157,7 @@ void Robot::AutonomousPeriodic()
 			driveBase.stop();
 	}
 	else if ((autoScenario == &sideLeftScenario || autoScenario == &sideRightScenario)
-	         && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.9))
+	          && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.9))
 	{
 		const static float blindTurn = Autonomous::BlindSpeeds::SideTurn;
 		if (autoTimer.Get() < blindTime - 2.475)
@@ -192,7 +192,7 @@ void Robot::AutonomousPeriodic()
 	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
-						SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
+	                    SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 }
 
 void Robot::TeleopInit()
@@ -248,7 +248,7 @@ void Robot::TeleopPeriodic()
 	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
-						SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
+	                    SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 
 	/* ========== Shooter ========== */
 	//SmartDashboard::PutNumber("shooterCurrent", shooter.getAmps(pdp));
@@ -270,7 +270,7 @@ void Robot::TeleopPeriodic()
 			shooter.addSpeedOffset(0.01);
 			printf("New shooter speed: ");
 			printf(std::to_string(Speeds::Shooter::Shooter +
-								  shooter.getSpeedOffset()).c_str());
+			                      shooter.getSpeedOffset()).c_str());
 			printf("\n");
 
 			increaseShooterSpeedDown = true;
@@ -286,7 +286,7 @@ void Robot::TeleopPeriodic()
 			shooter.addSpeedOffset(-0.01);
 			printf("New shooter speed: ");
 			printf(std::to_string(Speeds::Shooter::Shooter +
-								  shooter.getSpeedOffset()).c_str());
+			                      shooter.getSpeedOffset()).c_str());
 			printf("\n");
 
 			decreaseShooterSpeedDown = true;

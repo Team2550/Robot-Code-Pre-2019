@@ -11,6 +11,7 @@
 #include "Utility.h"
 #include "Constants.h"
 
+//these should be changed to constants instead of #defines
 #define BUFSIZE      2048
 #define SERVICE_PORT 8890	/* hard-coded port number */
 

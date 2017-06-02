@@ -10,8 +10,8 @@
  */
 DriveBase::DriveBase() : leftMotor(Ports::TankDrive::Left), rightMotor(Ports::TankDrive::Right)
 {
-    rightMotor.SetInverted(true);
-    isReversed = false;
+	rightMotor.SetInverted(true);
+	isReversed = false;
 }
 
 /*!
@@ -93,7 +93,7 @@ void DriveBase::stop()
  * \param[in] rightBackwardsRatio The trim to apply to the right side when driving backwards
  */
 void DriveBase::applyTrim(float leftForwardsRatio, float rightForwardsRatio,
-    		              float leftBackwardsRatio, float rightBackwardsRatio)
+                          float leftBackwardsRatio, float rightBackwardsRatio)
 {
 	float leftSpeed = leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
 	float rightSpeed = rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
@@ -136,5 +136,5 @@ bool DriveBase::getReversed()
 float DriveBase::getAmps(PowerDistributionPanel& pdp)
 {
 	return (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
-		    pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
+	        pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
 }

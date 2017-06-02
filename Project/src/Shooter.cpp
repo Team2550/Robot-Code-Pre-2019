@@ -1,9 +1,8 @@
 #include <WPILib.h>
 #include "Shooter.h"
 
-Shooter::Shooter() :
-				 shooterMotor(Ports::Shooter::Motor),
-				 blenderMotor(Ports::Shooter::BlenderMotor)
+Shooter::Shooter() : shooterMotor(Ports::Shooter::Motor),
+                     blenderMotor(Ports::Shooter::BlenderMotor)
 
 {
 #ifndef PRACTICE_2017_ROBOT
@@ -19,7 +18,7 @@ Shooter::Shooter() :
 void Shooter::shoot(float motorCurrent)
 {
 	if(timeSinceAdjustment.Get() >= 0.75)
-			timeSinceAdjustment.Reset();
+		timeSinceAdjustment.Reset();
 
 	if(motorCurrent < Speeds::Shooter::CurrentThreshold || timeSinceAdjustment.Get() >= 0.15)
 		shooterMotor.Set(Speeds::Shooter::Shooter + shooterSpeedOffset);
