@@ -20,17 +20,15 @@ private:
 	PowerDistributionPanel pdp;
 	UDP_Receiver udpReceiver;
 	DriveBase driveBase;
-	Shooter shooter;
-	Lift lift;
 
 	Autonomous::Ready safeReady = Autonomous::Safe;
 	Autonomous::Ready blindReady = Autonomous::Blind;
 	Autonomous::Ready visionReady = Autonomous::Vision;
 	SendableChooser<Autonomous::Ready*> autoReadyChooser;
 
-	Autonomous::Scenario middleScenario = Autonomous::Middle;
-	Autonomous::Scenario sideLeftScenario = Autonomous::SideLeft;
-	Autonomous::Scenario sideRightScenario = Autonomous::SideRight;
+	Autonomous::Scenario Scenario1 = Autonomous::Scenario1;
+	Autonomous::Scenario Scenario2 = Autonomous::Scenario2;
+	Autonomous::Scenario Scenario3 = Autonomous::Scenario3;
 	SendableChooser<Autonomous::Scenario*> autoScenarioChooser;
 
 	bool targetRumbleOff = false;
@@ -43,8 +41,6 @@ private:
 
 	bool wasAtTarget;
 	float reachedTargetTime;
-	bool climbToggleHold;
-	bool climbToggle;
 	bool decreaseShooterSpeedDown;
 	bool increaseShooterSpeedDown;
 

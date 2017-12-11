@@ -5,27 +5,16 @@
 
 namespace Ports
 {
-#ifndef PRACTICE_2017_ROBOT
+#ifndef NORMALIZED_CODE_BASED_ON_2017_CODE
 	namespace TankDrive
 	{
 		const int Left = 1;
 		const int Right = 0;
 	}
 
-	namespace Shooter
-	{
-		const int Motor = 3;
-		const int BlenderMotor = 4;
-	}
-
-	namespace Lifter
-	{
-		const int Motor = 2;
-	}
 
 	namespace PDP
 	{
-		const int Shooter = 2;
 		const int LeftMotor1 = 12;
 		const int LeftMotor2 = 13;
 		const int RightMotor1 = 14;
@@ -38,20 +27,9 @@ namespace Ports
 		const int Right = 0;
 	}
 
-	namespace Shooter
-	{
-		const int Motor = 4;
-		const int BlenderMotor = 3;
-	}
-
-	namespace Lifter
-	{
-		const int Motor = 2;
-	}
-
 	namespace PDP
 	{
-		const int Shooter = 2;
+
 		const int LeftMotor1 = 12;
 		const int LeftMotor2 = 13;
 		const int RightMotor1 = 14;
@@ -71,19 +49,6 @@ namespace Controls
 		const int AutoAim = xbox::btn::a;
 	}
 
-	namespace Peripherals
-	{
-		const int Climb = xbox::axis::LT;
-		const int ClimbToggle = xbox::btn::lb;
-
-		const int Shoot = xbox::btn::b;
-		const int Blender = xbox::btn::a;
-		const int ReverseBlender = xbox::axis::RT;
-		const int IncreaseShootSpeed = xbox::btn::y;
-		const int DecreaseShootSpeed = xbox::btn::x;
-	}
-}
-
 namespace Speeds
 {
 	namespace DriveBase
@@ -97,19 +62,6 @@ namespace Speeds
 		const float RightPowerRatioForwards = 1;
 	}
 
-	namespace Lift
-	{
-		const float Lift = 1;
-		const float Lower = -1;
-	}
-
-	namespace Shooter
-	{
-		const float Shooter = 0.65;
-		const float MaxShooter = 1;
-		const float CurrentThreshold = 3;
-		const float Blender = 0.75;
-	}
 }
 
 namespace Autonomous
@@ -125,25 +77,13 @@ namespace Autonomous
 
 	enum Scenario
 	{
-		Middle,
-		SideLeft,
-		SideRight
+		Scenario1,
+		Scenario2,
+		Scenario3
 	};
 
-	const Scenario DefaultScenario = Middle;
+	const Scenario DefaultScenario = Scenario1;
 
-	namespace BlindTimes
-	{
-		const float Middle = 3.6;
-		const float Side = 5.25;
-	}
-
-	namespace BlindSpeeds
-	{
-		const float Middle = Speeds::DriveBase::Turtle;
-		const float Side = Speeds::DriveBase::Turtle;
-		const float SideTurn = Side * 2.5;
-	}
 }
 
 namespace UDP

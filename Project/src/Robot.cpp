@@ -6,16 +6,10 @@
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
                  udpReceiver(),
-                 driveBase(),
-                 shooter(),
-                 lift()
+                 driveBase()
 {
 	wasAtTarget = false;
 	reachedTargetTime = 0;
-	decreaseShooterSpeedDown = false;
-	increaseShooterSpeedDown = false;
-	climbToggleHold = false;
-	climbToggle = false;
 	autoReady = &safeReady;
 	autoScenario = &middleScenario;
 	targetRumble = &targetRumbleOff;
@@ -30,7 +24,7 @@ void Robot::RobotInit()
 {
 	clearSmartDashboard();
 
-	// Autonomous readiness
+	 Autonomous readiness
 	autoReadyChooser.AddDefault("Go past baseline", &safeReady);
 	autoReadyChooser.AddObject("Place gear blind", &blindReady);
 	autoReadyChooser.AddObject("Place gear vision", &visionReady);
@@ -38,10 +32,10 @@ void Robot::RobotInit()
 
 	SmartDashboard::SetPersistent("Autonomous Readiness");
 
-	// Autonomous position
-	autoScenarioChooser.AddDefault("Middle", &middleScenario);
-	autoScenarioChooser.AddObject("SideLeft", &sideLeftScenario);
-	autoScenarioChooser.AddObject("SideRight", &sideRightScenario);
+	 Autonomous position
+	autoScenarioChooser.AddDefault("Scenario1", &Scenario1);
+	autoScenarioChooser.AddObject("Scenario2", &Scenario2);
+	autoScenarioChooser.AddObject("Scenario3", &Scenario3);
 	SmartDashboard::PutData("Auto Scenario", &autoScenarioChooser);
 
 	// Targeting Rumble Feedback
@@ -82,14 +76,14 @@ void Robot::AutonomousInit()
 			printf("No scenario found\n");
 			switch (Autonomous::DefaultScenario)
 			{
-			case Autonomous::Middle:
-				autoScenario = &middleScenario;
+			case Autonomous::Scenario2:
+				autoScenario = &Scenario2;
 				break;
-			case Autonomous::SideLeft:
-				autoScenario = &sideLeftScenario;
+			case Autonomous::Scenario1:
+				autoScenario = &Scenario1;
 				break;
-			case Autonomous::SideRight:
-				autoScenario = &sideRightScenario;
+			case Autonomous::Scenario3:
+				autoScenario = &Scenario3;
 				break;
 			}
 		}
@@ -121,73 +115,20 @@ void Robot::AutonomousPeriodic()
 
 	/* ========== DriveBase ========== */
 
-	float blindTime = 6;
-#ifndef PRACTICE_2017_ROBOT
-	float blindSpeed = Speeds::DriveBase::Turtle;
-#else
-	float blindSpeed = Speeds::DriveBase::Turtle * 2;
-#endif
-
-	if (autoReady != &safeReady)
+	// Autonomous Actions go here:
+	if (autoScenario == &Scenario1)
 	{
-		if (autoScenario == &middleScenario)
-		{
-			blindTime = Autonomous::BlindTimes::Middle;
-			blindSpeed = Autonomous::BlindSpeeds::Middle;
-		}
-		else if (autoScenario == &sideLeftScenario
-		         || autoScenario == & sideRightScenario)
-		{
-			blindTime = Autonomous::BlindTimes::Side;
-			blindSpeed = Autonomous::BlindSpeeds::Side;
-			if(autoScenario == &sideRightScenario)
-				blindTime -= 0.1;
-		}
+		
 	}
-
-	// Run choreographer script until end of second to last step, unless can't auto aim
-	if (autoScenario == &middleScenario
-	    && (autoReady != &visionReady || autoTimer.Get() < blindTime - 2.5))
+	else if (autoScenario == &Scenario2)
 	{
-		if (autoTimer.Get() < blindTime)
-			driveBase.drive(blindSpeed);
-		else if (autoTimer.Get() < blindTime + 0.15)
-			driveBase.drive(-blindSpeed * 0.75);
-		else
-			driveBase.stop();
+		
 	}
-	else if ((autoScenario == &sideLeftScenario || autoScenario == &sideRightScenario)
-	          && (autoReady != &visionReady || autoTimer.Get() < blindTime - 1.9))
+	else if (autoScenario == &Scenario3)
 	{
-		const static float blindTurn = Autonomous::BlindSpeeds::SideTurn;
-		if (autoTimer.Get() < blindTime - 2.475)
-			driveBase.drive(blindSpeed);
-		else if (autoReady == &visionReady && autoTimer.Get() < blindTime - 1.9)
-			driveBase.drive(autoScenario == &sideLeftScenario ? blindTurn : -blindTurn,
-			                autoScenario == &sideRightScenario ? blindTurn : -blindTurn);
-		else
-			driveBase.stop();
+			
 	}
-	else if(autoTimer.Get() < blindTime - 1.4 && (autoScenario == &sideLeftScenario
-	                                              || autoScenario == &sideRightScenario))
-		driveBase.stop();
-	else if (wasAtTarget)
-	{
-		if (autoTimer.Get() < reachedTargetTime + 0.28)
-			driveBase.drive(-blindSpeed * 0.75);
-		else
-			driveBase.stop();
-	}
-	else
-	{
-		wasAtTarget = autoAim(autoScenario == &sideLeftScenario
-		                      || autoScenario == &sideRightScenario,
-		                      autoTimer.Get() > blindTime - 0.8);
-
-		if (wasAtTarget)
-			reachedTargetTime = autoTimer.Get();
-	}
-
+	
 	// Modify motor speeds based on trim from smartDashboard
 	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
@@ -250,69 +191,6 @@ void Robot::TeleopPeriodic()
 	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 
-	/* ========== Shooter ========== */
-	//SmartDashboard::PutNumber("shooterCurrent", shooter.getAmps(pdp));
-
-	if (perifController.GetRawButton(Controls::Peripherals::Shoot))
-		shooter.shoot(shooter.getAmps(pdp));
-	else
-		shooter.stop();
-
-	if (perifController.GetRawButton(Controls::Peripherals::Blender))
-		shooter.blend(perifController.GetRawAxis(Controls::Peripherals::ReverseBlender) > 0.3);
-	else
-		shooter.stopBlend();
-
-	if (perifController.GetRawButton(Controls::Peripherals::IncreaseShootSpeed))
-	{
-		if (!increaseShooterSpeedDown)
-		{
-			shooter.addSpeedOffset(0.01);
-			printf("New shooter speed: ");
-			printf(std::to_string(Speeds::Shooter::Shooter +
-			                      shooter.getSpeedOffset()).c_str());
-			printf("\n");
-
-			increaseShooterSpeedDown = true;
-		}
-	}
-	else
-		increaseShooterSpeedDown = false;
-
-	if (perifController.GetRawButton(Controls::Peripherals::DecreaseShootSpeed))
-	{
-		if (!decreaseShooterSpeedDown)
-		{
-			shooter.addSpeedOffset(-0.01);
-			printf("New shooter speed: ");
-			printf(std::to_string(Speeds::Shooter::Shooter +
-			                      shooter.getSpeedOffset()).c_str());
-			printf("\n");
-
-			decreaseShooterSpeedDown = true;
-		}
-	}
-	else
-		decreaseShooterSpeedDown = false;
-
-	/* ========== Lift/In-Feed ========== */
-	if (perifController.GetRawButton(Controls::Peripherals::ClimbToggle))
-	{
-		if(climbToggleHold == false)
-		{
-			climbToggle = !climbToggle;
-			climbToggleHold = true;
-		}
-	}
-	else
-		climbToggleHold = false;
-
-	if(climbToggle)
-		lift.raise();
-	else if(perifController.GetRawAxis(Controls::Peripherals::Climb) > 0.25)
-		lift.raise(perifController.GetRawAxis(Controls::Peripherals::Climb));
-	else
-		lift.stop();
 
 	/* ========== Amps Feedback ========== */
 	//double amps = driveBase.getAmps(pdp);
