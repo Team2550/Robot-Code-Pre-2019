@@ -8,14 +8,8 @@
 
 class DriveBase {
 private:
-
-#ifndef PRACTICE_2017_ROBOT
-	VictorSP leftMotor;
-	VictorSP rightMotor;
-#else
 	Victor leftMotor;
 	Victor rightMotor;
-#endif
 
 	bool isReversed;
 public:
@@ -33,7 +27,6 @@ public:
 
 	void setReversed(bool reverse);
 	bool getReversed();
-	float getAmps(PowerDistributionPanel& pdp);
 };
 
 #endif

@@ -48,6 +48,7 @@ namespace Controls
 		const int Turtle = xbox::btn::lb;
 		const int AutoAim = xbox::btn::a;
 	}
+}
 
 namespace Speeds
 {

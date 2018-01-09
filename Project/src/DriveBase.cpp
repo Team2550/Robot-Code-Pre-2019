@@ -124,17 +124,3 @@ bool DriveBase::getReversed()
 {
 	return isReversed;
 }
-
-/*!
- * \brief Gives the average current draw of the drive motors
- *
- * To be clear, by average I mean the median of the current draws of each individual
- * motor
- * \param[in] pdp A PDP object that will be used to find the current draw of the motors
- * \return The average current draw of the drive motors
- */
-float DriveBase::getAmps(PowerDistributionPanel& pdp)
-{
-	return (pdp.GetCurrent(Ports::PDP::LeftMotor1) + pdp.GetCurrent(Ports::PDP::LeftMotor2) +
-	        pdp.GetCurrent(Ports::PDP::RightMotor1) + pdp.GetCurrent(Ports::PDP::RightMotor2)) / 4;
-}
