@@ -5,9 +5,16 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 driveBase()
+                 driveBase(0, 1)
 {
+	speedNormal = 0.5f;
+	speedTurtle = 0.25f;
+	speedBoost = 1.0f;
 
+	axisTankLeft = xbox::axis::leftY;
+	axisTankRight = xbox::axis::rightY;
+	buttonBoost = xbox::btn::lb;
+	buttonTurtle = xbox::btn::rb;
 }
 
 Robot::~Robot()
@@ -28,7 +35,7 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
+	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
@@ -36,25 +43,25 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit()
 {
-	driveBase.stop();
+	driveBase.Stop();
 }
 
 void Robot::TeleopPeriodic()
 {
-	float leftSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Left));
-	float rightSpeed = Utility::deadzone(-driveController.GetRawAxis(Controls::TankDrive::Right));
+	float leftSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankLeft));
+	float rightSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankRight));
 
-	float speed = Speeds::DriveBase::Normal;
+	float baseSpeed = speedNormal;
 
-	if (driveController.GetRawButton(Controls::TankDrive::Turtle))
-		speed = Speeds::DriveBase::Turtle;
-	else if (driveController.GetRawButton(Controls::TankDrive::Boost))
-		speed = Speeds::DriveBase::Boost;
+	if (driveController.GetRawButton(buttonTurtle))
+		baseSpeed = speedTurtle;
+	else if (driveController.GetRawButton(buttonBoost))
+		baseSpeed = speedBoost;
 
-	driveBase.drive(leftSpeed * speed,
-					rightSpeed * speed);
+	driveBase.Drive(leftSpeed * baseSpeed,
+					rightSpeed * baseSpeed);
 
-	driveBase.applyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
+	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));

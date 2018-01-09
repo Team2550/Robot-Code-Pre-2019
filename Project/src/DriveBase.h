@@ -4,7 +4,6 @@
 #include <WPILib.h>
 #include <math.h>
 #include "Utility.h"
-#include "Constants.h"
 
 class DriveBase {
 private:
@@ -13,20 +12,18 @@ private:
 
 	bool isReversed;
 public:
-	DriveBase();
+	DriveBase(int leftMotorPort, int rightMotorPort);
 
-	float getLeftSpeed();
-	float getRightSpeed();
-	void drive(float speed);
-	void drive(float leftSpeed, float rightSpeed);
-	void stop();
-	void applyTrim(float leftForwardsRatio = Speeds::DriveBase::LeftPowerRatioForwards,
-	               float rightForwardsRatio = Speeds::DriveBase::RightPowerRatioForwards,
-	               float leftBackwardsRatio = Speeds::DriveBase::LeftPowerRatioBackwards,
-	               float rightBackwardsRatio = Speeds::DriveBase::RightPowerRatioBackwards);
+	float GetLeftSpeed();
+	float GetRightSpeed();
+	void Drive(float leftSpeed, float rightSpeed);
+	void Drive(float speed);
+	void Stop();
+	void ApplyTrim(float leftForwardsRatio, float rightForwardsRatio,
+	               float leftBackwardsRatio, float rightBackwardsRatio);
 
-	void setReversed(bool reverse);
-	bool getReversed();
+	void SetReversed(bool reverse);
+	bool GetReversed();
 };
 
 #endif

@@ -10,7 +10,7 @@
  * \return 0 if the absolute value of the given value is smaller than or
  * equal to tolerance; otherwise, the original value
  */
-float Utility::deadzone(float value, float tolerance)
+float Utility::Deadzone(float value, float tolerance)
 {
 	return fabs(value) <= tolerance ? 0 : value;
 }
@@ -22,7 +22,7 @@ float Utility::deadzone(float value, float tolerance)
  * \param[in] delimiter The delimiter to use
  * \return A vector containing the resulting strings
  */
-std::vector<std::string> Utility::splitString(std::string str, char delimiter)
+std::vector<std::string> Utility::SplitString(std::string str, char delimiter)
 {
 	std::vector<std::string> substrings;
 	std::string substr;
@@ -50,7 +50,7 @@ std::vector<std::string> Utility::splitString(std::string str, char delimiter)
  * \param[in] strs The strings to convert
  * \return A vector containing the resulting floats
  */
-std::vector<float> Utility::strVectorToFloatVector(std::vector<std::string> strs)
+std::vector<float> Utility::StrVectorToFloatVector(std::vector<std::string> strs)
 {
 	std::vector<float> nums;
 	float num;
@@ -76,7 +76,7 @@ std::vector<float> Utility::strVectorToFloatVector(std::vector<std::string> strs
  * \param[in] rumbleSide   Which side of the controller to rumble
  * \param[in] rumbleAmount The intensity of the rumble, from 0 to 1
  */
-void Utility::setRumble(Joystick& controller, Utility::RumbleSide rumbleSide, float rumbleAmount)
+void Utility::SetRumble(Joystick& controller, Utility::RumbleSide rumbleSide, float rumbleAmount)
 {
 	switch (rumbleSide)
 	{

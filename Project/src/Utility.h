@@ -20,7 +20,7 @@ namespace Utility
 	Return:
 		none
 	=================================================*/
-	float deadzone(float value, float tolerance = 0.2);
+	float Deadzone(float value, float tolerance = 0.2);
 
 	/*=================================================
 	Name: splitString
@@ -31,7 +31,7 @@ namespace Utility
 	Return:
 		Vector containing substrings of original string
 	=================================================*/
-	std::vector<std::string> splitString(std::string str, char delimiter);
+	std::vector<std::string> SplitString(std::string str, char delimiter);
 
 	/*=================================================
 	Name: strVectorToFloatVector
@@ -41,7 +41,7 @@ namespace Utility
 	Return:
 		Vector of floats
 	=================================================*/
-	std::vector<float> strVectorToFloatVector(std::vector<std::string> strs);
+	std::vector<float> StrVectorToFloatVector(std::vector<std::string> strs);
 
 	/*=================================================
 	Name: setRumble
@@ -53,7 +53,7 @@ namespace Utility
 	Return:
 		none
 	=================================================*/
-	void setRumble(Joystick& controller, RumbleSide rumbleSide, float rumbleAmount);
+	void SetRumble(Joystick& controller, RumbleSide rumbleSide, float rumbleAmount);
 
 }
 
