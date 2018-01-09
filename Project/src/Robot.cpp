@@ -5,7 +5,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 driveBase(0, 1)
+                 driveBase(0, 1), gripPipeline()
 {
 	speedNormal = 0.5f;
 	speedTurtle = 0.25f;
@@ -24,7 +24,9 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-
+	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
+	camera.SetResolution(640, 480);
+	cvSink = CameraServer::GetInstance()->GetVideo();
 }
 
 void Robot::AutonomousInit()
@@ -35,6 +37,12 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
+	// This code should be multithreaded to increase efficiency
+	cv::Mat image;
+	cvSink.GrabFrame(image);
+	gripPipeline.Process(image);
+	// ================================
+
 	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),

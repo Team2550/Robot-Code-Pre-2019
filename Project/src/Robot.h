@@ -4,6 +4,7 @@
 #include <WPILib.h>
 #include "xBox.h"
 #include "DriveBase.h"
+#include "grip/GripPipeline.h"
 
 class Robot: public IterativeRobot
 {
@@ -20,9 +21,11 @@ private:
 	Joystick driveController;
 	Joystick perifController;
 
+	cs::CvSink cvSink; // OpenCV image data sink
 	Timer autoTimer;
 
 	DriveBase driveBase;
+	grip::GripPipeline gripPipeline;
 
 public:
 	Robot();
