@@ -15,6 +15,9 @@ Robot::Robot() : driveController(0), perifController(1),
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
+
+	autoCrossTime = 1.0f;
+	autoCrossSpeed = 0.5;
 }
 
 Robot::~Robot()
@@ -35,6 +38,11 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
+	if (autoTimer.Get() < autoCrossTime)
+		driveBase.Drive(autoCrossSpeed);
+	else
+		driveBase.Stop();
+
 	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
