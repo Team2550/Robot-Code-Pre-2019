@@ -15,6 +15,9 @@ Robot::Robot() : driveController(0), perifController(1),
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
+
+	autoCrossTime = 1.0f;
+	autoCrossSpeed = 0.5;
 }
 
 Robot::~Robot()
@@ -42,6 +45,11 @@ void Robot::AutonomousPeriodic()
 	cvSink.GrabFrame(image);
 	gripPipeline.Process(image);
 	// ================================
+
+	if (autoTimer.Get() < autoCrossTime)
+		driveBase.Drive(autoCrossSpeed);
+	else
+		driveBase.Stop();
 
 	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
@@ -78,6 +86,37 @@ void Robot::TeleopPeriodic()
 void Robot::DisabledInit()
 {
 
+}
+
+/*==============================================================
+Name: GetGameData
+Desc: Gets game data from the field management system that tells
+      the robot who owns which sides of the switches and scales.
+Parameters:
+    data (O) - Three-element boolean array, where each element
+               signifies signifies whether you own the left
+               (false) or right (true) side of the scale and
+               each switch. [Nearest switch, scale, furthest
+               switch]
+Return value:
+    None
+==============================================================*/
+void Robot::GetGameData(bool data[3])
+{
+	std::string gameData;
+	gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+
+	for (int i = 0; i < 3; i++)
+	{
+		if(gameData[i] == 'L')
+		{
+			data[i] = false;
+		}
+		else
+		{
+			data[i] = true;
+		}
+	}
 }
 
 void Robot::ClearSmartDashboard()

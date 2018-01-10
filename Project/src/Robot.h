@@ -18,6 +18,9 @@ private:
 	int buttonBoost;
 	int buttonTurtle;
 
+	float autoCrossTime;
+	float autoCrossSpeed;
+
 	Joystick driveController;
 	Joystick perifController;
 
@@ -36,6 +39,7 @@ public:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void DisabledInit();
+	void GetGameData(bool data[3]);
 	void ClearSmartDashboard();
 };
 
