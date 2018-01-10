@@ -80,6 +80,37 @@ void Robot::DisabledInit()
 
 }
 
+/*==============================================================
+Name: GetGameData
+Desc: Gets game data from the field management system that tells
+      the robot who owns which sides of the switches and scales.
+Parameters:
+    data (O) - Three-element boolean array, where each element
+               signifies signifies whether you own the left
+               (false) or right (true) side of the scale and
+               each switch. [Nearest switch, scale, furthest
+               switch]
+Return value:
+    None
+==============================================================*/
+void Robot::GetGameData(bool data[3])
+{
+	std::string gameData;
+	gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+
+	for (int i = 0; i < 3; i++)
+	{
+		if(gameData[i] == 'L')
+		{
+			data[i] = false;
+		}
+		else
+		{
+			data[i] = true;
+		}
+	}
+}
+
 void Robot::ClearSmartDashboard()
 {
 

@@ -36,6 +36,7 @@ public:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void DisabledInit();
+	void GetGameData(bool data[3]);
 	void ClearSmartDashboard();
 };
 
