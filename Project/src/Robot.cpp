@@ -29,6 +29,7 @@ void Robot::RobotInit()
 {
 	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
 	camera.SetResolution(640, 480);
+	camera.SetExposureManual(25);
 	cvSink = CameraServer::GetInstance()->GetVideo();
 }
 
