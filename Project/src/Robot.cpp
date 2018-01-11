@@ -27,10 +27,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
-	camera.SetResolution(640, 480);
-	camera.SetExposureManual(25);
-	cvSink = CameraServer::GetInstance()->GetVideo();
+
 }
 
 void Robot::AutonomousInit()
@@ -41,11 +38,7 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	// This code should be multithreaded to increase efficiency
-	cv::Mat image;
-	cvSink.GrabFrame(image);
-	gripPipeline.Process(image);
-	// ================================
+	cameraTracking.UpdateVision();
 
 	if (autoTimer.Get() < autoCrossTime)
 		driveBase.Drive(autoCrossSpeed);
