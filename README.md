@@ -3,9 +3,8 @@ All robot code from 2017 onward
 
 This is written by:
 
+Brayton,
+Kira,
+Lance,
 Nathan,
-Kyle,
-Travis,
-Jaden,
-Isaac,
-Dusty
+Travis
