@@ -2,7 +2,7 @@
  * Ultrasonic.h
  *
  *  Created on: Jan 11, 2018
- *      Author: Admin
+ *      Author: Brayton Kerekffy
  */
 #include <I2C.h>
 #ifndef SRC_ULTRASONIC_H_
@@ -10,9 +10,15 @@
 
 class sensors{
 public:
-	void openI2C(int deviceAddress)
+	//definitions
+	int deviceAddress = 1;
+
+	void openI2C()
 	{
-		frc::I2C::I2C(frc::I2C::Port, deviceAddresss);
+		I2C(I2C::Port(1), deviceAddress);
+	}
+	void initializeUltrasonic(){
+		openI2C();
 	}
 };
 
