@@ -12,7 +12,7 @@ class sensors{
 public:
 	void openI2C(int deviceAddress)
 	{
-		I2C::I2C(deviceAddress);
+		frc::I2C::I2C(frc::I2C::Port, deviceAddresss);
 	}
 };
 
