@@ -1,5 +1,8 @@
 # Robot-Code
 All robot code from 2017 onward 
+# Contributors
+The contributors to the 2017-present code consists of:
+Brayton, Nathan, Lance, Travis, Kira, Jadon, Demetri
 # Before You Do Anything
 Before you checkout code, you should first extract the eclipse workspace from
 either the workspace\.zip or workspace\.tar\.gz archive \(they're identical\)
