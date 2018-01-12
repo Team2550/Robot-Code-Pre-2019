@@ -16,8 +16,8 @@ public:
 	//definitions
 	int deviceAddress = 1;
 	bool addressOnly = true;
-	int readCount;
-	char readData[100];
+	int readCount = 10;
+	unsigned char *readData;
 	bool read = false;
 
 	//defined device address to I2C ultrasonic sensor
@@ -27,7 +27,7 @@ public:
 		I2C(I2C::Port(1), deviceAddress);
 	}
 	void readUltrasonic(){
-		I2C::ReadOnly(sensors::ultrasonic::readCount, sensors::ultrasonic::readData);
+		I2C::ReadOnly(initialize.readCount, *readData);
 	}
 	//function that can be ran to automatically setup the ultrasonic system
 	void initializeUltrasonic(){
