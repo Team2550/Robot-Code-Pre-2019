@@ -8,16 +8,14 @@
 #ifndef SRC_ULTRASONIC_H_
 #define SRC_ULTRASONIC_H_
 
-class sensors{
-public:
-	class ultrasonic{
+class Ultrasonic{
 	public:
-	sensors::ultrasonic initialize;
+	Ultrasonic();
+	//Ultrasonic initialize;
 	//definitions
 	int deviceAddress = 1;
 	bool addressOnly = true;
 	int readCount = 10;
-	unsigned char *readData;
 	bool read = false;
 
 	//defined device address to I2C ultrasonic sensor
@@ -27,15 +25,15 @@ public:
 		I2C(I2C::Port(1), deviceAddress);
 	}
 	void readUltrasonic(){
-		I2C::ReadOnly(initialize.readCount, *readData);
+		I2C::ReadOnly(readCount);
 	}
 	//function that can be ran to automatically setup the ultrasonic system
 	void initializeUltrasonic(){
 		openI2C();
 
 	}
-	};
 };
+
 
 
 
