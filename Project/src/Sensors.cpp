@@ -1,7 +1,8 @@
 #include <Sensors.h>
 int main(){
 	Ultrasonic::initializeUltrasonic();
-	if(Ultrasonic::read == true){
+	if(read == true){
 		Ultrasonic::readUltrasonic();
+
 	}
 }
