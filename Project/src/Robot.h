@@ -5,7 +5,7 @@
 #include <iostream>
 #include "xBox.h"
 #include "DriveBase.h"
-#include "UltrasonicI2C.h"
+#include "UltrasonicAnalog.h"
 
 class Robot: public IterativeRobot
 {
@@ -22,7 +22,7 @@ private:
 	Joystick driveController;
 	Joystick perifController;
 
-	UltrasonicI2C ultrasonic;
+	UltrasonicAnalog ultrasonic;
 	Timer autoTimer;
 
 	DriveBase driveBase;
