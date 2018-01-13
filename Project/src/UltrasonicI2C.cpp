@@ -13,7 +13,7 @@ bool UltrasonicI2C::GetDistance(double& distance)
 
 	if (success)
 	{
-		// Interpret data from buffer here, put value into distance variable
+		distance = buffer[0] * 256 + buffer[1];
 	}
 
 	return success;

@@ -2,8 +2,10 @@
 #define ROBOT_H
 
 #include <WPILib.h>
+#include <iostream>
 #include "xBox.h"
 #include "DriveBase.h"
+#include "UltrasonicI2C.h"
 
 class Robot: public IterativeRobot
 {
@@ -20,6 +22,7 @@ private:
 	Joystick driveController;
 	Joystick perifController;
 
+	UltrasonicI2C ultrasonic;
 	Timer autoTimer;
 
 	DriveBase driveBase;
