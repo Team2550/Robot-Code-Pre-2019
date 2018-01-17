@@ -36,7 +36,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	double distance = ultrasonic.GetDistanceInches();
-	SmartDashboard::PutNumber("Ultrasonic", distance);
+	SmartDashboard::PutNumber("Ultrasonic Distance", distance);
 
 	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
