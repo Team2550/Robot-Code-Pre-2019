@@ -1,5 +1,6 @@
 #include "Timer.h"
 #include "Robot.h"
+#include "CameraTracking.h"
 
 // driver: (int) xBox controller number
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
@@ -27,10 +28,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
-	camera.SetResolution(640, 480);
-	camera.SetExposureManual(25);
-	cvSink = CameraServer::GetInstance()->GetVideo();
+	gripPipeline.Init();
 }
 
 void Robot::AutonomousInit()
@@ -41,11 +39,7 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	// This code should be multithreaded to increase efficiency
-	cv::Mat image;
-	cvSink.GrabFrame(image);
-	gripPipeline.Process(image);
-	// ================================
+	gripPipeline.Auto();
 
 	if (autoTimer.Get() < autoCrossTime)
 		driveBase.Drive(autoCrossSpeed);

@@ -24,10 +24,10 @@ private:
 	Joystick driveController;
 	Joystick perifController;
 
-	cs::CvSink cvSink; // OpenCV image data sink
 	Timer autoTimer;
 
 	DriveBase driveBase;
+
 	grip::GripPipeline gripPipeline;
 
 public:
