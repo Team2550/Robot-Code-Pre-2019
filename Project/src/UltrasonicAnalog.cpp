@@ -3,7 +3,7 @@
 UltrasonicAnalog::UltrasonicAnalog(int port, double inchesPerVolt) :
 		analogInput(port)
 {
-	analogInput.SetAverageBits(3); // Uses 2^3 samples for average
+	analogInput.SetAverageBits(2); // Uses 2^2 samples for average
 
 	this->inchesPerVolt = inchesPerVolt;
 }
