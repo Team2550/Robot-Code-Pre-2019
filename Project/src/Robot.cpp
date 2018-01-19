@@ -28,7 +28,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	gripPipeline.Init();
+	cameraTracking.Init();
 }
 
 void Robot::AutonomousInit()
@@ -39,7 +39,7 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	gripPipeline.Auto();
+	cameraTracking.UpdateVision();
 
 	if (autoTimer.Get() < autoCrossTime)
 		driveBase.Drive(autoCrossSpeed);

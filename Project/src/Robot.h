@@ -4,7 +4,7 @@
 #include <WPILib.h>
 #include "xBox.h"
 #include "DriveBase.h"
-#include "grip/GripPipeline.h"
+#include "CameraTracking.h"
 
 class Robot: public IterativeRobot
 {
@@ -23,12 +23,11 @@ private:
 
 	Joystick driveController;
 	Joystick perifController;
+	CameraTracking cameraTracking;
 
 	Timer autoTimer;
 
 	DriveBase driveBase;
-
-	grip::GripPipeline gripPipeline;
 
 public:
 	Robot();
