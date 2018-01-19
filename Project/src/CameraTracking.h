@@ -17,13 +17,13 @@ private:
 	int targetX;
 	int targetY;
 
-	cs::CvSink cvSink; // OpenCV image data sink
-
 public:
 	CameraTracking();
 	~CameraTracking();
-	void Init();
-	void Auto();
+
+	void UpdateVision();
+	int GetTargetX();
+	int GetTargetY();
 
 	void UpdateVision();
 	int GetTargetX();

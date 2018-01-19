@@ -28,7 +28,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	cameraTracking.Init();
+	cameraTracking.CameraTracking();
 }
 
 void Robot::AutonomousInit()

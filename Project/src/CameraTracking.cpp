@@ -16,6 +16,12 @@ CameraTracking::CameraTracking() : gripPipeline()
 	targetY = 0;
 }
 
+CameraTracking::~CameraTracking()
+{
+
+}
+
+
 void CameraTracking::UpdateVision()
 {
 	cv::Mat image;
