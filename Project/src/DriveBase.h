@@ -10,7 +10,9 @@ private:
 	Victor leftMotor;
 	Victor rightMotor;
 
-	bool isReversed;
+	float leftTrim;
+	float rightTrim;
+
 public:
 	DriveBase(int leftMotorPort, int rightMotorPort);
 
@@ -19,11 +21,7 @@ public:
 	void Drive(float leftSpeed, float rightSpeed);
 	void Drive(float speed);
 	void Stop();
-	void ApplyTrim(float leftForwardsRatio, float rightForwardsRatio,
-	               float leftBackwardsRatio, float rightBackwardsRatio);
-
-	void SetReversed(bool reverse);
-	bool GetReversed();
+	void SetTrim(float leftTrim, float rightTrim);
 };
 
 #endif

@@ -24,7 +24,8 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-
+	driveBase.SetTrim(SmartDashboard::GetNumber("Left Trim", 1.0),
+	                  SmartDashboard::GetNumber("Right Trim", 1.0));
 }
 
 void Robot::AutonomousInit()
@@ -35,10 +36,8 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
+	driveBase.SetTrim(SmartDashboard::GetNumber("Left Trim", 1.0),
+	                  SmartDashboard::GetNumber("Right Trim", 1.0));
 }
 
 void Robot::TeleopInit()
@@ -48,6 +47,9 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+	driveBase.SetTrim(SmartDashboard::GetNumber("Left Trim", 1.0),
+	                  SmartDashboard::GetNumber("Right Trim", 1.0));
+
 	float leftSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankLeft));
 	float rightSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankRight));
 
@@ -60,11 +62,6 @@ void Robot::TeleopPeriodic()
 
 	driveBase.Drive(leftSpeed * baseSpeed,
 					rightSpeed * baseSpeed);
-
-	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 }
 
 void Robot::DisabledInit()
