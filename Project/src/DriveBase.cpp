@@ -1,40 +1,44 @@
 #include "DriveBase.h"
 #include "Utility.h"
 
-DriveBase::DriveBase(int leftMotorPort, int rightMotorPort) : leftMotor(leftMotorPort), rightMotor(rightMotorPort)
+DriveBase::DriveBase(int leftMotorPort, int rightMotorPort,
+					 int leftEncoderPortA, int leftEncoderPortB,
+					 int rightEncoderPortA, int rightEncoderPortB,
+					 double encoderDistancePerPulse) :
+	leftMotor(leftMotorPort), rightMotor(rightMotorPort),
+	leftEncoder(leftEncoderPortA, leftEncoderPortB, Encoder::EncodingType::k2X),
+	rightEncoder(rightEncoderPortA, rightEncoderPortB, Encoder::EncodingType::k2X)
 {
 	rightMotor.SetInverted(true);
-	isReversed = false;
+	rightEncoder.SetReverseDirection(true);
+
+	// Distance per pulse from encoder.
+	leftEncoder.SetDistancePerPulse(encoderDistancePerPulse);
+	rightEncoder.SetDistancePerPulse(encoderDistancePerPulse);
+
+	// Length of time needed to determine whether robot is stopped (seconds).
+	leftEncoder.SetMaxPeriod(.1);
+	rightEncoder.SetMaxPeriod(.1);
+
+	// Minimum speed to determine if robot is stopped (distance units/second).
+	leftEncoder.SetMinRate(1);
+	rightEncoder.SetMinRate(1);
 }
 
 float DriveBase::GetLeftSpeed()
 {
-	if (isReversed)
-		return -rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
-	else
-		return leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
+	return leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
 }
 
 float DriveBase::GetRightSpeed()
 {
-	if (isReversed)
-		return -leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
-	else
-		return rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
+	return rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
 }
 
 void DriveBase::Drive(float leftSpeed, float rightSpeed)
 {
-	if (isReversed)
-	{
-		leftMotor.Set(-rightSpeed);
-		rightMotor.Set(-leftSpeed);
-	}
-	else
-	{
-		leftMotor.Set(leftSpeed);
-		rightMotor.Set(rightSpeed);
-	}
+	leftMotor.Set(leftSpeed);
+	rightMotor.Set(rightSpeed);
 }
 
 void DriveBase::Drive(float speed)
@@ -45,6 +49,11 @@ void DriveBase::Drive(float speed)
 void DriveBase::Stop()
 {
 	Drive(0, 0);
+}
+
+bool DriveBase::IsStopped()
+{
+	return leftEncoder.GetStopped() && rightEncoder.GetStopped();
 }
 
 void DriveBase::ApplyTrim(float leftForwardsRatio, float rightForwardsRatio,
@@ -60,12 +69,22 @@ void DriveBase::ApplyTrim(float leftForwardsRatio, float rightForwardsRatio,
 	rightMotor.Set(rightSpeed);
 }
 
-void DriveBase::SetReversed(bool reverse)
+void DriveBase::ResetLeftDistance()
 {
-	isReversed = reverse;
+	leftEncoder.Reset();
 }
 
-bool DriveBase::GetReversed()
+void DriveBase::ResetRightDistance()
 {
-	return isReversed;
+	rightEncoder.Reset();
+}
+
+double DriveBase::GetLeftDistance()
+{
+	return leftEncoder.GetDistance();
+}
+
+double DriveBase::GetRightDistance()
+{
+	return rightEncoder.GetDistance();
 }
