@@ -2,9 +2,11 @@
 #define ROBOT_H
 
 #include <WPILib.h>
+#include <iostream>
 #include "xBox.h"
 #include "DriveBase.h"
 #include "CameraTracking.h"
+#include "UltrasonicAnalog.h"
 
 class Robot: public IterativeRobot
 {
@@ -23,8 +25,9 @@ private:
 
 	Joystick driveController;
 	Joystick perifController;
-	CameraTracking cameraTracking;
 
+	CameraTracking cameraTracking;
+	UltrasonicAnalog ultrasonic;
 	Timer autoTimer;
 
 	DriveBase driveBase;
