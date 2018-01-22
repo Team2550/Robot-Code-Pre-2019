@@ -25,10 +25,6 @@ public:
 	int GetTargetX();
 	int GetTargetY();
 
-	void UpdateVision();
-	int GetTargetX();
-	int GetTargetY();
-
 };
 
 #endif

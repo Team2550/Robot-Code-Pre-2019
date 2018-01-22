@@ -1,5 +1,5 @@
 #include <CameraTracking.h>
-#include <GripPipeline.h>
+#include <grip/GripPipeline.h>
 
 CameraTracking::CameraTracking() : gripPipeline()
 {
@@ -28,14 +28,14 @@ void CameraTracking::UpdateVision()
 	cvSink.GrabFrame(image);
 	gripPipeline.Process(image);
 
-	std::vector<cv::Point> contourData = gripPipeline.GetFilterContoursOutput()[0];
+	std::vector<cv::Point> contourData = (*gripPipeline.GetFilterContoursOutput())[0];
 
 	int minX = contourData[0].x;
 	int maxX = contourData[0].x;
 	int minY = contourData[0].y;
 	int maxY = contourData[0].y;
 
-	for (int point = 1; point < contourData; point++)
+	for (unsigned int point = 1; point < contourData.size(); point++)
 	{
 		if (contourData[point].x < minX)
 			minX = contourData[point].x;

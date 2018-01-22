@@ -6,8 +6,9 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
+				 cameraTracking(),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4)), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
-				 gripPipeline(), driveBase(0, 1)
+				 driveBase(0, 1)
 {
 	speedNormal = 0.5f;
 	speedTurtle = 0.25f;
@@ -29,7 +30,7 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	cameraTracking.CameraTracking();
+
 }
 
 void Robot::AutonomousInit()
