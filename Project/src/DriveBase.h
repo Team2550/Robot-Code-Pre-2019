@@ -7,8 +7,8 @@
 
 class DriveBase {
 private:
-	Victor leftMotor;
-	Victor rightMotor;
+	Talon leftMotor;
+	Talon rightMotor;
 
 	bool isReversed;
 public:
