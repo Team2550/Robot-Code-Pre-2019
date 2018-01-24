@@ -19,9 +19,6 @@ private:
 	int buttonBoost;
 	int buttonTurtle;
 
-	float autoCrossTime;
-	float autoCrossSpeed;
-
 	Joystick driveController;
 	Joystick perifController;
 

@@ -5,7 +5,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 ultrasonic(0, (5 / 4.88) * (1000 / 25.4)), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
+                 ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
 				 driveBase(0, 1)
 {
 	speedNormal = 0.5f;
@@ -16,9 +16,6 @@ Robot::Robot() : driveController(0), perifController(1),
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
-
-	autoCrossTime = 1.0f;
-	autoCrossSpeed = 0.5;
 }
 
 Robot::~Robot()
@@ -39,10 +36,20 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	if (autoTimer.Get() < autoCrossTime)
-		driveBase.Drive(autoCrossSpeed);
+	double distance = ultrasonic.GetDistanceInches();
+
+	if (distance > 45)
+		driveBase.Drive(speedTurtle);
+	else if (distance > 35)
+		driveBase.Drive(speedTurtle * 0.5);
+	else if (distance < 15)
+		driveBase.Drive(-speedTurtle);
+	else if (distance < 25)
+		driveBase.Drive(-speedTurtle * 0.5);
 	else
 		driveBase.Stop();
+
+	std::cout << ultrasonic.GetDistanceInches() << std::endl;
 
 	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),

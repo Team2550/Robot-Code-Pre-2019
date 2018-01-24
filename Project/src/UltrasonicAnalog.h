@@ -3,15 +3,19 @@
 
 #include <WPILib.h>
 
+const int NUM_VALUES_AVERAGE = 5;
+
 class UltrasonicAnalog
 {
 private:
 	AnalogInput analogInput;
+	double distanceValues[NUM_VALUES_AVERAGE] = {};
 
 	double inchesPerVolt;
+	double minDistance;
 
 public:
-	UltrasonicAnalog(int port, double inchesPerVolt);
+	UltrasonicAnalog(int port, double inchesPerVolt, double minDistance);
 
 	double GetDistanceInches();
 
