@@ -4,8 +4,7 @@
 #include <WPILib.h>
 #include "grip/GripPipeline.h"
 
-class CameraTracking
-{
+class CameraTracking {
 private:
 	int imgWidth;
 	int imgHeight;
@@ -16,14 +15,29 @@ private:
 
 	int targetX;
 	int targetY;
+	bool targetTracked;
+
+	int ultraPlaceholder;
+
+	struct position
+	{
+		position() = default;
+		position(float x, float y);
+
+		float x = 0.0;
+		float y = 0.0;
+	};
 
 public:
 	CameraTracking();
 	~CameraTracking();
 
 	void UpdateVision();
-	int GetTargetX();
-	int GetTargetY();
+	float GetTargetX();
+	float GetTargetY();
+
+	double GetRobotPosition(float position);
+	float CalculateAngle(float x, float y);
 
 };
 
