@@ -48,7 +48,7 @@ void Robot::AutonomousPeriodic()
 	}
 	else if (distance >= ultrasonicLimit)
 	{
-		speed = (((distance - ultrasonicLimit) / bufferDistance)*(speedTurtle - minAutoSpeed) + minAutoSpeed);
+		speed = ((distance - ultrasonicLimit) / bufferDistance)*(speedTurtle - minAutoSpeed) + minAutoSpeed;
 	}
 	else
 	{
