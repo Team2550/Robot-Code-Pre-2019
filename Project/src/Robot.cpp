@@ -15,6 +15,8 @@ Robot::Robot() : driveController(0), perifController(1),
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
+
+	prefs = Preferences::GetInstance();
 }
 
 Robot::~Robot()
@@ -24,32 +26,31 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	driveBase.SetTrim(SmartDashboard::GetNumber("Left Trim", 1.0),
-	                  SmartDashboard::GetNumber("Right Trim", 1.0));
+	UpdatePreferences();
 }
 
 void Robot::AutonomousInit()
 {
+	UpdatePreferences();
+
 	autoTimer.Reset();
 	autoTimer.Start();
 }
 
 void Robot::AutonomousPeriodic()
 {
-	driveBase.SetTrim(SmartDashboard::GetNumber("Left Trim", 1.0),
-	                  SmartDashboard::GetNumber("Right Trim", 1.0));
+
 }
 
 void Robot::TeleopInit()
 {
+	UpdatePreferences();
+
 	driveBase.Stop();
 }
 
 void Robot::TeleopPeriodic()
 {
-	driveBase.SetTrim(SmartDashboard::GetNumber("Left Trim", 1.0),
-	                  SmartDashboard::GetNumber("Right Trim", 1.0));
-
 	float leftSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankLeft));
 	float rightSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankRight));
 
@@ -69,9 +70,11 @@ void Robot::DisabledInit()
 
 }
 
-void Robot::ClearSmartDashboard()
+void Robot::UpdatePreferences()
 {
-
+	prefs = Preferences::GetInstance();
+	driveBase.SetTrim(prefs->GetDouble("LeftTrim", 1.0),
+					  prefs->GetDouble("RightTrim", 1.0));
 }
 
 START_ROBOT_CLASS(Robot)

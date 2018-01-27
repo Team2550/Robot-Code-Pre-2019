@@ -17,6 +17,8 @@ private:
 	int buttonBoost;
 	int buttonTurtle;
 
+	Preferences *prefs;
+
 	Joystick driveController;
 	Joystick perifController;
 
@@ -33,7 +35,7 @@ public:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void DisabledInit();
-	void ClearSmartDashboard();
+	void UpdatePreferences();
 };
 
 #endif
