@@ -9,7 +9,7 @@ Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(0, 1)
 {
 	speedNormal = 0.5f;
-	speedTurtle = 0.25f;
+	speedTurtle = 0.3f;
 	speedBoost = 1.0f;
 	minAutoSpeed = speedTurtle/2;
 	ultrasonicLimit = 12;
