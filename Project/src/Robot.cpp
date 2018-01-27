@@ -11,7 +11,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	speedNormal = 0.5f;
 	speedTurtle = 0.25f;
 	speedBoost = 1.0f;
-	minAutoSpeed = speedTurtle/2;
+	minAutoSpeed = speedTurtle * 0.6;
 	ultrasonicLimit = 12;
 	bufferDistance = 24; // distance from start of buffer zone to wall. calculations are taken into account in below math
 
