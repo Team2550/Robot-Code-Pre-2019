@@ -16,6 +16,7 @@ private:
 
 	float autoBufferStart;
 	float autoMinSpeed;
+	float autoMaxSpeed;
 	float autoBufferLength;
 
 	int axisTankLeft;

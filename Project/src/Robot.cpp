@@ -41,11 +41,11 @@ void Robot::AutonomousPeriodic()
 
 	if (distance > autoBufferStart + autoBufferLength)
 	{
-		speed = speedTurtle;
+		speed = autoMaxSpeed;
 	}
 	else if (distance >= autoBufferStart)
 	{
-		speed = ((distance - autoBufferStart) / autoBufferLength)*(speedTurtle - autoMinSpeed) + autoMinSpeed;
+		speed = ((distance - autoBufferStart) / autoBufferLength)*(autoMaxSpeed - autoMinSpeed) + autoMinSpeed;
 	}
 	else
 	{
@@ -127,6 +127,7 @@ void Robot::UpdatePreferences()
 	speedTurtle = prefs->GetFloat("SpeedTurtle", 0.25f);
 	speedBoost = prefs->GetFloat("SpeedBoost", 1.0f);
 	autoMinSpeed = prefs->GetFloat("AutoMinSpeed", speedTurtle * 0.8);
+	autoMaxSpeed = prefs->GetFloat("AutoMaxSpeed", speedTurtle);
 	autoBufferStart = prefs->GetFloat("AutoBufferStart", 12);
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 }
