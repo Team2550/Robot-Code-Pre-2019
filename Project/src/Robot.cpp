@@ -11,6 +11,9 @@ Robot::Robot() : driveController(0), perifController(1),
 	speedNormal = 0.5f;
 	speedTurtle = 0.25f;
 	speedBoost = 1.0f;
+	minAutoSpeed = speedTurtle/2;
+	ultrasonicLimit = 12;
+	bufferDistance = 24; // distance from start of buffer zone to wall. calculations are taken into account in below math
 
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
@@ -36,20 +39,23 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
+	float speed = 0;
 	double distance = ultrasonic.GetDistanceInches();
 
-	if (distance > 45)
-		driveBase.Drive(speedTurtle);
-	else if (distance > 35)
-		driveBase.Drive(speedTurtle * 0.5);
-	else if (distance < 15)
-		driveBase.Drive(-speedTurtle);
-	else if (distance < 25)
-		driveBase.Drive(-speedTurtle * 0.5);
+	if (distance > ultrasonicLimit + bufferDistance)
+	{
+		speed = speedTurtle;
+	}
+	else if (distance >= ultrasonicLimit)
+	{
+		speed = (((distance - ultrasonicLimit) / bufferDistance)*(speedTurtle - minAutoSpeed) + minAutoSpeed);
+	}
 	else
-		driveBase.Stop();
+	{
+		speed = 0;
+	}
 
-	std::cout << ultrasonic.GetDistanceInches() << std::endl;
+	driveBase.Drive(speed);
 
 	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
 	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),

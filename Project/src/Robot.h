@@ -14,6 +14,10 @@ private:
 	float speedTurtle;
 	float speedBoost;
 
+	int ultrasonicLimit;
+	int minAutoSpeed;
+	double bufferDistance;
+
 	int axisTankLeft;
 	int axisTankRight;
 	int buttonBoost;
