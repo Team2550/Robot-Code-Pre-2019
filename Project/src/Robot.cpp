@@ -8,19 +8,12 @@ Robot::Robot() : driveController(0), perifController(1),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
 				 driveBase(0, 1)
 {
-	speedNormal = 0.5f;
-	speedTurtle = 0.25f;
-	speedBoost = 1.0f;
-	minAutoSpeed = speedTurtle * 0.6;
-	ultrasonicLimit = 12;
-	bufferDistance = 24; // distance from start of buffer zone to wall. calculations are taken into account in below math
-
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 
-	prefs = Preferences::GetInstance();
+	UpdatePreferences();
 }
 
 Robot::~Robot()
@@ -46,18 +39,20 @@ void Robot::AutonomousPeriodic()
 	float speed = 0;
 	double distance = ultrasonic.GetDistanceInches();
 
-	if (distance > ultrasonicLimit + bufferDistance)
+	if (distance > autoBufferStart + autoBufferLength)
 	{
 		speed = speedTurtle;
 	}
-	else if (distance >= ultrasonicLimit)
+	else if (distance >= autoBufferStart)
 	{
-		speed = ((distance - ultrasonicLimit) / bufferDistance)*(speedTurtle - minAutoSpeed) + minAutoSpeed;
+		speed = ((distance - autoBufferStart) / autoBufferLength)*(speedTurtle - autoMinSpeed) + autoMinSpeed;
 	}
 	else
 	{
 		speed = 0;
 	}
+
+	std::cout << "Distance: " << distance << std::endl;
 
 	driveBase.Drive(speed);
 }
@@ -124,8 +119,16 @@ void Robot::GetGameData(bool data[3])
 void Robot::UpdatePreferences()
 {
 	prefs = Preferences::GetInstance();
+
 	driveBase.SetTrim(prefs->GetDouble("LeftTrim", 1.0),
 					  prefs->GetDouble("RightTrim", 1.0));
+
+	speedNormal = prefs->GetFloat("SpeedNormal", 0.5f);
+	speedTurtle = prefs->GetFloat("SpeedTurtle", 0.25f);
+	speedBoost = prefs->GetFloat("SpeedBoost", 1.0f);
+	autoMinSpeed = prefs->GetFloat("AutoMinSpeed", speedTurtle * 0.8);
+	autoBufferStart = prefs->GetFloat("AutoBufferStart", 12);
+	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 }
 
 START_ROBOT_CLASS(Robot)
