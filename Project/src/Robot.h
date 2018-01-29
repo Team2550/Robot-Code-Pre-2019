@@ -7,6 +7,12 @@
 #include "DriveBase.h"
 #include "UltrasonicAnalog.h"
 
+enum Position
+{
+	left = 0,
+	right = 1
+};
+
 class Robot: public IterativeRobot
 {
 private:
@@ -14,10 +20,15 @@ private:
 	float speedTurtle;
 	float speedBoost;
 
-	float autoBufferStart;
-	float autoMinSpeed;
-	float autoMaxSpeed;
-	float autoBufferLength;
+	Position autoStartPosition; // Position that the robot starts autonomous round at.
+	float autoMinSpeed; // Speed of robot after reaching wall
+	float autoMaxSpeed; // Speed of robot before reaching wall
+	float autoBufferStart; // Distance at which robot will reach min speed.
+	float autoBufferLength; // Length of region where the robot will slow on approach to wall
+
+	double autoTimeHitWall; // The time that the robot hit the wall
+	bool autoHasHitWall; // Whether the robot has hit the wall (since last update)
+	bool autoHasReleasedBlock; // Robot has released block onto switch
 
 	int axisTankLeft;
 	int axisTankRight;
@@ -43,7 +54,7 @@ public:
 	void TeleopInit();
 	void TeleopPeriodic();
 	void DisabledInit();
-	void GetGameData(bool data[3]);
+	void GetGameData(Position data[3]);
 	void UpdatePreferences();
 };
 

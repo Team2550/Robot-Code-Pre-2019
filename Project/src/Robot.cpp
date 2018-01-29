@@ -32,29 +32,75 @@ void Robot::AutonomousInit()
 
 	autoTimer.Reset();
 	autoTimer.Start();
+
+	autoTimeHitWall = 0;
+	autoHasHitWall = false;
+	autoHasReleasedBlock = false;
 }
 
 void Robot::AutonomousPeriodic()
 {
-	float speed = 0;
 	double distance = ultrasonic.GetDistanceInches();
+	bool bumperTouchingWall = true; // Replace with limit switch
 
-	if (distance > autoBufferStart + autoBufferLength)
+	// Vision sensing
+	if (autoTimer.Get() < 0.5)
+	{
+		// Set start position based on view from camera
+	}
+
+	// Drivebase control
+	float speed;
+
+	if (autoTimer.Get() < 0.5)
+	{
+		speed = 0;
+	}
+	else if (distance > autoBufferStart + autoBufferLength)
 	{
 		speed = autoMaxSpeed;
 	}
 	else if (distance >= autoBufferStart)
 	{
-		speed = ((distance - autoBufferStart) / autoBufferLength)*(autoMaxSpeed - autoMinSpeed) + autoMinSpeed;
+		// Scale speed down as the robot approaches the wall.
+		speed = autoMinSpeed +
+				((distance - autoBufferStart) / autoBufferLength)*
+				(autoMaxSpeed - autoMinSpeed);
+	}
+	else if (!bumperTouchingWall)
+	{
+		speed = autoMinSpeed;
 	}
 	else
 	{
 		speed = 0;
 	}
 
-	std::cout << "Distance: " << distance << std::endl;
-
 	driveBase.Drive(speed);
+	//==============================================================
+
+	// Manipulator control
+	if (bumperTouchingWall && !autoHasHitWall)
+	{
+		autoTimeHitWall = autoTimer.Get();
+		autoHasHitWall = true;
+	}
+	else if (autoHasHitWall && // Robot was against wall since last update.
+			 autoTimer.Get() > autoTimeHitWall + 1) // Robot has been against wall for at least 1 second.
+	{
+		// Get ownership information about switches and scale.
+		Position fieldData[3];
+		GetGameData(fieldData);
+
+		// Ownership of nearest switch is same as side that robot is on
+		if (autoStartPosition == fieldData[0] && !autoHasReleasedBlock)
+		{
+			// Cause mechanism to release block
+
+			autoHasReleasedBlock = true;
+		}
+	}
+	//==============================================================
 }
 
 void Robot::TeleopInit()
@@ -90,15 +136,13 @@ Name: GetGameData
 Desc: Gets game data from the field management system that tells
       the robot who owns which sides of the switches and scales.
 Parameters:
-    data (O) - Three-element boolean array, where each element
-               signifies signifies whether you own the left
-               (false) or right (true) side of the scale and
-               each switch. [Nearest switch, scale, furthest
-               switch]
+    data (O) - Three-element array containing which side of each
+    		   element is owned by my alliance.
+    		   [Nearest switch, scale, farthest switch]
 Return value:
     None
 ==============================================================*/
-void Robot::GetGameData(bool data[3])
+void Robot::GetGameData(Position data[3])
 {
 	std::string gameData;
 	gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
@@ -107,11 +151,11 @@ void Robot::GetGameData(bool data[3])
 	{
 		if(gameData[i] == 'L')
 		{
-			data[i] = false;
+			data[i] = left;
 		}
 		else
 		{
-			data[i] = true;
+			data[i] = right;
 		}
 	}
 }
@@ -126,6 +170,12 @@ void Robot::UpdatePreferences()
 	speedNormal = prefs->GetFloat("SpeedNormal", 0.5f);
 	speedTurtle = prefs->GetFloat("SpeedTurtle", 0.25f);
 	speedBoost = prefs->GetFloat("SpeedBoost", 1.0f);
+
+	if (prefs->GetBoolean("WillStartOnRight", true))
+		autoStartPosition = right;
+	else
+		autoStartPosition = left;
+
 	autoMinSpeed = prefs->GetFloat("AutoMinSpeed", speedTurtle * 0.8);
 	autoMaxSpeed = prefs->GetFloat("AutoMaxSpeed", speedTurtle);
 	autoBufferStart = prefs->GetFloat("AutoBufferStart", 12);
