@@ -6,6 +6,7 @@
 #include "xBox.h"
 #include "DriveBase.h"
 #include "UltrasonicAnalog.h"
+#include "LimitSwitch.h"
 
 enum Position
 {
@@ -41,6 +42,7 @@ private:
 	Joystick perifController;
 
 	UltrasonicAnalog ultrasonic;
+	LimitSwitch bumperSwitch;
 	Timer autoTimer;
 
 	DriveBase driveBase;
@@ -49,6 +51,7 @@ public:
 	Robot();
 	~Robot();
 	void RobotInit();
+	void RobotPeriodic();
 	void AutonomousInit();
 	void AutonomousPeriodic();
 	void TeleopInit();

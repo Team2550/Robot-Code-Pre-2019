@@ -6,6 +6,7 @@
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
+				 bumperSwitch(0),
 				 driveBase(0, 1)
 {
 	axisTankLeft = xbox::axis::leftY;
@@ -26,6 +27,11 @@ void Robot::RobotInit()
 	UpdatePreferences();
 }
 
+void Robot::RobotPeriodic()
+{
+	std::cout << "Limit Switch: " << bumperSwitch.Get() << std::endl;
+}
+
 void Robot::AutonomousInit()
 {
 	UpdatePreferences();
@@ -41,13 +47,14 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	double distance = ultrasonic.GetDistanceInches();
-	bool bumperTouchingWall = true; // Replace with limit switch
+	bool bumperTouchingWall = !bumperSwitch.Get();
 
 	// Vision sensing
 	if (autoTimer.Get() < 0.5)
 	{
 		// Set start position based on view from camera
 	}
+	//==============================================================
 
 	// Drivebase control
 	float speed;
@@ -75,6 +82,8 @@ void Robot::AutonomousPeriodic()
 	{
 		speed = 0;
 	}
+
+	std::cout << "Speed: " << speed << std::endl;
 
 	driveBase.Drive(speed);
 	//==============================================================
@@ -180,6 +189,8 @@ void Robot::UpdatePreferences()
 	autoMaxSpeed = prefs->GetFloat("AutoMaxSpeed", speedTurtle);
 	autoBufferStart = prefs->GetFloat("AutoBufferStart", 12);
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
+
+	std::cout << "Updated Preferences" << std::endl;
 }
 
 START_ROBOT_CLASS(Robot)

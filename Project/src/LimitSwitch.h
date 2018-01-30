@@ -13,7 +13,7 @@ private:
 public:
 	LimitSwitch(int port);
 
-	bool GetPressed();
+	bool Get();
 };
 
 #endif

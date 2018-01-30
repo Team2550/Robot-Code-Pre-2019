@@ -5,7 +5,7 @@ LimitSwitch::LimitSwitch(int port) : sensor(port)
 
 }
 
-bool LimitSwitch::GetPressed()
+bool LimitSwitch::Get()
 {
 	return sensor.Get();
 }
