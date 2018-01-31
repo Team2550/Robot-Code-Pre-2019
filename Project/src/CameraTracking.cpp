@@ -1,6 +1,4 @@
 #include <CameraTracking.h>
-#include <GripPipeline.h>
-#include <math.h>
 
 CameraTracking::CameraTracking() : gripPipeline()
 {
@@ -32,26 +30,27 @@ void CameraTracking::UpdateVision()
 	cvSink.GrabFrame(image);
 	gripPipeline.Process(image);
 
-	std::vector<cv::Point> contourData = gripPipeline.GetFilterContoursOutput()[0];
+	std::vector<std::vector<cv::Point>>* contours = gripPipeline.GetFilterContoursOutput();
+	std::vector<cv::Point> targetContourData = (*contours)[0];
 
-	int minX = contourData[0].x;
-	int maxX = contourData[0].x;
-	int minY = contourData[0].y;
-	int maxY = contourData[0].y;
+	int minX = targetContourData[0].x;
+	int maxX = targetContourData[0].x;
+	int minY = targetContourData[0].y;
+	int maxY = targetContourData[0].y;
 
-	for (int point = 1; point < contourData; point++)
+	for (unsigned int point = 1; point < targetContourData.size(); point++)
 	{
-		if (contourData[point].x < minX)
-			minX = contourData[point].x;
+		if (targetContourData[point].x < minX)
+			minX = targetContourData[point].x;
 
-		if (contourData[point].x > maxX)
-			maxX = contourData[point].x;
+		if (targetContourData[point].x > maxX)
+			maxX = targetContourData[point].x;
 
-		if (contourData[point].y < minY)
-			minY = contourData[point].y;
+		if (targetContourData[point].y < minY)
+			minY = targetContourData[point].y;
 
-		if (contourData[point].y > maxY)
-			maxY = contourData[point].y;
+		if (targetContourData[point].y > maxY)
+			maxY = targetContourData[point].y;
 	}
 
 	targetX = (minX + maxX) / 2;
@@ -77,24 +76,13 @@ float CameraTracking::GetTargetY()
 
 double CameraTracking::GetRobotPosition(float position)
 {
-	//TODO need to update the position struct;
-	position = gripPipeline.GetFilterContoursOutput();
-
-	//If the target is detected, return the X and Y positions and calculate the angle
-	while (targetTracked = true)
-	{
-		GetTargetX();
-		GetTargetY();
-		CalculateAngle(targetX, targetY);
-	}
-
 	return position;
 }
 
 float CameraTracking::CalculateAngle(float x, float y)
 {
-	float angle;
-	float finalAngle;
+	float angle = 0;
+	float finalAngle = 0;
 
 	//calculate angle based on ultrasonic readings
 	//angle = arctan();

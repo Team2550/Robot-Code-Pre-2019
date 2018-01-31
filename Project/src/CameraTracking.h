@@ -2,6 +2,7 @@
 #define CAMERA_TRACKING_H
 
 #include <WPILib.h>
+#include <math.h>
 #include "grip/GripPipeline.h"
 
 class CameraTracking {

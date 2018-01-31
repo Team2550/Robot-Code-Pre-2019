@@ -7,6 +7,13 @@
 #include "DriveBase.h"
 #include "CameraTracking.h"
 #include "UltrasonicAnalog.h"
+#include "LimitSwitch.h"
+
+enum Position
+{
+	left = 0,
+	right = 1
+};
 
 class Robot: public IterativeRobot
 {
@@ -15,19 +22,29 @@ private:
 	float speedTurtle;
 	float speedBoost;
 
+	Position autoStartPosition; // Position that the robot starts autonomous round at.
+	float autoMinSpeed; // Speed of robot after reaching wall
+	float autoMaxSpeed; // Speed of robot before reaching wall
+	float autoBufferStart; // Distance at which robot will reach min speed.
+	float autoBufferLength; // Length of region where the robot will slow on approach to wall
+
+	double autoTimeHitWall; // The time that the robot hit the wall
+	bool autoHasHitWall; // Whether the robot has hit the wall (since last update)
+	bool autoHasReleasedBlock; // Robot has released block onto switch
+
 	int axisTankLeft;
 	int axisTankRight;
 	int buttonBoost;
 	int buttonTurtle;
 
-	float autoCrossTime;
-	float autoCrossSpeed;
+	Preferences *prefs;
 
 	Joystick driveController;
 	Joystick perifController;
 
 	CameraTracking cameraTracking;
 	UltrasonicAnalog ultrasonic;
+	LimitSwitch bumperSwitch;
 	Timer autoTimer;
 
 	DriveBase driveBase;
@@ -36,13 +53,14 @@ public:
 	Robot();
 	~Robot();
 	void RobotInit();
+	void RobotPeriodic();
 	void AutonomousInit();
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
 	void DisabledInit();
-	void GetGameData(bool data[3]);
-	void ClearSmartDashboard();
+	void GetGameData(Position data[3]);
+	void UpdatePreferences();
 };
 
 #endif
