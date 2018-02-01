@@ -7,6 +7,17 @@
 
 class Robot: public IterativeRobot
 {
+public:
+	Robot();
+	~Robot();
+	void RobotInit();
+	void AutonomousInit();
+	void AutonomousPeriodic();
+	void TeleopInit();
+	void TeleopPeriodic();
+	void DisabledInit();
+	void UpdatePreferences();
+
 private:
 	float speedNormal;
 	float speedTurtle;
@@ -26,16 +37,6 @@ private:
 
 	DriveBase driveBase;
 
-public:
-	Robot();
-	~Robot();
-	void RobotInit();
-	void AutonomousInit();
-	void AutonomousPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic();
-	void DisabledInit();
-	void UpdatePreferences();
 };
 
 #endif

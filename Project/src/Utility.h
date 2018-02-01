@@ -9,7 +9,7 @@
 
 namespace Utility
 {
-	enum RumbleSide {left, right, both};
+	enum RumbleSide { LEFT, RIGHT, BOTH };
 
 	/*=================================================
 	Name: deadzone

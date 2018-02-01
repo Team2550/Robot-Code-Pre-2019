@@ -5,14 +5,8 @@
 #include <math.h>
 #include "Utility.h"
 
-class DriveBase {
-private:
-	Victor leftMotor;
-	Victor rightMotor;
-
-	float leftTrim;
-	float rightTrim;
-
+class DriveBase
+{
 public:
 	DriveBase(int leftMotorPort, int rightMotorPort);
 
@@ -22,6 +16,14 @@ public:
 	void Drive(float speed);
 	void Stop();
 	void SetTrim(float leftTrim, float rightTrim);
+
+private:
+	Victor leftMotor;
+	Victor rightMotor;
+
+	float leftTrim;
+	float rightTrim;
+
 };
 
 #endif
