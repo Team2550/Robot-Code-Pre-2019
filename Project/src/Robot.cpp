@@ -31,7 +31,7 @@ void Robot::RobotInit()
 
 void Robot::RobotPeriodic()
 {
-	std::cout << "Limit Switch: " << bumperSwitch.Get() << std::endl;
+
 }
 
 void Robot::AutonomousInit()
@@ -49,6 +49,10 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	cameraTracking.UpdateVision();
+
+	Vector2 targetPosition = cameraTracking.GetTargetPositionRelative();
+
+	std::cout << "Target X: " << targetPosition.x << " Target Y: " << targetPosition.y << std::endl;
 
 	double distance = ultrasonic.GetDistanceInches();
 	bool bumperTouchingWall = !bumperSwitch.Get();
@@ -89,7 +93,7 @@ void Robot::AutonomousPeriodic()
 
 	std::cout << "Speed: " << speed << std::endl;
 
-	driveBase.Drive(speed);
+	driveBase.Drive(0); //speed);
 	//==============================================================
 
 	// Manipulator control
