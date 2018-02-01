@@ -16,6 +16,19 @@ enum Position
 
 class Robot: public IterativeRobot
 {
+public:
+	Robot();
+	~Robot();
+	void RobotInit();
+	void RobotPeriodic();
+	void AutonomousInit();
+	void AutonomousPeriodic();
+	void TeleopInit();
+	void TeleopPeriodic();
+	void DisabledInit();
+	void GetGameData(Position data[3]);
+	void UpdatePreferences();
+
 private:
 	float speedNormal;
 	float speedTurtle;
@@ -47,18 +60,6 @@ private:
 
 	DriveBase driveBase;
 
-public:
-	Robot();
-	~Robot();
-	void RobotInit();
-	void RobotPeriodic();
-	void AutonomousInit();
-	void AutonomousPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic();
-	void DisabledInit();
-	void GetGameData(Position data[3]);
-	void UpdatePreferences();
 };
 
 #endif
