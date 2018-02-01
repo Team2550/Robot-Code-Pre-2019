@@ -8,15 +8,11 @@
 #include "UltrasonicAnalog.h"
 #include "LimitSwitch.h"
 
-enum Position
-{
-	left = 0,
-	right = 1
-};
-
 class Robot: public IterativeRobot
 {
 public:
+	enum Position { LEFT, RIGHT };
+
 	Robot();
 	~Robot();
 	void RobotInit();

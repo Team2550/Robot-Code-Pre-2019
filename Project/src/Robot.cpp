@@ -160,11 +160,11 @@ void Robot::GetGameData(Position data[3])
 	{
 		if(gameData[i] == 'L')
 		{
-			data[i] = left;
+			data[i] = LEFT;
 		}
 		else
 		{
-			data[i] = right;
+			data[i] = RIGHT;
 		}
 	}
 }
@@ -181,9 +181,9 @@ void Robot::UpdatePreferences()
 	speedBoost = prefs->GetFloat("SpeedBoost", 1.0f);
 
 	if (prefs->GetBoolean("WillStartOnRight", true))
-		autoStartPosition = right;
+		autoStartPosition = RIGHT;
 	else
-		autoStartPosition = left;
+		autoStartPosition = LEFT;
 
 	autoMinSpeed = prefs->GetFloat("AutoMinSpeed", speedTurtle * 0.8);
 	autoMaxSpeed = prefs->GetFloat("AutoMaxSpeed", speedTurtle);

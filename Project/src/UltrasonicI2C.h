@@ -11,16 +11,16 @@
 
 class UltrasonicI2C
 {
+public:
+	UltrasonicI2C(int sensorAddress);
+
+	bool GetDistance(double& distance);
+
 private:
 	// Bytes output by I2C ultrasonic sensor
 	const int READ_BYTE_COUNT = 2;
 
 	I2C sensorI2C;
-
-public:
-	UltrasonicI2C(int sensorAddress);
-
-	bool GetDistance(double& distance);
 
 };
 

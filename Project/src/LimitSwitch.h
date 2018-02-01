@@ -7,13 +7,14 @@
 
 class LimitSwitch
 {
-private:
-	DigitalInput sensor;
-
 public:
 	LimitSwitch(int port);
 
 	bool Get();
+
+private:
+	DigitalInput sensor;
+
 };
 
 #endif
