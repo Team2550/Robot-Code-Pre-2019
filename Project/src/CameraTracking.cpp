@@ -1,22 +1,16 @@
 #include <CameraTracking.h>
 
-CameraTracking::CameraTracking() : gripPipeline()
+CameraTracking::CameraTracking(int imgWidth, int imgHeight, int imgExposure)
 {
-	imgWidth = 640;
-	imgHeight = 480;
-	imgExposure = 10;
-
 	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
 	camera.SetResolution(imgWidth, imgHeight);
 	camera.SetExposureManual(imgExposure);
 	cvSink = CameraServer::GetInstance()->GetVideo();
 
-	targetX = 0;
-	targetY = 0;
+	targetPositionRelative.x = 0;
+	targetPositionRelative.y = 0;
 
-	targetTracked = false;
-
-	ultraPlaceholder = 0;
+	targetIsVisible = false;
 }
 
 CameraTracking::~CameraTracking()
@@ -30,49 +24,54 @@ void CameraTracking::UpdateVision()
 	cvSink.GrabFrame(image);
 	gripPipeline.Process(image);
 
+	int minX = 0;
+	int maxX = 0;
+	int minY = 0;
+	int maxY = 0;
+
 	std::vector<std::vector<cv::Point>>* contours = gripPipeline.GetFilterContoursOutput();
-	std::vector<cv::Point> targetContourData = (*contours)[0];
 
-	int minX = targetContourData[0].x;
-	int maxX = targetContourData[0].x;
-	int minY = targetContourData[0].y;
-	int maxY = targetContourData[0].y;
-
-	for (unsigned int point = 1; point < targetContourData.size(); point++)
+	if (contours->size() > 0)
 	{
-		if (targetContourData[point].x < minX)
-			minX = targetContourData[point].x;
+		std::vector<cv::Point> targetContourData = (*contours)[0];
 
-		if (targetContourData[point].x > maxX)
-			maxX = targetContourData[point].x;
+		minX = targetContourData[0].x;
+		maxX = targetContourData[0].x;
+		minY = targetContourData[0].y;
+		maxY = targetContourData[0].y;
 
-		if (targetContourData[point].y < minY)
-			minY = targetContourData[point].y;
+		for (unsigned int point = 1; point < targetContourData.size(); point++)
+		{
+			if (targetContourData[point].x < minX)
+				minX = targetContourData[point].x;
 
-		if (targetContourData[point].y > maxY)
-			maxY = targetContourData[point].y;
+			if (targetContourData[point].x > maxX)
+				maxX = targetContourData[point].x;
+
+			if (targetContourData[point].y < minY)
+				minY = targetContourData[point].y;
+
+			if (targetContourData[point].y > maxY)
+				maxY = targetContourData[point].y;
+		}
 	}
 
-	targetX = (minX + maxX) / 2;
-	targetY = (minY + maxY) / 2;
+	Vector2 target = {(minX + maxX) / 2.f, (minY + maxY) / 2.f};
 
 	//If the target is not zero, then the target is found
-	if (targetX > 0 || targetX < 0 || targetY > 0 || targetY < 0)
+	if (target.x == 0 && target.y == 0)
 	{
-		targetTracked = true;
+		targetIsVisible = false;
 	}
+
+	targetPositionRelative.x = target.x;
+	targetPositionRelative.y = target.y;
 }
 
-float CameraTracking::GetTargetX()
+Vector2 CameraTracking::GetTargetPositionRelative()
 {
-	return targetX;
+	return targetPositionRelative;
 }
-
-float CameraTracking::GetTargetY()
-{
-	return targetY;
-}
-
 
 double CameraTracking::GetRobotPosition(float position)
 {
