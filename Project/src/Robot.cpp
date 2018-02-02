@@ -6,7 +6,7 @@
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
-				 bumperSwitch(0),
+				 bumperSwitch(0, LimitSwitch::LOW),
 				 driveBase(0, 1)
 {
 	axisTankLeft = xbox::axis::leftY;
@@ -29,7 +29,7 @@ void Robot::RobotInit()
 
 void Robot::RobotPeriodic()
 {
-	std::cout << "Limit Switch: " << bumperSwitch.Get() << std::endl;
+	std::cout << "Limit Switch: " << bumperSwitch.GetPushed() << std::endl;
 }
 
 void Robot::AutonomousInit()
@@ -47,7 +47,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	double distance = ultrasonic.GetDistanceInches();
-	bool bumperTouchingWall = !bumperSwitch.Get();
+	bool bumperTouchingWall = !bumperSwitch.GetPushed();
 
 	// Vision sensing
 	if (autoTimer.Get() < 0.5)

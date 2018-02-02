@@ -1,11 +1,14 @@
 #include "LimitSwitch.h"
 
-LimitSwitch::LimitSwitch(int port) : sensor(port)
+LimitSwitch::LimitSwitch(int port, SignalState stateWhenPushed) : sensor(port)
 {
-
+	this->stateWhenPushed = stateWhenPushed;
 }
 
-bool LimitSwitch::Get()
+bool LimitSwitch::GetPushed()
 {
-	return sensor.Get();
+	if (stateWhenPushed == HIGH)
+		return sensor.Get();
+	else
+		return !sensor.Get();
 }

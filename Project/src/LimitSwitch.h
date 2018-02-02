@@ -8,12 +8,16 @@
 class LimitSwitch
 {
 public:
-	LimitSwitch(int port);
+	enum SignalState { LOW, HIGH };
 
-	bool Get();
+	LimitSwitch( int port, SignalState stateWhenPushed );
+
+	bool GetPushed();
 
 private:
 	DigitalInput sensor;
+
+	SignalState stateWhenPushed;
 
 };
 
