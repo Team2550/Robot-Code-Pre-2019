@@ -4,8 +4,8 @@
  *  Created on: Jan 11, 2018
  *      Author: Brayton Kerekffy and Nathan Walker
  */
-#ifndef ULTRASONIC_I2C_H_
-#define ULTRASONIC_I2C_H_
+#ifndef ULTRASONIC_I2C_H
+#define ULTRASONIC_I2C_H
 
 #include <I2C.h>
 

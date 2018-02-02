@@ -1,5 +1,5 @@
-#ifndef ULTRASONIC_ANALOG_H_
-#define ULTRASONIC_ANALOG_H_
+#ifndef ULTRASONIC_ANALOG_H
+#define ULTRASONIC_ANALOG_H
 
 #include <WPILib.h>
 
