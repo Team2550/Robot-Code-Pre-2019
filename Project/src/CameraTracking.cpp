@@ -2,15 +2,19 @@
 
 CameraTracking::CameraTracking(int imgWidth, int imgHeight, int imgExposure)
 {
-	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
-	camera.SetResolution(imgWidth, imgHeight);
-	camera.SetExposureManual(imgExposure);
-	cvSink = CameraServer::GetInstance()->GetVideo();
+	//cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
+	//camera.SetResolution(imgWidth, imgHeight);
+	//camera.SetExposureManual(imgExposure);
+	//cvSink = CameraServer::GetInstance()->GetVideo();
+
+	std::thread visionThread(VisionThread);
+	visionThread.detach();
 
 	targetPositionRelative.x = 0;
 	targetPositionRelative.y = 0;
 
 	targetIsVisible = false;
+
 }
 
 CameraTracking::~CameraTracking()
@@ -18,10 +22,29 @@ CameraTracking::~CameraTracking()
 
 }
 
+void CameraTracking::VisionThread()
+{
+	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
+	camera.SetResolution(640, 480);
+	cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
+	cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray", 640, 480);
+	cv::Mat source;
+	cv::Mat output;
+
+	while(true)
+	{
+		cvSink.GrabFrame(source);
+		//cs::CvSource outputStreamStd.PutFrame(source);
+	}
+}
+
 void CameraTracking::UpdateVision()
 {
+	/*
+	std::cout << "Accessed UpdateVision" << std::endl;
 	cv::Mat image;
 	cvSink.GrabFrame(image);
+	std::cout << "reached proccess" << std::endl;
 	gripPipeline.Process(image);
 
 	int minX = 0;
@@ -29,10 +52,12 @@ void CameraTracking::UpdateVision()
 	int minY = 0;
 	int maxY = 0;
 
-	std::vector<std::vector<cv::Point>>* contours = gripPipeline.GetFilterContoursOutput();
+
+	std::vector<std::vector<cv::Point>>* contours = gripPipeline.getfindContoursOutput();
 
 	if (contours->size() > 0)
 	{
+		std::cout << "coorPart1" << std::endl;
 		std::vector<cv::Point> targetContourData = (*contours)[0];
 
 		minX = targetContourData[0].x;
@@ -59,13 +84,15 @@ void CameraTracking::UpdateVision()
 	Vector2 target = {(minX + maxX) / 2.f, (minY + maxY) / 2.f};
 
 	//If the target is not zero, then the target is found
-	if (target.x == 0 && target.y == 0)
+	if (target.x != 0 && target.y != 0)
 	{
-		targetIsVisible = false;
+		targetIsVisible = true;
+		std::cout << "target is found!!" << std::endl;
 	}
 
 	targetPositionRelative.x = target.x;
 	targetPositionRelative.y = target.y;
+*/
 }
 
 Vector2 CameraTracking::GetTargetPositionRelative()

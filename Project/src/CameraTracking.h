@@ -3,7 +3,9 @@
 
 #include <WPILib.h>
 #include <math.h>
-#include "grip/GripPipeline.h"
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/core.hpp>
+#include <iostream>
 
 struct Vector2
 {
@@ -14,8 +16,8 @@ struct Vector2
 class CameraTracking
 {
 private:
-	cs::CvSink cvSink; // OpenCV image data sink
-	grip::GripPipeline gripPipeline;
+	//cs::CvSink cvSink; // OpenCV image data sink
+	//grip::GripPipeline gripPipeline;
 
 	Vector2 targetPositionRelative;
 	bool targetIsVisible;
@@ -24,6 +26,7 @@ public:
 	CameraTracking(int imgWidth, int imgHeight, int imgExposure);
 	~CameraTracking();
 
+	static void VisionThread();
 	void UpdateVision();
 
 	Vector2 GetTargetPositionRelative();
