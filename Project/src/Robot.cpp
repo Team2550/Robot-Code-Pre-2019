@@ -34,13 +34,16 @@ void Robot::AutonomousInit()
 {
 	UpdatePreferences();
 
+	driveBase.ResetDistance();
+
 	autoTimer.Reset();
 	autoTimer.Start();
 }
 
 void Robot::AutonomousPeriodic()
 {
-
+	std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
+	          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << std::endl;
 }
 
 void Robot::TeleopInit()

@@ -59,13 +59,9 @@ bool DriveBase::IsStopped()
 	return leftEncoder.GetStopped() && rightEncoder.GetStopped();
 }
 
-void DriveBase::ResetLeftDistance()
+void DriveBase::ResetDistance()
 {
 	leftEncoder.Reset();
-}
-
-void DriveBase::ResetRightDistance()
-{
 	rightEncoder.Reset();
 }
 

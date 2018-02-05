@@ -19,8 +19,7 @@ public:
 	void Drive(float speed);
 	void Stop();
 	bool IsStopped();
-	void ResetLeftDistance();
-	void ResetRightDistance();
+	void ResetDistance();
 	double GetLeftDistance();
 	double GetRightDistance();
 	void SetTrim(float leftTrim, float rightTrim);
