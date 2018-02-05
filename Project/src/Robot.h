@@ -9,27 +9,6 @@
 
 class Robot: public IterativeRobot
 {
-private:
-	float speedNormal;
-	float speedTurtle;
-	float speedBoost;
-
-	int axisTankLeft;
-	int axisTankRight;
-	int buttonBoost;
-	int buttonTurtle;
-
-	float autoCrossTime;
-	float autoCrossSpeed;
-
-	Joystick driveController;
-	Joystick perifController;
-
-	UltrasonicAnalog ultrasonic;
-	Timer autoTimer;
-
-	DriveBase driveBase;
-
 public:
 	Robot();
 	~Robot();
@@ -40,7 +19,28 @@ public:
 	void TeleopPeriodic();
 	void DisabledInit();
 	void GetGameData(bool data[3]);
-	void ClearSmartDashboard();
+	void UpdatePreferences();
+
+private:
+	float speedNormal;
+	float speedTurtle;
+	float speedBoost;
+
+	int axisTankLeft;
+	int axisTankRight;
+	int buttonBoost;
+	int buttonTurtle;
+
+	Preferences *prefs;
+
+	Joystick driveController;
+	Joystick perifController;
+
+	UltrasonicAnalog ultrasonic;
+	Timer autoTimer;
+
+	DriveBase driveBase;
+
 };
 
 #endif

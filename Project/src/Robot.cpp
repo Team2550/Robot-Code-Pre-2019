@@ -17,8 +17,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 
-	autoCrossTime = 1.0f;
-	autoCrossSpeed = 0.5;
+	prefs = Preferences::GetInstance();
 }
 
 Robot::~Robot()
@@ -28,30 +27,26 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-
+	UpdatePreferences();
 }
 
 void Robot::AutonomousInit()
 {
+	UpdatePreferences();
+
 	autoTimer.Reset();
 	autoTimer.Start();
 }
 
 void Robot::AutonomousPeriodic()
 {
-	if (autoTimer.Get() < autoCrossTime)
-		driveBase.Drive(autoCrossSpeed);
-	else
-		driveBase.Stop();
 
-	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 }
 
 void Robot::TeleopInit()
 {
+	UpdatePreferences();
+
 	driveBase.Stop();
 }
 
@@ -69,11 +64,6 @@ void Robot::TeleopPeriodic()
 
 	driveBase.Drive(leftSpeed * baseSpeed,
 					rightSpeed * baseSpeed);
-
-	driveBase.ApplyTrim(SmartDashboard::GetNumber("Left Forwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Right Forwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Left Backwards Ratio", 1.0),
-	                    SmartDashboard::GetNumber("Right Backwards Ratio", 1.0));
 }
 
 void Robot::DisabledInit()
@@ -112,9 +102,11 @@ void Robot::GetGameData(bool data[3])
 	}
 }
 
-void Robot::ClearSmartDashboard()
+void Robot::UpdatePreferences()
 {
-
+	prefs = Preferences::GetInstance();
+	driveBase.SetTrim(prefs->GetDouble("LeftTrim", 1.0),
+					  prefs->GetDouble("RightTrim", 1.0));
 }
 
 START_ROBOT_CLASS(Robot)

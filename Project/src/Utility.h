@@ -2,14 +2,14 @@
 #define UTILITY_H
 
 #include <WPILib.h>
-#include <xBox.h>
 #include <math.h>
 #include <vector>
 #include <string>
+#include "xBox.h"
 
 namespace Utility
 {
-	enum RumbleSide {left, right, both};
+	enum RumbleSide { LEFT, RIGHT, BOTH };
 
 	/*=================================================
 	Name: deadzone

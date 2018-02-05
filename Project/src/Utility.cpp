@@ -80,13 +80,13 @@ void Utility::SetRumble(Joystick& controller, Utility::RumbleSide rumbleSide, fl
 {
 	switch (rumbleSide)
 	{
-	case left:
+	case LEFT:
 		controller.SetRumble(Joystick::kLeftRumble, rumbleAmount);
 		break;
-	case right:
+	case RIGHT:
 		controller.SetRumble(Joystick::kRightRumble, rumbleAmount);
 		break;
-	case both:
+	case BOTH:
 		controller.SetRumble(Joystick::kLeftRumble, rumbleAmount);
 		controller.SetRumble(Joystick::kRightRumble, rumbleAmount);
 		break;

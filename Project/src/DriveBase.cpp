@@ -23,6 +23,9 @@ DriveBase::DriveBase(int leftMotorPort, int rightMotorPort,
 	// Minimum speed to determine if robot is stopped (distance units/second).
 	leftEncoder.SetMinRate(1);
 	rightEncoder.SetMinRate(1);
+
+	leftTrim = 1;
+	rightTrim = 1;
 }
 
 float DriveBase::GetLeftSpeed()
@@ -37,8 +40,8 @@ float DriveBase::GetRightSpeed()
 
 void DriveBase::Drive(float leftSpeed, float rightSpeed)
 {
-	leftMotor.Set(leftSpeed);
-	rightMotor.Set(rightSpeed);
+	leftMotor.Set(leftSpeed * leftTrim);
+	rightMotor.Set(rightSpeed * rightTrim);
 }
 
 void DriveBase::Drive(float speed)
@@ -54,19 +57,6 @@ void DriveBase::Stop()
 bool DriveBase::IsStopped()
 {
 	return leftEncoder.GetStopped() && rightEncoder.GetStopped();
-}
-
-void DriveBase::ApplyTrim(float leftForwardsRatio, float rightForwardsRatio,
-                          float leftBackwardsRatio, float rightBackwardsRatio)
-{
-	float leftSpeed = leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
-	float rightSpeed = rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
-
-	leftSpeed *= (leftSpeed > 0) ? leftForwardsRatio : leftBackwardsRatio;
-	rightSpeed *= (rightSpeed > 0) ? rightForwardsRatio : rightBackwardsRatio;
-
-	leftMotor.Set(leftSpeed);
-	rightMotor.Set(rightSpeed);
 }
 
 void DriveBase::ResetLeftDistance()
@@ -87,4 +77,10 @@ double DriveBase::GetLeftDistance()
 double DriveBase::GetRightDistance()
 {
 	return rightEncoder.GetDistance();
+}
+
+void DriveBase::SetTrim(float leftTrim, float rightTrim)
+{
+	this->leftTrim = leftTrim;
+	this->rightTrim = rightTrim;
 }
