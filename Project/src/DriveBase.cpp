@@ -10,6 +10,9 @@ DriveBase::DriveBase(int leftMotorPort, int rightMotorPort,
 	rightEncoder(rightEncoderPortA, rightEncoderPortB, Encoder::EncodingType::k2X)
 {
 	rightMotor.SetInverted(true);
+
+	// Set encoder reversal for one side
+	leftEncoder.SetReverseDirection(false);
 	rightEncoder.SetReverseDirection(true);
 
 	// Distance per pulse from encoder.

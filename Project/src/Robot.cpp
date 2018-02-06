@@ -42,15 +42,16 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
-	          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << std::endl;
-
 	double leftDistInches = driveBase.GetLeftDistance();
 	double rightDistInches = driveBase.GetRightDistance();
+
+	std::cout << "Left: " << std::setw(5) << leftDistInches << ' '
+	          << "Right: " << std::setw(5) << rightDistInches << std::endl;
 
 	double avgDistInches = (leftDistInches + rightDistInches) / 2;
 
 	float speed = 0;
+	float rotationSpeedOffset = 0.05;
 
 	// Drive 36 inches at turtle speed. Then set speed to 0.
 	if (avgDistInches < 36)
@@ -59,12 +60,16 @@ void Robot::AutonomousPeriodic()
 		speed = 0;
 
 	// Offsets left and right speeds if one side drifts too far.
-	if (leftDistInches - rightDistInches < -3)
-		driveBase.Drive(speed + 0.2, speed - 0.2);
-	else if (leftDistInches - rightDistInches > 3)
-		driveBase.Drive(speed - 0.2, speed + 0.2);
+	std::cout << leftDistInches - rightDistInches << std::endl;
+
+	if (leftDistInches - rightDistInches > 3)
+		driveBase.Drive(speed + rotationSpeedOffset, speed - rotationSpeedOffset);
+	else if (leftDistInches - rightDistInches < -3)
+		driveBase.Drive(speed - rotationSpeedOffset, speed + rotationSpeedOffset);
 	else
 		driveBase.Drive(speed);
+
+	std::cout << driveBase.GetLeftSpeed() << ' ' << driveBase.GetRightSpeed() << std::endl;
 
 }
 
