@@ -5,7 +5,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 ultrasonic(0, (5 / 4.88) * (1000 / 25.4)), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
+                 ultrasonic(0, (5 / 4.88) * (1000 / 25.4)), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V) Makes distance measure in INCHES
 				 driveBase(0, 1, 0, 1, 2, 3, (6 * M_PI) / 360) // (circumference / 360 pulses per rotation)
 {
 	speedNormal = 0.5f;
@@ -44,6 +44,28 @@ void Robot::AutonomousPeriodic()
 {
 	std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
 	          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << std::endl;
+
+	double leftDistInches = driveBase.GetLeftDistance();
+	double rightDistInches = driveBase.GetRightDistance();
+
+	double avgDistInches = (leftDistInches + rightDistInches) / 2;
+
+	float speed = 0;
+
+	// Drive 36 inches at turtle speed. Then set speed to 0.
+	if (avgDistInches < 36)
+		speed = speedTurtle;
+	else
+		speed = 0;
+
+	// Offsets left and right speeds if one side drifts too far.
+	if (leftDistInches - rightDistInches < -3)
+		driveBase.Drive(speed + 0.2, speed - 0.2);
+	else if (leftDistInches - rightDistInches > 3)
+		driveBase.Drive(speed - 0.2, speed + 0.2);
+	else
+		driveBase.Drive(speed);
+
 }
 
 void Robot::TeleopInit()
@@ -51,10 +73,14 @@ void Robot::TeleopInit()
 	UpdatePreferences();
 
 	driveBase.Stop();
+	driveBase.ResetDistance();
 }
 
 void Robot::TeleopPeriodic()
 {
+	std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
+	          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << std::endl;
+
 	float leftSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankLeft));
 	float rightSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankRight));
 
