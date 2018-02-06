@@ -13,6 +13,7 @@ class Gyroscope
 	//static const float kP = 0.03;
 
 public:
+	Gyroscope();
 	int port;
 	float targetAngle;
 	float angle;
