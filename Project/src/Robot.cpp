@@ -59,10 +59,10 @@ void Robot::AutonomousPeriodic()
 		speed = 0;
 
 	// Offsets left and right speeds if one side drifts too far.
-	if (leftDistInches - rightDistInches < -3)
-		driveBase.Drive(speed + 0.2, speed - 0.2);
-	else if (leftDistInches - rightDistInches > 3)
-		driveBase.Drive(speed - 0.2, speed + 0.2);
+	if (angle < targetAngle)
+		driveBase.Drive(speed + 0.1, speed - 0.1);
+	else if (angle > targetAngle)
+		driveBase.Drive(speed - 0.1, speed + 0.1);
 	else
 		driveBase.Drive(speed);
 

@@ -7,6 +7,7 @@
 #include "xBox.h"
 #include "DriveBase.h"
 #include "UltrasonicAnalog.h"
+#include "Gyroscope.h"
 
 class Robot: public IterativeRobot
 {
