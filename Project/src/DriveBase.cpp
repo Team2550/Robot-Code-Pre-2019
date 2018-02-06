@@ -3,29 +3,36 @@
 
 DriveBase::DriveBase(int leftMotorPort, int rightMotorPort) : leftMotor(leftMotorPort), rightMotor(rightMotorPort)
 {
+	leftMotor.SetInverted(false);
 	rightMotor.SetInverted(true);
 
 	leftTrim = 1;
 	rightTrim = 1;
 }
 
-float DriveBase::GetLeftSpeed()
+double DriveBase::GetLeftSpeed()
 {
-	return leftMotor.Get() * (leftMotor.GetInverted() ? -1 : 1);
+	if (leftMotor.GetInverted())
+		return -leftMotor.Get();
+	else
+		return leftMotor.Get();
 }
 
-float DriveBase::GetRightSpeed()
+double DriveBase::GetRightSpeed()
 {
-	return rightMotor.Get() * (rightMotor.GetInverted() ? -1 : 1);
+	if (rightMotor.GetInverted())
+		return -rightMotor.Get();
+	else
+		return rightMotor.Get();
 }
 
-void DriveBase::Drive(float leftSpeed, float rightSpeed)
+void DriveBase::Drive(double leftSpeed, double rightSpeed)
 {
 	leftMotor.Set(leftSpeed * leftTrim);
 	rightMotor.Set(rightSpeed * rightTrim);
 }
 
-void DriveBase::Drive(float speed)
+void DriveBase::Drive(double speed)
 {
 	Drive(speed, speed);
 }

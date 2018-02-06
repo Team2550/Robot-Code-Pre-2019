@@ -10,10 +10,10 @@ class DriveBase
 public:
 	DriveBase(int leftMotorPort, int rightMotorPort);
 
-	float GetLeftSpeed();
-	float GetRightSpeed();
-	void Drive(float leftSpeed, float rightSpeed);
-	void Drive(float speed);
+	double GetLeftSpeed();
+	double GetRightSpeed();
+	void Drive(double leftSpeed, double rightSpeed);
+	void Drive(double speed);
 	void Stop();
 	void SetTrim(float leftTrim, float rightTrim);
 
