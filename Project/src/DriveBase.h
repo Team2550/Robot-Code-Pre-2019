@@ -13,10 +13,10 @@ public:
 			  int rightEncoderPortA, int rightEncoderPortB,
 			  double encoderDistancePerPulse);
 
-	float GetLeftSpeed();
-	float GetRightSpeed();
-	void Drive(float leftSpeed, float rightSpeed);
-	void Drive(float speed);
+	double GetLeftSpeed();
+	double GetRightSpeed();
+	void Drive(double leftSpeed, double rightSpeed);
+	void Drive(double speed);
 	void Stop();
 	bool IsStopped();
 	void ResetDistance();
