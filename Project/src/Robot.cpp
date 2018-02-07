@@ -58,6 +58,8 @@ void Robot::AutonomousPeriodic()
 	else
 		speed = 0;
 
+	std::cout << gyroScope.angle << std::endl;
+
 	// Offsets left and right speeds if one side drifts too far.
 	if (gyroScope.angle < gyroScope.targetAngle)
 		driveBase.Drive(speed + 0.1, speed - 0.1);
@@ -65,6 +67,7 @@ void Robot::AutonomousPeriodic()
 		driveBase.Drive(speed - 0.1, speed + 0.1);
 	else
 		driveBase.Drive(speed);
+
 
 }
 
