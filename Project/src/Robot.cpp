@@ -59,9 +59,9 @@ void Robot::AutonomousPeriodic()
 		speed = 0;
 
 	// Offsets left and right speeds if one side drifts too far.
-	if (angle < targetAngle)
+	if (gyroScope.angle < gyroScope.targetAngle)
 		driveBase.Drive(speed + 0.1, speed - 0.1);
-	else if (angle > targetAngle)
+	else if (gyroScope.angle > gyroScope.targetAngle)
 		driveBase.Drive(speed - 0.1, speed + 0.1);
 	else
 		driveBase.Drive(speed);

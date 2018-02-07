@@ -42,7 +42,7 @@ private:
 	Timer autoTimer;
 
 	DriveBase driveBase;
-
+	Gyroscope gyroScope;
 };
 
 #endif
