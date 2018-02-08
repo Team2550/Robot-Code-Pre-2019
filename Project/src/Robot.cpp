@@ -7,7 +7,7 @@
 Robot::Robot() : driveController(0), perifController(1),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
 				 bumperSwitch(0, LimitSwitch::LOW),
-				 driveBase(0, 1)
+				 driveBase(0, 1, 0, 1, 2, 3, (6 * M_PI) / 360) // (circumference / 360 pulses per rotation)
 {
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
@@ -35,6 +35,8 @@ void Robot::RobotPeriodic()
 void Robot::AutonomousInit()
 {
 	UpdatePreferences();
+
+	driveBase.ResetDistance();
 
 	autoTimer.Reset();
 	autoTimer.Start();
@@ -117,10 +119,14 @@ void Robot::TeleopInit()
 	UpdatePreferences();
 
 	driveBase.Stop();
+	driveBase.ResetDistance();
 }
 
 void Robot::TeleopPeriodic()
 {
+	std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
+	          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << std::endl;
+
 	float leftSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankLeft));
 	float rightSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankRight));
 
