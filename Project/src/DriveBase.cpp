@@ -7,6 +7,8 @@ DriveBase::DriveBase(int leftMotorPort, int rightMotorPort) : leftMotor(leftMoto
 
 	leftTrim = 1;
 	rightTrim = 1;
+
+	lastActionCallback = nullptr;
 }
 
 float DriveBase::GetLeftSpeed()
@@ -39,4 +41,12 @@ void DriveBase::SetTrim(float leftTrim, float rightTrim)
 {
 	this->leftTrim = leftTrim;
 	this->rightTrim = rightTrim;
+}
+
+void DriveBase::Rotate(float degrees, DriveActionCallback callback)
+{
+	if (lastActionCallback != nullptr)
+		lastActionCallback();
+
+	lastActionCallback = callback;
 }

@@ -8,6 +8,8 @@
 class DriveBase
 {
 public:
+	typedef void (*DriveActionCallback) ();
+
 	DriveBase(int leftMotorPort, int rightMotorPort);
 
 	float GetLeftSpeed();
@@ -17,12 +19,16 @@ public:
 	void Stop();
 	void SetTrim(float leftTrim, float rightTrim);
 
+	void Rotate(float degrees, DriveActionCallback callback);
+
 private:
 	Victor leftMotor;
 	Victor rightMotor;
 
 	float leftTrim;
 	float rightTrim;
+
+	DriveActionCallback lastActionCallback;
 
 };
 
