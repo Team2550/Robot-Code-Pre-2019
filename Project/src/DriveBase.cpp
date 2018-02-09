@@ -4,7 +4,7 @@
 DriveBase::DriveBase(int leftMotorPort, int rightMotorPort,
 					 int leftEncoderPortA, int leftEncoderPortB,
 					 int rightEncoderPortA, int rightEncoderPortB,
-					 double encoderDistancePerPulse) :
+					 double leftPulseDist, double rightPulseDist) :
 	leftMotor(leftMotorPort), rightMotor(rightMotorPort),
 	leftEncoder(leftEncoderPortA, leftEncoderPortB, Encoder::EncodingType::k2X),
 	rightEncoder(rightEncoderPortA, rightEncoderPortB, Encoder::EncodingType::k2X)
@@ -17,8 +17,8 @@ DriveBase::DriveBase(int leftMotorPort, int rightMotorPort,
 	rightEncoder.SetReverseDirection(true);
 
 	// Distance per pulse from encoder.
-	leftEncoder.SetDistancePerPulse(encoderDistancePerPulse);
-	rightEncoder.SetDistancePerPulse(encoderDistancePerPulse);
+	leftEncoder.SetDistancePerPulse(leftPulseDist);
+	rightEncoder.SetDistancePerPulse(rightPulseDist);
 
 	// Length of time needed to determine whether robot is stopped (seconds).
 	leftEncoder.SetMaxPeriod(.1);

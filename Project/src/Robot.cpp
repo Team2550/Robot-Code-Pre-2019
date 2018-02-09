@@ -6,7 +6,9 @@
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4)), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V) Makes distance measure in INCHES
-				 driveBase(0, 1, 0, 1, 2, 3, (6 * M_PI) / 360) // (circumference / 360 pulses per rotation)
+				 driveBase(0, 1, 0, 1, 2, 3,
+						   (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
+						   1.13 * (6 * M_PI) / 360) // Multiplied by 1.5 to adjust for incorrect readings
 {
 	speedNormal = 0.5f;
 	speedTurtle = 0.25f;
@@ -86,18 +88,47 @@ void Robot::TeleopPeriodic()
 	std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
 	          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << std::endl;
 
-	float leftSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankLeft));
-	float rightSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankRight));
+	int controllerPOV = driveController.GetPOV();
 
-	float baseSpeed = speedNormal;
+	if (controllerPOV == 315)
+	{
+		driveBase.Drive(0, speedTurtle);
+	}
+	else if (controllerPOV == 0)
+	{
+		driveBase.Drive(speedTurtle);
+	}
+	else if (controllerPOV == 45)
+	{
+		driveBase.Drive(speedTurtle, 0);
+	}
+	else if (controllerPOV == 135)
+	{
+		driveBase.Drive(0, -speedTurtle);
+	}
+	else if (controllerPOV == 180)
+	{
+		driveBase.Drive(-speedTurtle);
+	}
+	else if (controllerPOV == 225)
+	{
+		driveBase.Drive(-speedTurtle, 0);
+	}
+	else
+	{
+		float leftSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankLeft));
+		float rightSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankRight));
 
-	if (driveController.GetRawButton(buttonTurtle))
-		baseSpeed = speedTurtle;
-	else if (driveController.GetRawButton(buttonBoost))
-		baseSpeed = speedBoost;
+		float baseSpeed = speedNormal;
 
-	driveBase.Drive(leftSpeed * baseSpeed,
-					rightSpeed * baseSpeed);
+		if (driveController.GetRawButton(buttonTurtle))
+			baseSpeed = speedTurtle;
+		else if (driveController.GetRawButton(buttonBoost))
+			baseSpeed = speedBoost;
+
+		driveBase.Drive(leftSpeed * baseSpeed,
+						rightSpeed * baseSpeed);
+	}
 }
 
 void Robot::DisabledInit()
