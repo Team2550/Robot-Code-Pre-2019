@@ -1,5 +1,4 @@
 #include "DriveBase.h"
-#include "Utility.h"
 
 DriveBase::DriveBase(int leftMotorPort, int rightMotorPort,
 					 int leftEncoderPortA, int leftEncoderPortB,
@@ -100,12 +99,13 @@ void DriveBase::SetTrim(float leftTrim, float rightTrim)
 void DriveBase::UpdateAutoDrive()
 {
 	// TODO: Set motor speeds based on what is needed to acheive goals.
+	Drive(100, 100);
 
 	RunCallback(false);
 }
 
 void DriveBase::AutoDriveTo(double left,
-		double right, double thresholdInches, DriveActionCallback callback )
+		double right, double thresholdInches, Utility::ActionCallback callback )
 {
 	leftTargetDistance = left;
 	rightTargetDistance = right;
@@ -115,13 +115,13 @@ void DriveBase::AutoDriveTo(double left,
 }
 
 void DriveBase::AutoDriveDist(double distance,
-		double thresholdInches, DriveActionCallback callback )
+		double thresholdInches, Utility::ActionCallback callback )
 {
 	AutoDriveTo(GetLeftDistance() + distance, GetRightDistance() + distance, thresholdInches, callback);
 }
 
 void DriveBase::AutoRotate(double degrees,
-		double thresholdInches, DriveActionCallback callback )
+		double thresholdInches, Utility::ActionCallback callback )
 {
 	double radians = (degrees / 180) * 3.14159265;
 	double radius = 30 / 2; // Drive base width / 2
@@ -138,7 +138,7 @@ void DriveBase::RunCallback(bool actionCompleted)
 	nextCallback = nullptr;
 }
 
-void DriveBase::SetNextCallback(DriveActionCallback func)
+void DriveBase::SetNextCallback(Utility::ActionCallback func)
 {
 	RunCallback(false);
 

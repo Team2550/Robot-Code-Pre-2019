@@ -14,6 +14,11 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 
+	callbackTime = -1;
+	nextTimerCallback = nullptr;
+
+	autoStage = 0;
+
 	UpdatePreferences();
 }
 
@@ -41,16 +46,20 @@ void Robot::AutonomousInit()
 	autoTimer.Reset();
 	autoTimer.Start();
 
-	autoTimeHitWall = 0;
-	autoHasHitWall = false;
-	autoHasReleasedBlock = false;
+	autoStage = 0;
+
+	callbackTime = 0.5;
+	nextTimerCallback = &AutonomousStage;
 }
 
 void Robot::AutonomousPeriodic()
 {
-	double distance = ultrasonic.GetDistanceInches();
-	bool bumperTouchingWall = !bumperSwitch.GetPushed();
+//	double distance = ultrasonic.GetDistanceInches();
+	//bool bumperTouchingWall = !bumperSwitch.GetPushed();
 
+	CheckTimer();
+	driveBase.UpdateAutoDrive();
+/*
 	// Vision sensing
 	if (autoTimer.Get() < 0.5)
 	{
@@ -111,7 +120,21 @@ void Robot::AutonomousPeriodic()
 			autoHasReleasedBlock = true;
 		}
 	}
-	//==============================================================
+	//==============================================================*/
+}
+
+void Robot::AutonomousStage(bool success)
+{
+	if (autoStage == 0)
+	{
+		driveBase.AutoDriveDist(50, 5, &AutonomousStage);
+	}
+	else if (autoStage == 1)
+	{
+		std::cout << "End of Autonomous Script" << std::endl;
+	}
+
+	autoStage++;
 }
 
 void Robot::TeleopInit()
@@ -193,10 +216,20 @@ void Robot::UpdatePreferences()
 
 	autoMinSpeed = prefs->GetFloat("AutoMinSpeed", speedTurtle * 0.8);
 	autoMaxSpeed = prefs->GetFloat("AutoMaxSpeed", speedTurtle);
-	autoBufferStart = prefs->GetFloat("AutoBufferStart", 12);
-	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
 	std::cout << "Updated Preferences" << std::endl;
+}
+
+void Robot::CheckTimer()
+{
+	if (callbackTime >= 0 && autoTimer.Get() >= callbackTime)
+	{
+		if (nextTimerCallback != nullptr)
+			nextTimerCallback(true);
+
+		callbackTime = -1;
+		nextTimerCallback = nullptr;
+	}
 }
 
 START_ROBOT_CLASS(Robot)

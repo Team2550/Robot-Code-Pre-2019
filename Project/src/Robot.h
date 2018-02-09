@@ -4,6 +4,7 @@
 #include <WPILib.h>
 #include <iostream>
 #include <iomanip>
+#include "Utility.h"
 #include "xBox.h"
 #include "DriveBase.h"
 #include "UltrasonicAnalog.h"
@@ -20,6 +21,7 @@ public:
 	void RobotPeriodic();
 	void AutonomousInit();
 	void AutonomousPeriodic();
+	void AutonomousStage(bool previousSuccess);
 	void TeleopInit();
 	void TeleopPeriodic();
 	void DisabledInit();
@@ -34,12 +36,7 @@ private:
 	Position autoStartPosition; // Position that the robot starts autonomous round at.
 	float autoMinSpeed; // Speed of robot after reaching wall
 	float autoMaxSpeed; // Speed of robot before reaching wall
-	float autoBufferStart; // Distance at which robot will reach min speed.
-	float autoBufferLength; // Length of region where the robot will slow on approach to wall
-
-	double autoTimeHitWall; // The time that the robot hit the wall
-	bool autoHasHitWall; // Whether the robot has hit the wall (since last update)
-	bool autoHasReleasedBlock; // Robot has released block onto switch
+	int autoStage;
 
 	int axisTankLeft;
 	int axisTankRight;
@@ -56,6 +53,11 @@ private:
 	Timer autoTimer;
 
 	DriveBase driveBase;
+
+	double callbackTime;
+	Utility::ActionCallback nextTimerCallback;
+
+	void CheckTimer();
 
 };
 

@@ -9,6 +9,8 @@
 
 namespace Utility
 {
+	typedef void (*ActionCallback) (bool); // Bool parameter will be true if action was completed successfully.
+
 	enum RumbleSide { LEFT, RIGHT, BOTH };
 
 	/*=================================================
