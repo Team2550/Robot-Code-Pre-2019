@@ -51,10 +51,10 @@ void Robot::AutonomousPeriodic()
 	double avgDistInches = (leftDistInches + rightDistInches) / 2;
 
 	float speed = 0;
-	float rotationSpeedOffset = speedTurtle / 2;
+	float rotationSpeedOffset = speedTurtle / 4;
 
 	// Drive 36 inches at turtle speed. Then set speed to 0.
-	if (avgDistInches < 36)
+	if (avgDistInches < 48)
 		speed = speedTurtle;
 	else
 		speed = 0;
