@@ -31,7 +31,11 @@ DriveBase::DriveBase(int leftMotorPort, int rightMotorPort,
 	leftTrim = 1;
 	rightTrim = 1;
 
-	lastActionCallback = nullptr;
+	leftTargetDistance = 0;
+	rightTargetDistance = 0;
+	threshold = DEFAULT_AUTODRIVE_THRESHOLD_INCHES;
+
+	nextCallback = nullptr;
 }
 
 double DriveBase::GetLeftSpeed()
@@ -93,10 +97,50 @@ void DriveBase::SetTrim(float leftTrim, float rightTrim)
 	this->rightTrim = rightTrim;
 }
 
-void DriveBase::Rotate(float degrees, DriveActionCallback callback)
+void DriveBase::UpdateAutoDrive()
 {
-	if (lastActionCallback != nullptr)
-		lastActionCallback();
+	// TODO: Set motor speeds based on what is needed to acheive goals.
 
-	lastActionCallback = callback;
+	RunCallback(false);
+}
+
+void DriveBase::AutoDriveTo(double left,
+		double right, double thresholdInches, DriveActionCallback callback )
+{
+	leftTargetDistance = left;
+	rightTargetDistance = right;
+	threshold = thresholdInches;
+
+	SetNextCallback(callback);
+}
+
+void DriveBase::AutoDriveDist(double distance,
+		double thresholdInches, DriveActionCallback callback )
+{
+	AutoDriveTo(GetLeftDistance() + distance, GetRightDistance() + distance, thresholdInches, callback);
+}
+
+void DriveBase::AutoRotate(double degrees,
+		double thresholdInches, DriveActionCallback callback )
+{
+	double radians = (degrees / 180) * 3.14159265;
+	double radius = 30 / 2; // Drive base width / 2
+	double arcLengthInches = radians * radius;
+
+	AutoDriveTo(GetLeftDistance() + arcLengthInches, GetRightDistance() - arcLengthInches, thresholdInches, callback);
+}
+
+void DriveBase::RunCallback(bool actionCompleted)
+{
+	if (nextCallback != nullptr)
+		nextCallback(actionCompleted);
+
+	nextCallback = nullptr;
+}
+
+void DriveBase::SetNextCallback(DriveActionCallback func)
+{
+	RunCallback(false);
+
+	nextCallback = func;
 }
