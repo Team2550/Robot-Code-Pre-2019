@@ -28,10 +28,18 @@ Robot::~Robot()
 void Robot::RobotInit()
 {
 	UpdatePreferences();
+	//chooser.AddDefault("Default Auto", new );
+	//chooser.AddObject("My Auto", new );
+	frc::SmartDashboard::PutData("Auto Modes", &chooser);
 }
 
 void Robot::AutonomousInit()
 {
+	autonomousCommand.reset(chooser.GetSelected());
+	if(autonomousCommand.get() != nullptr)
+	{
+		autonomousCommand->Start();
+	}
 	UpdatePreferences();
 
 	driveBase.ResetDistance();
@@ -68,7 +76,7 @@ void Robot::AutonomousPeriodic()
 	else
 		driveBase.Drive(speed);
 
-
+	frc::Scheduler::GetInstance()->Run();
 }
 
 void Robot::TeleopInit()

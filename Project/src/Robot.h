@@ -43,6 +43,9 @@ private:
 
 	DriveBase driveBase;
 	Gyroscope gyroScope;
+
+	std::unique_ptr<frc::Command> autonomousCommand;
+	frc::SendableChooser<frc::Command*> chooser;
 };
 
 #endif
