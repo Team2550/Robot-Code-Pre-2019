@@ -52,6 +52,7 @@ private:
 
 	UltrasonicAnalog ultrasonic;
 	LimitSwitch bumperSwitch;
+	ADXRS450_Gyro gyroscope;
 	Timer autoTimer;
 
 	DriveBase driveBase;
