@@ -47,41 +47,43 @@ void Robot::AutonomousInit()
 	autoTimer.Reset();
 	autoTimer.Start();
 
-	autoTimeHitWall = 0;
-	autoHasHitWall = false;
-	autoHasReleasedBlock = false;
+	autoStage = 0;
 }
 
 void Robot::AutonomousPeriodic()
 {
-	double leftDistInches = driveBase.GetLeftDistance();
-	double rightDistInches = driveBase.GetRightDistance();
+	if (autoStage == 0)
+	{
+		// Stage Loop
+		driveBase.Drive(speedTurtle, -speedTurtle);
 
-	std::cout << "Left: " << std::setw(5) << leftDistInches << ' '
-	          << "Right: " << std::setw(5) << rightDistInches << std::endl;
+		// Stage End Condition and Next Stage Preparation
+		if ( abs( gyroscope.GetAngle() - 90 ) < 5 )
+		{
+			autoStage++;
 
-	double avgDistInches = (leftDistInches + rightDistInches) / 2;
+			gyroscope.Reset();
+			driveBase.ResetDistance();
+		}
+	}
+	else if (autoStage == 1)
+	{
+		// Stage Loop
+		driveBase.Drive(speedTurtle);
 
-	float speed = 0;
-	float rotationSpeedOffset = speedTurtle / 4;
+		// Stage End Condition and Next Stage Preparation
+		if ( 0.5 * (driveBase.GetLeftDistance() + driveBase.GetRightDistance()) > 48 )
+		{
+			autoStage++;
 
-	// Drive 36 inches at turtle speed. Then set speed to 0.
-	if (avgDistInches < 48)
-		speed = speedTurtle;
+			gyroscope.Reset();
+			driveBase.ResetDistance();
+		}
+	}
 	else
-		speed = 0;
-
-	// Offsets left and right speeds if one side drifts too far.
-	double leftRightOffset = leftDistInches - rightDistInches; // Positive = left side faster, negative = right side faster
-
-	if (leftRightOffset > 1)
-		driveBase.Drive(speed - rotationSpeedOffset, speed + rotationSpeedOffset);
-	else if (leftRightOffset < -1)
-		driveBase.Drive(speed + rotationSpeedOffset, speed - rotationSpeedOffset);
-	else
-		driveBase.Drive(speed);
-
-	std::cout << driveBase.GetLeftSpeed() << ' ' << driveBase.GetRightSpeed() << std::endl;
+	{
+		driveBase.Drive(0);
+	}
 }
 
 void Robot::TeleopInit()

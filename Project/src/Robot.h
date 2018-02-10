@@ -37,9 +37,7 @@ private:
 	float autoBufferStart; // Distance at which robot will reach min speed.
 	float autoBufferLength; // Length of region where the robot will slow on approach to wall
 
-	double autoTimeHitWall; // The time that the robot hit the wall
-	bool autoHasHitWall; // Whether the robot has hit the wall (since last update)
-	bool autoHasReleasedBlock; // Robot has released block onto switch
+	int autoStage; // Counts up for each stage of autonomous
 
 	int axisTankLeft;
 	int axisTankRight;
