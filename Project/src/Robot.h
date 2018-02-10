@@ -13,6 +13,7 @@ class Robot: public IterativeRobot
 {
 public:
 	enum Position { LEFT, RIGHT };
+	enum AutoStrategy { DEFAULT };
 
 	Robot();
 	~Robot();
@@ -37,6 +38,7 @@ private:
 	float autoBufferStart; // Distance at which robot will reach min speed.
 	float autoBufferLength; // Length of region where the robot will slow on approach to wall
 
+	AutoStrategy autoStrategy;
 	int autoStage; // Counts up for each stage of autonomous
 
 	int axisTankLeft;

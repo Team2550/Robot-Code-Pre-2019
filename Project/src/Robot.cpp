@@ -52,25 +52,31 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	if (autoStage == 0)
+	switch( autoStrategy )
 	{
-		if ( AutoRotate(90, 5, speedTurtle) )
+	case DEFAULT:
+		switch( autoStage )
 		{
-			autoStage++;
-			driveBase.ResetDistance();
+		case 0:
+			if ( AutoRotate(90, 5, speedTurtle) )
+			{
+				autoStage++;
+				driveBase.ResetDistance();
+			}
+			break;
+
+		case 1:
+			if ( AutoDrive(48, 90, speedTurtle) )
+			{
+				autoStage++;
+			}
+			break;
+
+		default:
+			driveBase.Drive(0);
+			break;
 		}
-	}
-	else if (autoStage == 1)
-	{
-		if ( AutoDrive(48, 90, speedTurtle) )
-		{
-			autoStage++;
-			driveBase.ResetDistance();
-		}
-	}
-	else
-	{
-		driveBase.Drive(0);
+		break;
 	}
 }
 
