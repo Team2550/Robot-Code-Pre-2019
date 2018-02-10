@@ -27,11 +27,19 @@ private:
 	int axisTankRight;
 	int buttonBoost;
 	int buttonTurtle;
+	int buttonlowDeckSolenoid;
+	int buttonhighDeckSolenoid;
+	bool lowDeckSolenoidToggle = false;
+	bool highDeckSolenoidToggle = false;
+
 
 	Preferences *prefs;
 
 	Joystick driveController;
 	Joystick perifController;
+
+	Solenoid lowDeckSolenoid {0};
+	Solenoid highDeckSolenoid {1};
 
 	Timer autoTimer;
 

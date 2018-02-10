@@ -15,6 +15,8 @@ Robot::Robot() : driveController(0), perifController(1),
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
+	buttonlowDeckSolenoid = xbox::btn::rb;
+	buttonhighDeckSolenoid = xbox::btn::lb;
 
 	prefs = Preferences::GetInstance();
 }
@@ -60,6 +62,27 @@ void Robot::TeleopPeriodic()
 		baseSpeed = speedTurtle;
 	else if (driveController.GetRawButton(buttonBoost))
 		baseSpeed = speedBoost;
+	else if (perifController.GetRawButton(buttonlowDeckSolenoid)){
+		SetRumble(perifController, Utility::RIGHT, .5);
+		if(lowDeckSolenoidToggle)
+		{
+			lowDeckSolenoidToggle = true;
+		}
+		else
+			lowDeckSolenoidToggle = false;
+	}
+	else if (perifController.GetRawButton(buttonhighDeckSolenoid)){
+		SetRumble(perifController, Utility::LEFT, .5);
+			if(!highDeckSolenoidToggle)
+			{
+				highDeckSolenoidToggle = true;
+			}
+			else
+				highDeckSolenoidToggle = false;
+		}
+
+	lowDeckSolenoid.Set(lowDeckSolenoidToggle);
+	highDeckSolenoid.Set(highDeckSolenoidToggle);
 
 	driveBase.Drive(leftSpeed * baseSpeed,
 					rightSpeed * baseSpeed);
