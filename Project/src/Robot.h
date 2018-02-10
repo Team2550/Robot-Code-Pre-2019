@@ -56,6 +56,10 @@ private:
 
 	DriveBase driveBase;
 
+	// Auto functions return true if complete
+	bool AutoDrive(double dist, double angle, double speed);
+	bool AutoRotate(double angle, double threshold, double speed);
+
 };
 
 #endif

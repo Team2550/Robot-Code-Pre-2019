@@ -54,37 +54,17 @@ void Robot::AutonomousPeriodic()
 {
 	if (autoStage == 0)
 	{
-		// Stage Loop
-		driveBase.Drive(speedTurtle, -speedTurtle);
-
-		// Stage End Condition and Next Stage Preparation
-		if ( abs( gyroscope.GetAngle() - 90 ) < 5 )
+		if ( AutoRotate(90, 5, speedTurtle) )
 		{
 			autoStage++;
-
 			driveBase.ResetDistance();
 		}
 	}
 	else if (autoStage == 1)
 	{
-		// Stage Loop
-		double rightSpeedOffset = 0;
-		rightSpeedOffset = (gyroscope.GetAngle() - 90) / 180;
-
-		if (rightSpeedOffset > 1)
-			rightSpeedOffset = 1;
-		if (rightSpeedOffset < -1)
-			rightSpeedOffset = -1;
-
-		rightSpeedOffset *= speedTurtle;
-
-		driveBase.Drive(speedTurtle - rightSpeedOffset, speedTurtle - rightSpeedOffset);
-
-		// Stage End Condition and Next Stage Preparation
-		if ( 0.5 * (driveBase.GetLeftDistance() + driveBase.GetRightDistance()) > 48 )
+		if ( AutoDrive(48, 90, speedTurtle) )
 		{
 			autoStage++;
-
 			driveBase.ResetDistance();
 		}
 	}
@@ -208,6 +188,35 @@ void Robot::UpdatePreferences()
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
 	std::cout << "Updated Preferences" << std::endl;
+}
+
+bool Robot::AutoDrive(double dist, double angle, double speed)
+{
+	double rightSpeedOffset = 0;
+	rightSpeedOffset = (gyroscope.GetAngle() - angle) / 180;
+
+	if (rightSpeedOffset > 1)
+		rightSpeedOffset = 1;
+	if (rightSpeedOffset < -1)
+		rightSpeedOffset = -1;
+
+	rightSpeedOffset *= speed;
+
+	driveBase.Drive(speed - rightSpeedOffset, speed - rightSpeedOffset);
+
+	// End Condition
+	return 0.5 * (driveBase.GetLeftDistance() + driveBase.GetRightDistance()) > dist;
+}
+
+bool Robot::AutoRotate(double angle, double threshold, double speed)
+{
+	if ( gyroscope.GetAngle() > angle + threshold )
+		driveBase.Drive(speed, -speed);
+	else if ( gyroscope.GetAngle() < angle - threshold )
+		driveBase.Drive(-speed, speed);
+
+	// End Condition
+	return abs( gyroscope.GetAngle() - angle ) < threshold;
 }
 
 START_ROBOT_CLASS(Robot)
