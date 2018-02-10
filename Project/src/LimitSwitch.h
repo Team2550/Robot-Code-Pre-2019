@@ -7,13 +7,18 @@
 
 class LimitSwitch
 {
+public:
+	enum SignalState { LOW, HIGH };
+
+	LimitSwitch( int port, SignalState stateWhenPushed );
+
+	bool GetPushed();
+
 private:
 	DigitalInput sensor;
 
-public:
-	LimitSwitch(int port);
+	SignalState stateWhenPushed;
 
-	bool GetPressed();
 };
 
 #endif
