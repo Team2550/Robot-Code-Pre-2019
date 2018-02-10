@@ -7,6 +7,7 @@
 Robot::Robot() : driveController(0), perifController(1),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
 				 bumperSwitch(0, LimitSwitch::LOW),
+				 gyroscope(frc::SPI::Port::kOnboardCS0),
 				 driveBase(0, 1)
 {
 	axisTankLeft = xbox::axis::leftY;
@@ -25,6 +26,8 @@ Robot::~Robot()
 void Robot::RobotInit()
 {
 	UpdatePreferences();
+
+	gyroscope.Calibrate();
 }
 
 void Robot::RobotPeriodic()
@@ -35,6 +38,8 @@ void Robot::RobotPeriodic()
 void Robot::AutonomousInit()
 {
 	UpdatePreferences();
+
+	gyroscope.Reset();
 
 	autoTimer.Reset();
 	autoTimer.Start();
@@ -116,6 +121,8 @@ void Robot::TeleopInit()
 {
 	UpdatePreferences();
 
+	gyroscope.Reset();
+
 	driveBase.Stop();
 }
 
@@ -130,6 +137,8 @@ void Robot::TeleopPeriodic()
 		baseSpeed = speedTurtle;
 	else if (driveController.GetRawButton(buttonBoost))
 		baseSpeed = speedBoost;
+
+	std::cout << gyroscope.GetAngle() << std::endl;
 
 	driveBase.Drive(leftSpeed * baseSpeed,
 					rightSpeed * baseSpeed);
