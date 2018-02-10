@@ -34,7 +34,7 @@ void Robot::RobotInit()
 
 void Robot::RobotPeriodic()
 {
-	std::cout << "Limit Switch: " << bumperSwitch.GetPushed() << std::endl;
+
 }
 
 void Robot::AutonomousInit()
@@ -62,21 +62,29 @@ void Robot::AutonomousPeriodic()
 		{
 			autoStage++;
 
-			gyroscope.Reset();
 			driveBase.ResetDistance();
 		}
 	}
 	else if (autoStage == 1)
 	{
 		// Stage Loop
-		driveBase.Drive(speedTurtle);
+		double rightSpeedOffset = 0;
+		rightSpeedOffset = (gyroscope.GetAngle() - 90) / 180;
+
+		if (rightSpeedOffset > 1)
+			rightSpeedOffset = 1;
+		if (rightSpeedOffset < -1)
+			rightSpeedOffset = -1;
+
+		rightSpeedOffset *= speedTurtle;
+
+		driveBase.Drive(speedTurtle - rightSpeedOffset, speedTurtle - rightSpeedOffset);
 
 		// Stage End Condition and Next Stage Preparation
 		if ( 0.5 * (driveBase.GetLeftDistance() + driveBase.GetRightDistance()) > 48 )
 		{
 			autoStage++;
 
-			gyroscope.Reset();
 			driveBase.ResetDistance();
 		}
 	}
