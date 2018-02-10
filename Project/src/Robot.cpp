@@ -209,33 +209,57 @@ void Robot::UpdatePreferences()
 	std::cout << "Updated Preferences" << std::endl;
 }
 
-bool Robot::AutoDrive(double dist, double angle, double speed)
+bool Robot::AutoDrive(double targetDist, double targetAngle, double speed)
 {
-	double rightSpeedOffset = 0;
-	rightSpeedOffset = (gyroscope.GetAngle() - angle) / 180;
+// OPTION ONE
+	// Get the angle that the robot has drifted from its target as a percentage out of 90 degrees
+	double angleOffsetPercent = (gyroscope.GetAngle() - targetAngle) / 90;
 
-	if (rightSpeedOffset > 1)
-		rightSpeedOffset = 1;
-	if (rightSpeedOffset < -1)
-		rightSpeedOffset = -1;
+	// Limit angle offset to range of -90 to 90 (-100% to 100%)
+	if (angleOffsetPercent > 1)
+		angleOffsetPercent = 1;
+	if (angleOffsetPercent < -1)
+		angleOffsetPercent = -1;
 
-	rightSpeedOffset *= speed;
+	// Set speed offset to the speed multiplied by the percent that the robot is to 90 degrees off target
+	double rightSpeedOffset = angleOffsetPercent * speed;
 
-	driveBase.Drive(speed - rightSpeedOffset, speed - rightSpeedOffset);
+	driveBase.Drive(speed - rightSpeedOffset, speed + rightSpeedOffset);
 
-	// End Condition
-	return 0.5 * (driveBase.GetLeftDistance() + driveBase.GetRightDistance()) > dist;
+	// End Condition (Average distance between left and right is greater than target)
+	return 0.5 * (driveBase.GetLeftDistance() + driveBase.GetRightDistance()) > targetDist;
+
+// OPTION TWO
+/*	double angle = gyroscope.GetAngle();
+
+	if (angle > targetAngle + 1)
+	{
+		double speedOffset = speed - speed / abs(angle - targetAngle);
+		driveBase.Drive(speed, speed + speedOffset);
+	}
+	else if (angle < targetAngle - 1)
+	{
+		double speedOffset = speed - speed / abs(angle - targetAngle);
+		driveBase.Drive(speed + speedOffset, speed);
+	}
+	else
+	{
+		driveBase.Stop();
+	}
+
+	// End Condition (Average distance between left and right is greater than target)
+	return 0.5 * (driveBase.GetLeftDistance() + driveBase.GetRightDistance()) > targetDist;*/
 }
 
-bool Robot::AutoRotate(double angle, double threshold, double speed)
+bool Robot::AutoRotate(double targetAngle, double threshold, double speed)
 {
-	if ( gyroscope.GetAngle() > angle + threshold )
+	if ( gyroscope.GetAngle() > targetAngle + threshold )
 		driveBase.Drive(speed, -speed);
-	else if ( gyroscope.GetAngle() < angle - threshold )
+	else if ( gyroscope.GetAngle() < targetAngle - threshold )
 		driveBase.Drive(-speed, speed);
 
-	// End Condition
-	return abs( gyroscope.GetAngle() - angle ) < threshold;
+	// End Condition (Angle is within range of (targetAngle - threshold, targetAngle + threshold))
+	return abs( gyroscope.GetAngle() - targetAngle ) < threshold;
 }
 
 START_ROBOT_CLASS(Robot)
