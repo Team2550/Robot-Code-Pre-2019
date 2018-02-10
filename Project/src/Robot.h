@@ -7,7 +7,6 @@
 #include "xBox.h"
 #include "DriveBase.h"
 #include "UltrasonicAnalog.h"
-#include "Gyroscope.h"
 
 class Robot: public IterativeRobot
 {
@@ -39,10 +38,10 @@ private:
 	Joystick perifController;
 
 	UltrasonicAnalog ultrasonic;
+	ADXRS450_Gyro gyroscope;
 	Timer autoTimer;
 
 	DriveBase driveBase;
-	Gyroscope gyroScope;
 
 	std::unique_ptr<frc::Command> autonomousCommand;
 	frc::SendableChooser<frc::Command*> chooser;

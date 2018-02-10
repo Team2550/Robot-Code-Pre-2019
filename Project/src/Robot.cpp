@@ -6,6 +6,7 @@
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4)), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V) Makes distance measure in INCHES
+				 gyroscope(frc::SPI::Port::kOnboardCS0),
 				 driveBase(0, 1, 0, 1, 2, 3, (6 * M_PI) / 360) // (circumference / 360 pulses per rotation)
 {
 	speedNormal = 0.5f;
@@ -31,6 +32,8 @@ void Robot::RobotInit()
 	//chooser.AddDefault("Default Auto", new );
 	//chooser.AddObject("My Auto", new );
 	frc::SmartDashboard::PutData("Auto Modes", &chooser);
+
+	gyroscope.Calibrate();
 }
 
 void Robot::AutonomousInit()
@@ -42,6 +45,7 @@ void Robot::AutonomousInit()
 	}
 	UpdatePreferences();
 
+	gyroscope.Reset();
 	driveBase.ResetDistance();
 
 	autoTimer.Reset();
@@ -66,12 +70,12 @@ void Robot::AutonomousPeriodic()
 	else
 		speed = 0;
 
-	std::cout << gyroScope.angle << std::endl;
+	std::cout << gyroscope.GetAngle() << std::endl;
 
 	// Offsets left and right speeds if one side drifts too far.
-	if (gyroScope.angle < gyroScope.targetAngle)
+	if (gyroscope.GetAngle() < 1)
 		driveBase.Drive(speed + 0.1, speed - 0.1);
-	else if (gyroScope.angle > gyroScope.targetAngle)
+	else if (gyroscope.GetAngle() > 1)
 		driveBase.Drive(speed - 0.1, speed + 0.1);
 	else
 		driveBase.Drive(speed);
@@ -82,6 +86,8 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit()
 {
 	UpdatePreferences();
+
+	gyroscope.Reset();
 
 	driveBase.Stop();
 	driveBase.ResetDistance();
@@ -101,6 +107,8 @@ void Robot::TeleopPeriodic()
 		baseSpeed = speedTurtle;
 	else if (driveController.GetRawButton(buttonBoost))
 		baseSpeed = speedBoost;
+
+	std::cout << gyroscope.GetAngle() << std::endl;
 
 	driveBase.Drive(leftSpeed * baseSpeed,
 					rightSpeed * baseSpeed);
