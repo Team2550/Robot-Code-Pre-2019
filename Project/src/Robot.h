@@ -13,7 +13,7 @@ class Robot: public IterativeRobot
 {
 public:
 	enum Position { LEFT, RIGHT };
-	enum AutoStrategy { DEFAULT };
+	enum AutoStrategy { DEFAULT, DISABLE };
 
 	Robot();
 	~Robot();
@@ -47,6 +47,7 @@ private:
 	int buttonTurtle;
 
 	Preferences *prefs;
+	frc::SendableChooser<AutoStrategy> autoChooser;
 
 	Joystick driveController;
 	Joystick perifController;

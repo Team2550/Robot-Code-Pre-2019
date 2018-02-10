@@ -17,6 +17,10 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 
+	autoChooser.AddDefault("Default", DEFAULT);
+	autoChooser.AddObject("Disable", DISABLE);
+	frc::SmartDashboard::PutData("Autonomous Strategies", &autoChooser);
+
 	UpdatePreferences();
 }
 
@@ -27,7 +31,6 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
-	UpdatePreferences();
 
 	gyroscope.Calibrate();
 }
@@ -55,6 +58,8 @@ void Robot::AutonomousPeriodic()
 	switch( autoStrategy )
 	{
 	case DEFAULT:
+		std::cout << "Default Auto Strategy" << std::endl;
+
 		switch( autoStage )
 		{
 		case 0:
@@ -73,9 +78,15 @@ void Robot::AutonomousPeriodic()
 			break;
 
 		default:
-			driveBase.Drive(0);
+			driveBase.Stop();
 			break;
 		}
+		driveBase.Stop();
+		break;
+
+	case DISABLE:
+		std::cout << "Auto Disabled" << std::endl;
+		driveBase.Stop();
 		break;
 	}
 }
@@ -192,6 +203,8 @@ void Robot::UpdatePreferences()
 	autoMaxSpeed = prefs->GetFloat("AutoMaxSpeed", speedTurtle);
 	autoBufferStart = prefs->GetFloat("AutoBufferStart", 12);
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
+
+	autoStrategy = autoChooser.GetSelected();
 
 	std::cout << "Updated Preferences" << std::endl;
 }
