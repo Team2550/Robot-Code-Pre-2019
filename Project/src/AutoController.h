@@ -1,13 +1,13 @@
-#ifndef AUTOSTRATEGY_H
-#define AUTOSTRATEGY_H
+#ifndef AUTONOMOUS_H
+#define AUTONOMOUS_H
 
 #include <WPILib.h>
 #include "DriveBase.h"
 
-class AutoStrategy
+class AutoController
 {
 public:
-	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, RESET_DIST_ULTRA, RESET_ANGLE  };
+	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, RESET_DIST_ULTRA  };
 
 	struct Instruction
 	{
@@ -16,8 +16,14 @@ public:
 		double speed;
 	};
 
-	AutoStrategy(Instruction* instructions, unsigned int instructionCount);
-	~AutoStrategy();
+	struct InstructionSet
+	{
+		Instruction* steps;
+		unsigned int count;
+	};
+
+	AutoController(DriveBase* driveBase, ADXRS450_Gyro* gyroscope);
+	~AutoController();
 
 	// Name:	Execute
 	// Parameters:
@@ -26,18 +32,24 @@ public:
 	//		autoTimer (I)	- Timer that measures how much time has passed since the match started. Used for timing.
 	// Return:
 	//		True if strategy is complete.
-	bool Execute( DriveBase& driveBase, ADXRS450_Gyro& gyroscope, Timer& autoTimer );
+	void Init(InstructionSet instructionSet);
+	bool Execute();
 
 private:
-	unsigned int instructionCount;
-	Instruction* instructions;
+	DriveBase* driveBase;
+	ADXRS450_Gyro* gyroscope;
+
+	Timer timer;
+
+	InstructionSet instructionSet;
+
 	unsigned int currentInstruction;
 	double instructionStartTime;
 	double instructionStartDistance;
 	double instructionStartAngle;
 
-	bool AutoDriveToDist( double speed, double distance, double angle, double targetDistance, double targetAngle, DriveBase& driveBase );
-	bool AutoRotateToAngle( double speed, double angle, double targetAngle, DriveBase& driveBase );
+	bool AutoDriveToDist( double speed, double targetDistance, double targetAngle );
+	bool AutoRotateToAngle( double speed, double targetAngle );
 
 };
 

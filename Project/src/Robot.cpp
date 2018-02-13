@@ -9,31 +9,45 @@ Robot::Robot() : driveController(0), perifController(1),
 				 gyroscope(frc::SPI::Port::kOnboardCS0),
 				 driveBase(0, 1, 0, 1, 2, 3,
 						   (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
-						   1.13 * (6 * M_PI) / 360) // Multiplied by 1.13 to adjust for incorrect readings
+						   1.13 * (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings
+                 autoController(&driveBase, &gyroscope)
 {
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 
-	AutoStrategy::Instruction defaultStrategy[] = {
-		{AutoStrategy::WAIT_TIME, 1, 0}
-	};
+	AutoController::Instruction* instructions;
 
-	autoChooser.AddDefault("Default", new AutoStrategy(defaultStrategy, 1));
+	// Default auto strategy
+	instructions = new AutoController::Instruction[1];
+	instructions[0] = {AutoController::WAIT_UNTIL, 3, 0};
+	autoDefault = {instructions, 1};
+
+	// Other auto strategy
+	instructions = new AutoController::Instruction[2];
+	instructions[0] = {AutoController::WAIT_TIME, 2, 0};
+	instructions[1] = {AutoController::WAIT_UNTIL, 6, 0};
+	autoOther = {instructions, 2};
+
+	autoChooser.AddDefault("Default", &autoDefault);
+	autoChooser.AddObject("Other", &autoOther);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoChooser);
+
+	selectedAutonomous.steps = NULL;
+	selectedAutonomous.count = 0;
 
 	UpdatePreferences();
 }
 
 Robot::~Robot()
 {
-
+	delete[] autoDefault.steps;
+	delete[] autoOther.steps;
 }
 
 void Robot::RobotInit()
 {
-
 	gyroscope.Calibrate();
 }
 
@@ -46,18 +60,12 @@ void Robot::AutonomousInit()
 {
 	UpdatePreferences();
 
-	gyroscope.Reset();
-	driveBase.ResetDistance();
-
-	autoTimer.Reset();
-	autoTimer.Start();
-
-	autoStage = 0;
+	autoController.Init(selectedAutonomous);
 }
 
 void Robot::AutonomousPeriodic()
 {
-	bool strategyComplete = autoStrategy->Execute(driveBase, gyroscope, autoTimer);
+	bool strategyComplete = autoController.Execute();
 
 	if (strategyComplete)
 		std::cout << "Finished" << std::endl;
@@ -178,7 +186,7 @@ void Robot::UpdatePreferences()
 	autoBufferStart = prefs->GetFloat("AutoBufferStart", 12);
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
-	autoStrategy = autoChooser.GetSelected();
+	selectedAutonomous = *(autoChooser.GetSelected());
 
 	std::cout << "Updated Preferences" << std::endl;
 }

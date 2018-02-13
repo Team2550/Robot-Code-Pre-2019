@@ -1,6 +1,7 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
+#include <AutoController.h>
 #include <WPILib.h>
 #include <iostream>
 #include <iomanip>
@@ -8,7 +9,6 @@
 #include "DriveBase.h"
 #include "UltrasonicAnalog.h"
 #include "LimitSwitch.h"
-#include "AutoStrategy.h"
 
 class Robot: public IterativeRobot
 {
@@ -38,16 +38,16 @@ private:
 	float autoBufferStart; // Distance at which robot will reach min speed.
 	float autoBufferLength; // Length of region where the robot will slow on approach to wall
 
-	AutoStrategy* autoStrategy;
-	int autoStage; // Counts up for each stage of autonomous
-
 	int axisTankLeft;
 	int axisTankRight;
 	int buttonBoost;
 	int buttonTurtle;
 
 	Preferences *prefs;
-	frc::SendableChooser<AutoStrategy*> autoChooser;
+	AutoController::InstructionSet autoDefault;
+	AutoController::InstructionSet autoOther;
+	frc::SendableChooser<AutoController::InstructionSet*> autoChooser;
+	AutoController::InstructionSet selectedAutonomous;
 
 	Joystick driveController;
 	Joystick perifController;
@@ -55,9 +55,9 @@ private:
 	UltrasonicAnalog ultrasonic;
 	LimitSwitch bumperSwitch;
 	ADXRS450_Gyro gyroscope;
-	Timer autoTimer;
 
 	DriveBase driveBase;
+	AutoController autoController;
 
 };
 
