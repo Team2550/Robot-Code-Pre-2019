@@ -19,6 +19,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	AutoStrategy::Instruction defaultStrategy[] = {
 		{AutoStrategy::WAIT_TIME, 1, 0}
 	};
+
 	autoChooser.AddDefault("Default", new AutoStrategy(defaultStrategy, 1));
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoChooser);
 
