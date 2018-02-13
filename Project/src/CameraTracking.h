@@ -6,6 +6,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
 #include <iostream>
+#include <GripPipeline.h>
 
 struct Vector2
 {
@@ -17,7 +18,7 @@ class CameraTracking
 {
 private:
 	//cs::CvSink cvSink; // OpenCV image data sink
-	//grip::GripPipeline gripPipeline;
+	grip::GripPipeline gripPipeline;
 
 	Vector2 targetPositionRelative;
 	bool targetIsVisible;

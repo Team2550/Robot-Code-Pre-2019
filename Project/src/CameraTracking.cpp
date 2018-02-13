@@ -1,13 +1,6 @@
 #include <CameraTracking.h>
 
 CameraTracking::CameraTracking(int imgWidth, int imgHeight, int imgExposure) {
-	//cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
-	//camera.SetResolution(imgWidth, imgHeight);
-	//camera.SetExposureManual(imgExposure);
-	//cvSink = CameraServer::GetInstance()->GetVideo();
-
-	std::thread visionThread(VisionThread);
-	visionThread.detach();
 
 	targetPositionRelative.x = 0;
 	targetPositionRelative.y = 0;
@@ -20,45 +13,40 @@ CameraTracking::~CameraTracking() {
 
 }
 
-void CameraTracking::VisionThread() {
+void CameraTracking::VisionThread()
+{
 	// Get the USB camera from CameraServer,
-	// start streaming to dashboard
-	// (the vision processing will pick it up thusly)
-	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture("USB Camera 0", 0);
-	// Set the resolution
-	camera.SetResolution(320, 240);
-	camera.SetExposureManual(20);
-	camera.SetBrightness(100);
+		// start streaming to dashboard
+		// (the vision processing will pick it up thusly)
 
-	/* cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
-	 camera.SetResolution(640, 480);
-	 cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
-	 cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray", 640, 480);
-	 cv::Mat source;
-	 cv::Mat output;
+		cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
+		camera.SetResolution(640, 480);
+		cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
+		cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray",640, 480);
+		cv::Mat source;
+		cv::Mat output;
 
-	 while(true)
-	 {
-	 cvSink.GrabFrame(source);
-	 //cs::CvSource outputStreamStd.PutFrame(source);
-	 } */
+		while (true)
+		{
+			cvSink.GrabFrame(source);
+			cvtColor(source, output, cv::COLOR_BGR2GRAY);
+			//outputStreamStd.PutFrame(output);
+		}
 }
 
-void CameraTracking::UpdateVision() {
-	/*
-	 std::cout << "Accessed UpdateVision" << std::endl;
-	 cv::Mat image;
-	 cvSink.GrabFrame(image);
-	 std::cout << "reached proccess" << std::endl;
-	 gripPipeline.Process(image);
+void CameraTracking::UpdateVision()
+{
 
-	 int minX = 0;
-	 int maxX = 0;
-	 int minY = 0;
-	 int maxY = 0;
+std::cout << "Accessed UpdateVision" << std::endl;
+//std::cout << "reached proccess" << std::endl;
+gripPipeline.Process(source);
 
+	int minX = 0;
+	int maxX = 0;
+	int minY = 0;
+	int maxY = 0;
 
-	 std::vector<std::vector<cv::Point>>* contours = gripPipeline.getfindContoursOutput();
+	 std::vector<std::vector<cv::Point>>* contours = gripPipeline.GetFindContoursOutput();
 
 	 if (contours->size() > 0)
 	 {
@@ -84,9 +72,9 @@ void CameraTracking::UpdateVision() {
 	 if (targetContourData[point].y > maxY)
 	 maxY = targetContourData[point].y;
 	 }
-	 }
+}
 
-	 Vector2 target = {(minX + maxX) / 2.f, (minY + maxY) / 2.f};
+	 Vector2 target = { (minX + maxX) / 2.f, (minY + maxY) / 2.f };
 
 	 //If the target is not zero, then the target is found
 	 if (target.x != 0 && target.y != 0)
@@ -97,7 +85,6 @@ void CameraTracking::UpdateVision() {
 
 	 targetPositionRelative.x = target.x;
 	 targetPositionRelative.y = target.y;
-	 */
 }
 
 Vector2 CameraTracking::GetTargetPositionRelative() {
@@ -112,14 +99,10 @@ float CameraTracking::CalculateAngle(float x, float y) {
 	float angle = 0;
 	float finalAngle = 0;
 
-	//calculate angle based on ultrasonic readings
-	//angle = arctan();
+//calculate angle based on ultrasonic readings
+//angle = arctan();
 	finalAngle = angle * 180 / M_PI; //convert radians to degrees
 
 	return finalAngle;
 }
-
-/* Possible solutions
- *  atan2(max.y - min.y, max.x - min.x).
- */
 
