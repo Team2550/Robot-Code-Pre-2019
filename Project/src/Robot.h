@@ -8,12 +8,12 @@
 #include "DriveBase.h"
 #include "UltrasonicAnalog.h"
 #include "LimitSwitch.h"
+#include "AutoStrategy.h"
 
 class Robot: public IterativeRobot
 {
 public:
 	enum Position { LEFT, RIGHT };
-	enum AutoStrategy { DEFAULT, DISABLE };
 
 	Robot();
 	~Robot();
@@ -38,7 +38,7 @@ private:
 	float autoBufferStart; // Distance at which robot will reach min speed.
 	float autoBufferLength; // Length of region where the robot will slow on approach to wall
 
-	AutoStrategy autoStrategy;
+	AutoStrategy* autoStrategy;
 	int autoStage; // Counts up for each stage of autonomous
 
 	int axisTankLeft;
@@ -47,7 +47,7 @@ private:
 	int buttonTurtle;
 
 	Preferences *prefs;
-	frc::SendableChooser<AutoStrategy> autoChooser;
+	frc::SendableChooser<AutoStrategy*> autoChooser;
 
 	Joystick driveController;
 	Joystick perifController;
@@ -58,10 +58,6 @@ private:
 	Timer autoTimer;
 
 	DriveBase driveBase;
-
-	// Auto functions return true if complete
-	bool AutoDrive(double targetDist, double targetAngle, double speed);
-	bool AutoRotate(double targetAngle, double threshold, double speed);
 
 };
 

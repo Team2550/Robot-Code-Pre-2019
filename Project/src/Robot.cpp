@@ -1,4 +1,3 @@
-#include "Timer.h"
 #include "Robot.h"
 
 // driver: (int) xBox controller number
@@ -10,15 +9,17 @@ Robot::Robot() : driveController(0), perifController(1),
 				 gyroscope(frc::SPI::Port::kOnboardCS0),
 				 driveBase(0, 1, 0, 1, 2, 3,
 						   (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
-						   1.13 * (6 * M_PI) / 360) // Multiplied by 1.5 to adjust for incorrect readings
+						   1.13 * (6 * M_PI) / 360) // Multiplied by 1.13 to adjust for incorrect readings
 {
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 
-	autoChooser.AddDefault("Default", DEFAULT);
-	autoChooser.AddObject("Disable", DISABLE);
+	AutoStrategy::Instruction defaultStrategy[] = {
+		{AutoStrategy::WAIT_TIME, 1, 0}
+	};
+	autoChooser.AddDefault("Default", new AutoStrategy(defaultStrategy, 1));
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoChooser);
 
 	UpdatePreferences();
@@ -55,40 +56,12 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	switch( autoStrategy )
-	{
-	case DEFAULT:
-		std::cout << "Default Auto Strategy" << std::endl;
+	bool strategyComplete = autoStrategy->Execute(driveBase, gyroscope, autoTimer);
 
-		switch( autoStage )
-		{
-		case 0:
-			if ( AutoRotate(90, 5, speedTurtle) )
-			{
-				autoStage++;
-				driveBase.ResetDistance();
-			}
-			break;
-
-		case 1:
-			if ( AutoDrive(48, 90, speedTurtle) )
-			{
-				autoStage++;
-			}
-			break;
-
-		default:
-			driveBase.Stop();
-			break;
-		}
-		driveBase.Stop();
-		break;
-
-	case DISABLE:
-		std::cout << "Auto Disabled" << std::endl;
-		driveBase.Stop();
-		break;
-	}
+	if (strategyComplete)
+		std::cout << "Finished" << std::endl;
+	else
+		std::cout << "Running auto strategy..." << std::endl;
 }
 
 void Robot::TeleopInit()
@@ -207,59 +180,6 @@ void Robot::UpdatePreferences()
 	autoStrategy = autoChooser.GetSelected();
 
 	std::cout << "Updated Preferences" << std::endl;
-}
-
-bool Robot::AutoDrive(double targetDist, double targetAngle, double speed)
-{
-// OPTION ONE
-	// Get the angle that the robot has drifted from its target as a percentage out of 90 degrees
-	double angleOffsetPercent = (gyroscope.GetAngle() - targetAngle) / 90;
-
-	// Limit angle offset to range of -90 to 90 (-100% to 100%)
-	if (angleOffsetPercent > 1)
-		angleOffsetPercent = 1;
-	if (angleOffsetPercent < -1)
-		angleOffsetPercent = -1;
-
-	// Set speed offset to the speed multiplied by the percent that the robot is to 90 degrees off target
-	double rightSpeedOffset = angleOffsetPercent * speed;
-
-	driveBase.Drive(speed - rightSpeedOffset, speed + rightSpeedOffset);
-
-	// End Condition (Average distance between left and right is greater than target)
-	return 0.5 * (driveBase.GetLeftDistance() + driveBase.GetRightDistance()) > targetDist;
-
-// OPTION TWO
-/*	double angle = gyroscope.GetAngle();
-
-	if (angle > targetAngle + 1)
-	{
-		double speedOffset = speed - speed / abs(angle - targetAngle);
-		driveBase.Drive(speed, speed + speedOffset);
-	}
-	else if (angle < targetAngle - 1)
-	{
-		double speedOffset = speed - speed / abs(angle - targetAngle);
-		driveBase.Drive(speed + speedOffset, speed);
-	}
-	else
-	{
-		driveBase.Stop();
-	}
-
-	// End Condition (Average distance between left and right is greater than target)
-	return 0.5 * (driveBase.GetLeftDistance() + driveBase.GetRightDistance()) > targetDist;*/
-}
-
-bool Robot::AutoRotate(double targetAngle, double threshold, double speed)
-{
-	if ( gyroscope.GetAngle() > targetAngle + threshold )
-		driveBase.Drive(speed, -speed);
-	else if ( gyroscope.GetAngle() < targetAngle - threshold )
-		driveBase.Drive(-speed, speed);
-
-	// End Condition (Angle is within range of (targetAngle - threshold, targetAngle + threshold))
-	return abs( gyroscope.GetAngle() - targetAngle ) < threshold;
 }
 
 START_ROBOT_CLASS(Robot)
