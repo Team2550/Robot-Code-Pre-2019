@@ -29,6 +29,11 @@ Robot::~Robot()
 void Robot::RobotInit()
 {
 	UpdatePreferences();
+
+	pneumaticDelay.Reset();
+	pneumaticDelay.Start();
+
+
 }
 
 void Robot::AutonomousInit()
@@ -62,24 +67,26 @@ void Robot::TeleopPeriodic()
 		baseSpeed = speedTurtle;
 	else if (driveController.GetRawButton(buttonBoost))
 		baseSpeed = speedBoost;
-	else if (perifController.GetRawButton(buttonlowDeckSolenoid)){
+	//When the right bumper is pressed, the bottom solenoid is turned on for .5 sec then turned off and the controller rubles on the right side for the duration of the if statement
+	else if (perifController.GetRawButton(buttonlowDeckSolenoid))
+	{
 		SetRumble(perifController, Utility::RIGHT, .5);
-		if(lowDeckSolenoidToggle)
-		{
 			lowDeckSolenoidToggle = true;
-		}
-		else
-			lowDeckSolenoidToggle = false;
+			pneumaticTimeStamp = pneumaticDelay.Get();
+			if (pneumaticDelay.Get() > pneumaticTimeStamp + .5)
+				lowDeckSolenoidToggle = false;
+			SetRumble(perifController, Utility::RIGHT, 0);
 	}
-	else if (perifController.GetRawButton(buttonhighDeckSolenoid)){
+	//When the left bumper is pressed, the top solenoid is turned on for .5 sec then turned off and the controller rubles on the left side for the duration of the if statement
+	else if (perifController.GetRawButton(buttonhighDeckSolenoid))
+	{
 		SetRumble(perifController, Utility::LEFT, .5);
-			if(!highDeckSolenoidToggle)
-			{
-				highDeckSolenoidToggle = true;
-			}
-			else
+			highDeckSolenoidToggle = true;
+			pneumaticTimeStamp = pneumaticDelay.Get();
+			if (pneumaticDelay.Get() > pneumaticTimeStamp + .5)
 				highDeckSolenoidToggle = false;
-		}
+			SetRumble(perifController, Utility::LEFT, 0);
+	}
 
 	lowDeckSolenoid.Set(lowDeckSolenoidToggle);
 	highDeckSolenoid.Set(highDeckSolenoidToggle);

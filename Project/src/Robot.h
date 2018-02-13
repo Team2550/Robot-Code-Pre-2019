@@ -29,6 +29,7 @@ private:
 	int buttonTurtle;
 	int buttonlowDeckSolenoid;
 	int buttonhighDeckSolenoid;
+	int pneumaticTimeStamp;
 	bool lowDeckSolenoidToggle = false;
 	bool highDeckSolenoidToggle = false;
 
@@ -42,6 +43,7 @@ private:
 	Solenoid highDeckSolenoid {1};
 
 	Timer autoTimer;
+	Timer pneumaticDelay;
 
 	DriveBase driveBase;
 
