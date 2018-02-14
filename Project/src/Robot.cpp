@@ -48,7 +48,9 @@ Robot::~Robot()
 
 void Robot::RobotInit()
 {
+	std::cout << "Calibrating gyro..." << std::endl;
 	gyroscope.Calibrate();
+	std::cout << "Gyro calibrated" << std::endl;
 }
 
 void Robot::RobotPeriodic()
@@ -60,6 +62,7 @@ void Robot::AutonomousInit()
 {
 	UpdatePreferences();
 
+	std::cout << "Initializing autonomous" << std::endl;
 	autoController.Init(selectedAutonomous);
 }
 
