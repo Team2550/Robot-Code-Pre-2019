@@ -17,12 +17,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 
-	autoChooser.AddDefault("Default", &AUTO_STRATEGIES::DEFAULT);
-	autoChooser.AddObject("Other", &AUTO_STRATEGIES::OTHER);
-	frc::SmartDashboard::PutData("Autonomous Strategies", &autoChooser);
-
-	selectedAutonomous.steps = NULL;
-	selectedAutonomous.count = 0;
+	selectedAutoStrategy = NULL;
 
 	UpdatePreferences();
 }
@@ -48,21 +43,34 @@ void Robot::AutonomousInit()
 {
 	UpdatePreferences();
 
-	std::cout << "Initializing autonomous" << std::endl;
-	autoController.Init(selectedAutonomous);
+	if (selectedAutoStrategy != NULL)
+	{
+		std::cout << "Initializing autonomous" << std::endl;
+		autoController.Init(*selectedAutoStrategy);
+		autoStrategyCompleted = false;
+	}
+	else
+	{
+		autoStrategyCompleted = true;
+	}
 
-	timer.Reset();
-	timer.Start();
+	autoTimer.Reset();
+	autoTimer.Start();
 }
 
 void Robot::AutonomousPeriodic()
 {
-	bool strategyComplete = autoController.Execute();
+	if (!autoStrategyCompleted)
+	{
+		autoStrategyCompleted = autoController.Execute();
 
-	if (strategyComplete)
-		std::cout << timer.Get() << " Finished" << std::endl;
+		if (autoStrategyCompleted)
+			std::cout << "Finished at " << autoTimer.Get() << " seconds" << std::endl;
+	}
 	else
-		std::cout << "Running auto strategy..." << std::endl;
+	{
+		driveBase.Stop();
+	}
 }
 
 void Robot::TeleopInit()
@@ -178,7 +186,13 @@ void Robot::UpdatePreferences()
 	autoBufferStart = prefs->GetFloat("AutoBufferStart", 12);
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
-	selectedAutonomous = *(autoChooser.GetSelected());
+	// Setup autonomous strategy chooser
+	autoStrategyChooser.AddDefault("Default", &AUTO_STRATEGIES::DEFAULT);
+	autoStrategyChooser.AddObject("Other", &AUTO_STRATEGIES::OTHER);
+	autoStrategyChooser.AddObject("Do Nothing", &AUTO_STRATEGIES::NOTHING);
+	frc::SmartDashboard::PutData("Autonomous Strategies", &autoStrategyChooser);
+
+	selectedAutoStrategy = autoStrategyChooser.GetSelected();
 
 	std::cout << "Updated Preferences" << std::endl;
 }

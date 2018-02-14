@@ -18,7 +18,7 @@ public:
 
 	struct InstructionSet
 	{
-		Instruction* steps;
+		const Instruction* steps;
 		unsigned int count;
 	};
 
@@ -32,7 +32,7 @@ public:
 	//		autoTimer (I)	- Timer that measures how much time has passed since the match started. Used for timing.
 	// Return:
 	//		True if strategy is complete.
-	void Init(InstructionSet instructionSet);
+	void Init(const InstructionSet instructionSet);
 	bool Execute();
 
 private:

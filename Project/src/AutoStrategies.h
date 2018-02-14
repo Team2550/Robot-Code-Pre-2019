@@ -5,19 +5,24 @@
 
 namespace AUTO_STRATEGIES
 {
-	static AutoController::Instruction DEFAULT_STEPS[] =
+	// Default
+	const AutoController::Instruction DEFAULT_STEPS[] =
 	{
 		{AutoController::WAIT_TIME, 3, 0}
 	};
-	static AutoController::InstructionSet DEFAULT = {DEFAULT_STEPS, 1};
+	const AutoController::InstructionSet DEFAULT = {DEFAULT_STEPS, 1};
 
-
-	static AutoController::Instruction OTHER_STEPS[] =
+	// Other
+	const AutoController::Instruction OTHER_STEPS[] =
 	{
 		{AutoController::WAIT_UNTIL, 5, 0},
 		{AutoController::WAIT_TIME, 3, 0}
 	};
-	static AutoController::InstructionSet OTHER = {OTHER_STEPS, 2};
+	const AutoController::InstructionSet OTHER = {OTHER_STEPS, 2};
+
+	// Nothing
+	const AutoController::Instruction NOTHING_STEPS[] = {};
+	const AutoController::InstructionSet NOTHING = {NOTHING_STEPS, 0};
 }
 
 #endif

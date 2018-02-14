@@ -24,7 +24,8 @@ void AutoController::Init(InstructionSet instructionSet)
 	timer.Reset();
 	timer.Start();
 
-	this->instructionSet = instructionSet;
+	this->instructionSet.steps = instructionSet.steps;
+	this->instructionSet.count = instructionSet.count;
 
 	currentInstruction = 0;
 	instructionStartTime = 0;
@@ -84,12 +85,11 @@ bool AutoController::Execute()
 
 	if (instructionCompleted)
 	{
-		// Increment current instruction number and get next instruction's type
-		InstructionType nextInstructionType = (instructionSet.steps + (++currentInstruction))->type;
-
 		instructionStartTime = timer.Get();
 		instructionStartDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2;
 		instructionStartAngle = gyroscope->GetAngle();
+
+		currentInstruction++;
 	}
 
 	// Check if all instructions are complete

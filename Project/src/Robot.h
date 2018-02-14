@@ -45,12 +45,13 @@ private:
 	int buttonTurtle;
 
 	Preferences *prefs;
-	frc::SendableChooser<AutoController::InstructionSet*> autoChooser;
-	AutoController::InstructionSet selectedAutonomous;
+	frc::SendableChooser<const AutoController::InstructionSet*> autoStrategyChooser;
+	const AutoController::InstructionSet* selectedAutoStrategy;
+	bool autoStrategyCompleted;
 
 	Joystick driveController;
 	Joystick perifController;
-	Timer timer;
+	Timer autoTimer;
 
 	UltrasonicAnalog ultrasonic;
 	LimitSwitch bumperSwitch;
