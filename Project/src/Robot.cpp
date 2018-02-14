@@ -17,21 +17,8 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 
-	AutoController::Instruction* instructions;
-
-	// Default auto strategy
-	instructions = new AutoController::Instruction[1];
-	instructions[0] = {AutoController::WAIT_UNTIL, 3, 0};
-	autoDefault = {instructions, 1};
-
-	// Other auto strategy
-	instructions = new AutoController::Instruction[2];
-	instructions[0] = {AutoController::WAIT_TIME, 2, 0};
-	instructions[1] = {AutoController::WAIT_UNTIL, 6, 0};
-	autoOther = {instructions, 2};
-
-	autoChooser.AddDefault("Default", &autoDefault);
-	autoChooser.AddObject("Other", &autoOther);
+	autoChooser.AddDefault("Default", &AUTO_STRATEGIES::DEFAULT);
+	autoChooser.AddObject("Other", &AUTO_STRATEGIES::OTHER);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoChooser);
 
 	selectedAutonomous.steps = NULL;
@@ -42,8 +29,7 @@ Robot::Robot() : driveController(0), perifController(1),
 
 Robot::~Robot()
 {
-	delete[] autoDefault.steps;
-	delete[] autoOther.steps;
+
 }
 
 void Robot::RobotInit()
@@ -64,6 +50,9 @@ void Robot::AutonomousInit()
 
 	std::cout << "Initializing autonomous" << std::endl;
 	autoController.Init(selectedAutonomous);
+
+	timer.Reset();
+	timer.Start();
 }
 
 void Robot::AutonomousPeriodic()
@@ -71,7 +60,7 @@ void Robot::AutonomousPeriodic()
 	bool strategyComplete = autoController.Execute();
 
 	if (strategyComplete)
-		std::cout << "Finished" << std::endl;
+		std::cout << timer.Get() << " Finished" << std::endl;
 	else
 		std::cout << "Running auto strategy..." << std::endl;
 }

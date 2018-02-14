@@ -1,11 +1,12 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include <AutoController.h>
 #include <WPILib.h>
 #include <iostream>
 #include <iomanip>
 #include "xBox.h"
+#include "AutoController.h"
+#include "AutoStrategies.h"
 #include "DriveBase.h"
 #include "UltrasonicAnalog.h"
 #include "LimitSwitch.h"
@@ -44,13 +45,12 @@ private:
 	int buttonTurtle;
 
 	Preferences *prefs;
-	AutoController::InstructionSet autoDefault;
-	AutoController::InstructionSet autoOther;
 	frc::SendableChooser<AutoController::InstructionSet*> autoChooser;
 	AutoController::InstructionSet selectedAutonomous;
 
 	Joystick driveController;
 	Joystick perifController;
+	Timer timer;
 
 	UltrasonicAnalog ultrasonic;
 	LimitSwitch bumperSwitch;
