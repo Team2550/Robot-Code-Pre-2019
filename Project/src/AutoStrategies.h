@@ -5,22 +5,24 @@
 
 namespace AUTO_STRATEGIES
 {
-	// Default
-	const AutoController::Instruction DEFAULT_STEPS[] =
-	{
-		{AutoController::WAIT_TIME, 3, 0}
-	};
-	const AutoController::InstructionSet DEFAULT = {DEFAULT_STEPS, 1};
+	// Instruction Format: Type, Target, Speed
 
-	// Other
-	const AutoController::Instruction OTHER_STEPS[] =
+	// Place block in exchange
+	const AutoController::Instruction EXCHANGE_STEPS[] =
 	{
-		{AutoController::WAIT_UNTIL, 5, 0},
-		{AutoController::WAIT_TIME, 3, 0}
-	};
-	const AutoController::InstructionSet OTHER = {OTHER_STEPS, 2};
+		{AutoController::DRIVE_TO, 3, 0.2f},
+		{AutoController::ROTATE_TO, -90, 0.2f},
 
-	// Nothing
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 12.011f, 0.2f},
+		{AutoController::ROTATE_TO, -180, 0.2f},
+
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 2.5f, 0.2f}
+	};
+	const AutoController::InstructionSet EXCHANGE = {EXCHANGE_STEPS, 7};
+
+	// Do nothing
 	const AutoController::Instruction NOTHING_STEPS[] = {};
 	const AutoController::InstructionSet NOTHING = {NOTHING_STEPS, 0};
 }
