@@ -24,6 +24,8 @@ Robot::~Robot() {
 void Robot::RobotInit()
 {
 	UpdatePreferences();
+
+	cameraTracking.LaunchVisionThread();
 }
 
 void Robot::RobotPeriodic()
@@ -46,7 +48,6 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
 	std::cout << "Working" << std::endl;
-	cameraTracking.UpdateVision();
 
 	Vector2 targetPosition = cameraTracking.GetTargetPositionRelative();
 

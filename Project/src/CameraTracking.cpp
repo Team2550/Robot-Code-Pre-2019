@@ -2,22 +2,18 @@
 
 CameraTracking::CameraTracking(int imgWidth, int imgHeight, int imgExposure)
 {
-	cv::Mat frame;
-	cv::VideoCapture cap(imgExposure);
-	cap.set(CV_CAP_PROP_FRAME_WIDTH, 300);
-	cap.set(CV_CAP_PROP_FRAME_HEIGHT, 600);
-	bool bSuccess = cap.read(frame);
-	grip::GripPipeline gp;
-	return gripPipeline.Process(frame);
+	CameraTracking::imgWidth = imgWidth;
+	CameraTracking::imgHeight = imgHeight;
+	CameraTracking::imgExposure = imgExposure;
 
 	targetPositionRelative.x = 0;
 	targetPositionRelative.y = 0;
 
 	targetIsVisible = false;
-
 }
 
-CameraTracking::~CameraTracking() {
+CameraTracking::~CameraTracking()
+{
 
 }
 
@@ -25,24 +21,32 @@ void CameraTracking::VisionThread()
 {
 	// Get the USB camera from CameraServer,
 	// start streaming to dashboard
-	// (the vision processing will pick it up thusly)
 
-		cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
-		camera.SetResolution(640, 480);
-		cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
-		cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray", 640, 480);
-		cv::Mat source;
-		cv::Mat output;
+	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
+	camera.SetResolution(imgWidth, imgHeight);
+	camera.SetExposureManual(imgExposure);
+	cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
+	cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray", imgWidth, imgHeight);
+	cv::Mat source;
+	cv::Mat output;
 
-		while (true)
-		{
-			cvSink.GrabFrame(source);
-			cvtColor(source, output, cv::COLOR_BGR2GRAY);
-			outputStreamstd.PutFrame(output);
-		}
+	while (true)
+	{
+		cvSink.GrabFrame(source);
+		cvtColor(source, output, cv::COLOR_BGR2GRAY);
+		outputStreamstd.PutFrame(output);
+
+		//targetIsVisible = false;
+	}
 }
 
-void CameraTracking::UpdateVision()
+void CameraTracking::LaunchVisionThread()
+{
+	std::thread visionThread(VisionThread);
+	visionThread.detach();
+}
+
+/*void CameraTracking::UpdateVision()
 {
 	cv::Mat source;
 	std::cout << "Accessed UpdateVision" << std::endl;
@@ -58,29 +62,29 @@ void CameraTracking::UpdateVision()
 
 	 if (contours->size() > 0)
 	 {
-	 std::cout << "coorPart1" << std::endl;
-	 std::vector<cv::Point> targetContourData = (*contours)[0];
+		 std::cout << "coorPart1" << std::endl;
+		 std::vector<cv::Point> targetContourData = (*contours)[0];
 
-	 minX = targetContourData[0].x;
-	 maxX = targetContourData[0].x;
-	 minY = targetContourData[0].y;
-	 maxY = targetContourData[0].y;
+		 minX = targetContourData[0].x;
+		 maxX = targetContourData[0].x;
+		 minY = targetContourData[0].y;
+		 maxY = targetContourData[0].y;
 
-	 for (unsigned int point = 1; point < targetContourData.size(); point++)
-	 {
-	 if (targetContourData[point].x < minX)
-	 minX = targetContourData[point].x;
+		 for (unsigned int point = 1; point < targetContourData.size(); point++)
+		 {
+		 if (targetContourData[point].x < minX)
+		 minX = targetContourData[point].x;
 
-	 if (targetContourData[point].x > maxX)
-	 maxX = targetContourData[point].x;
+		 if (targetContourData[point].x > maxX)
+		 maxX = targetContourData[point].x;
 
-	 if (targetContourData[point].y < minY)
-	 minY = targetContourData[point].y;
+		 if (targetContourData[point].y < minY)
+		 minY = targetContourData[point].y;
 
-	 if (targetContourData[point].y > maxY)
-	 maxY = targetContourData[point].y;
-	 }
-}
+		 if (targetContourData[point].y > maxY)
+		 maxY = targetContourData[point].y;
+		 }
+	}
 
 	 Vector2 target = { (minX + maxX) / 2.f, (minY + maxY) / 2.f };
 
@@ -93,7 +97,7 @@ void CameraTracking::UpdateVision()
 
 	 targetPositionRelative.x = target.x;
 	 targetPositionRelative.y = target.y;
-}
+}*/
 
 Vector2 CameraTracking::GetTargetPositionRelative()
 {

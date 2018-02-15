@@ -16,24 +16,25 @@ struct Vector2
 
 class CameraTracking
 {
-private:
-	//cs::CvSink cvSink; // OpenCV image data sink
-	grip::GripPipeline gripPipeline;
-
-	Vector2 targetPositionRelative;
-	bool targetIsVisible;
-
 public:
 	CameraTracking(int imgWidth, int imgHeight, int imgExposure);
 	~CameraTracking();
 
-	static void VisionThread();
-	void UpdateVision();
+	void LaunchVisionThread();
 
 	Vector2 GetTargetPositionRelative();
 	double GetRobotPosition(float position);
 	float CalculateAngle(float x, float y);
 
+private:
+	static int imgWidth;
+	static int imgHeight;
+	static int imgExposure;
+
+	static Vector2 targetPositionRelative;
+	static bool targetIsVisible;
+
+	static void VisionThread();
 };
 
 #endif
