@@ -1,6 +1,14 @@
-#include <CameraTracking.h>
+#include "CameraTracking.h"
 
-CameraTracking::CameraTracking(int imgWidth, int imgHeight, int imgExposure) {
+CameraTracking::CameraTracking(int imgWidth, int imgHeight, int imgExposure)
+{
+	cv::Mat frame;
+	cv::VideoCapture cap(imgExposure);
+	cap.set(CV_CAP_PROP_FRAME_WIDTH, 300);
+	cap.set(CV_CAP_PROP_FRAME_HEIGHT, 600);
+	bool bSuccess = cap.read(frame);
+	grip::GripPipeline gp;
+	return gripPipeline.Process(frame);
 
 	targetPositionRelative.x = 0;
 	targetPositionRelative.y = 0;
@@ -16,13 +24,13 @@ CameraTracking::~CameraTracking() {
 void CameraTracking::VisionThread()
 {
 	// Get the USB camera from CameraServer,
-		// start streaming to dashboard
-		// (the vision processing will pick it up thusly)
+	// start streaming to dashboard
+	// (the vision processing will pick it up thusly)
 
 		cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
 		camera.SetResolution(640, 480);
 		cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
-		cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray",640, 480);
+		cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray", 640, 480);
 		cv::Mat source;
 		cv::Mat output;
 
@@ -30,16 +38,16 @@ void CameraTracking::VisionThread()
 		{
 			cvSink.GrabFrame(source);
 			cvtColor(source, output, cv::COLOR_BGR2GRAY);
-			//outputStreamStd.PutFrame(output);
+			outputStreamstd.PutFrame(output);
 		}
 }
 
 void CameraTracking::UpdateVision()
 {
-
-std::cout << "Accessed UpdateVision" << std::endl;
-//std::cout << "reached proccess" << std::endl;
-gripPipeline.Process(source);
+	cv::Mat source;
+	std::cout << "Accessed UpdateVision" << std::endl;
+	gripPipeline.Process(source);
+	std::cout << "reached proccess" << std::endl;
 
 	int minX = 0;
 	int maxX = 0;
@@ -87,15 +95,18 @@ gripPipeline.Process(source);
 	 targetPositionRelative.y = target.y;
 }
 
-Vector2 CameraTracking::GetTargetPositionRelative() {
+Vector2 CameraTracking::GetTargetPositionRelative()
+{
 	return targetPositionRelative;
 }
 
-double CameraTracking::GetRobotPosition(float position) {
+double CameraTracking::GetRobotPosition(float position)
+{
 	return position;
 }
 
-float CameraTracking::CalculateAngle(float x, float y) {
+float CameraTracking::CalculateAngle(float x, float y)
+{
 	float angle = 0;
 	float finalAngle = 0;
 

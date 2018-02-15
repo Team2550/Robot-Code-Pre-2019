@@ -6,7 +6,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
 #include <iostream>
-#include <GripPipeline.h>
+#include "GripPipeline.h"
 
 struct Vector2
 {
