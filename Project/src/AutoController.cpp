@@ -87,7 +87,11 @@ bool AutoController::Execute()
 	{
 		instructionStartTime = timer.Get();
 		instructionStartDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2;
-		instructionStartAngle = gyroscope->GetAngle();
+
+		if (instructionType == ROTATE_DEG || instructionType == ROTATE_TO)
+			instructionStartAngle = target;
+		else
+			instructionStartAngle = gyroscope->GetAngle();
 
 		currentInstruction++;
 	}
@@ -136,13 +140,21 @@ bool AutoController::AutoDriveToDist( double speed, double targetDistance, doubl
 bool AutoController::AutoRotateToAngle( double speed, double targetAngle )
 {
 	// Get sensor data
-	double currentAngle = gyroscope->GetAngle();
+	double currentAngleOffset = gyroscope->GetAngle() - targetAngle;
 
-	if ( currentAngle > targetAngle + 5 )
-		driveBase->Drive(speed, -speed);
-	else if ( currentAngle < targetAngle - 5 )
-		driveBase->Drive(-speed, speed);
+	// Scale the speed based on the angle offset. Smaller offset = smaller speed.
+	double scaledSpeed = speed;
+
+	if (abs(currentAngleOffset) < 45)
+		scaledSpeed *= 0.5 + abs(currentAngleOffset) / 90; // Minimum scale of 50%. Max of 100%
+
+	if ( currentAngleOffset > 5 )
+		driveBase->Drive(scaledSpeed, -scaledSpeed);
+	else if ( currentAngleOffset < 5 )
+		driveBase->Drive(-scaledSpeed, scaledSpeed);
+	else
+		driveBase->Drive(0, 0);
 
 	// Return true if angle is within range of (targetAngle - 5, targetAngle + 5))
-	return abs( currentAngle - targetAngle ) < 5;
+	return abs( currentAngleOffset ) < 5;
 }

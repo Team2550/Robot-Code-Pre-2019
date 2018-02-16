@@ -10,32 +10,28 @@ namespace AUTO_STRATEGIES
 	// Place block in exchange
 	const AutoController::Instruction EXCHANGE_STEPS[] =
 	{
-		{AutoController::DRIVE_TO, 36, 0.2f},
+		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 45 degrees.
+		{AutoController::DRIVE_TO, 36 - 16.92, 0.2f},
+		{AutoController::ROTATE_TO, -45, 0.2f},
+
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 24, 0.2f},
 		{AutoController::ROTATE_TO, -90, 0.2f},
 
+		// Drive left down field 12.011 feet.
 		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 144.132, 0.2f},
+		{AutoController::DRIVE_TO, 144.132 - 33.84, 0.2f},
+		{AutoController::ROTATE_TO, -135, 0.2f},
+
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 24, 0.2f},
 		{AutoController::ROTATE_TO, -180, 0.2f},
 
+		// Drive towards wall for 30 inches (slightly less than three feet).
 		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 30, 0.2f}
+		{AutoController::DRIVE_TO, 30 - 16.92, 0.2f}
 	};
-	const AutoController::InstructionSet EXCHANGE = {EXCHANGE_STEPS, 7};
-
-	// Place block in exchange
-	const AutoController::Instruction EXCHANGE_STEPS[] =
-	{
-		{AutoController::DRIVE_TO, 1, .3f},
-		{AutoController::ROTATE_TO, -90, 0.2f},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 12.011f, 0.2f},
-		{AutoController::ROTATE_TO, -180, 0.2f},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 2.5f, 0.2f}
-	};
-	const AutoController::InstructionSet EXCHANGE = {EXCHANGE_STEPS, 7};
+	const AutoController::InstructionSet EXCHANGE = {EXCHANGE_STEPS, 13};
 
 	// Do nothing
 	const AutoController::Instruction NOTHING_STEPS[] = {};
