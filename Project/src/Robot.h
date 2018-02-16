@@ -28,10 +28,8 @@ private:
 	int buttonBoost;
 	int buttonTurtle;
 	int buttonlowDeckSolenoid;
-	int buttonhighDeckSolenoid;
 	int pneumaticTimeStamp;
-	bool lowDeckSolenoidToggle = false;
-	bool highDeckSolenoidToggle = false;
+	bool solenoidToggle;
 
 
 	Preferences *prefs;
@@ -39,8 +37,7 @@ private:
 	Joystick driveController;
 	Joystick perifController;
 
-	Solenoid lowDeckSolenoid {0};
-	Solenoid highDeckSolenoid {1};
+	DoubleSolenoid solenoid;
 
 	Timer autoTimer;
 	Timer pneumaticDelay;

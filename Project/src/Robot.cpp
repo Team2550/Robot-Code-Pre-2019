@@ -5,7 +5,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 driveBase(0, 1)
+                 solenoid(1, 0), driveBase(0, 1)
 {
 	speedNormal = 0.5f;
 	speedTurtle = 0.25f;
@@ -16,7 +16,9 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 	buttonlowDeckSolenoid = xbox::btn::rb;
-	buttonhighDeckSolenoid = xbox::btn::lb;
+
+	pneumaticTimeStamp = 0;
+	solenoidToggle = false;
 
 	prefs = Preferences::GetInstance();
 }
@@ -67,29 +69,28 @@ void Robot::TeleopPeriodic()
 		baseSpeed = speedTurtle;
 	else if (driveController.GetRawButton(buttonBoost))
 		baseSpeed = speedBoost;
-	//When the right bumper is pressed, the bottom solenoid is turned on for .5 sec then turned off and the controller rubles on the right side for the duration of the if statement
-	else if (perifController.GetRawButton(buttonlowDeckSolenoid))
+
+	//When the right bumper is pressed, the solenoid is turned on for .5 sec then turned off and the controller rubles on the right side for the duration of the if statement
+	if (perifController.GetRawButton(buttonlowDeckSolenoid))
 	{
-		SetRumble(perifController, Utility::RIGHT, .5);
-			lowDeckSolenoidToggle = true;
-			pneumaticTimeStamp = pneumaticDelay.Get();
-			if (pneumaticDelay.Get() > pneumaticTimeStamp + .5)
-				lowDeckSolenoidToggle = false;
-			SetRumble(perifController, Utility::RIGHT, 0);
-	}
-	//When the left bumper is pressed, the top solenoid is turned on for .5 sec then turned off and the controller rubles on the left side for the duration of the if statement
-	else if (perifController.GetRawButton(buttonhighDeckSolenoid))
-	{
-		SetRumble(perifController, Utility::LEFT, .5);
-			highDeckSolenoidToggle = true;
-			pneumaticTimeStamp = pneumaticDelay.Get();
-			if (pneumaticDelay.Get() > pneumaticTimeStamp + .5)
-				highDeckSolenoidToggle = false;
-			SetRumble(perifController, Utility::LEFT, 0);
+		solenoidToggle = true;
+		pneumaticDelay.Reset();
 	}
 
-	lowDeckSolenoid.Set(lowDeckSolenoidToggle);
-	highDeckSolenoid.Set(highDeckSolenoidToggle);
+	if (solenoidToggle)
+	{
+		if (pneumaticDelay.Get() < 0.5)
+			solenoid.Set(frc::DoubleSolenoid::kForward);
+		else if (pneumaticDelay.Get() < 1)
+			solenoid.Set(frc::DoubleSolenoid::kOff);
+		else if (pneumaticDelay.Get() < 1.5)
+			solenoid.Set(frc::DoubleSolenoid::kReverse);
+		else
+		{
+			solenoid.Set(frc::DoubleSolenoid::kOff);
+			solenoidToggle = false;
+		}
+	}
 
 	driveBase.Drive(leftSpeed * baseSpeed,
 					rightSpeed * baseSpeed);
