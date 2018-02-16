@@ -15,7 +15,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
-	buttonlowDeckSolenoid = xbox::btn::rb;
+	buttonSolenoidToggle = xbox::btn::rb;
 
 	pneumaticTimeStamp = 0;
 	solenoidToggle = false;
@@ -71,7 +71,7 @@ void Robot::TeleopPeriodic()
 		baseSpeed = speedBoost;
 
 	//When the right bumper is pressed, the solenoid is turned on for .5 sec then turned off and the controller rubles on the right side for the duration of the if statement
-	if (perifController.GetRawButton(buttonlowDeckSolenoid))
+	if (perifController.GetRawButton(buttonSolenoidToggle))
 	{
 		solenoidToggle = true;
 		pneumaticDelay.Reset();

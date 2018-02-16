@@ -27,7 +27,7 @@ private:
 	int axisTankRight;
 	int buttonBoost;
 	int buttonTurtle;
-	int buttonlowDeckSolenoid;
+	int buttonSolenoidToggle;
 	int pneumaticTimeStamp;
 	bool solenoidToggle;
 
