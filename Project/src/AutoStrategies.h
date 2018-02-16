@@ -10,7 +10,22 @@ namespace AUTO_STRATEGIES
 	// Place block in exchange
 	const AutoController::Instruction EXCHANGE_STEPS[] =
 	{
-		{AutoController::DRIVE_TO, 3, 0.2f},
+		{AutoController::DRIVE_TO, 36, 0.2f},
+		{AutoController::ROTATE_TO, -90, 0.2f},
+
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 144.132, 0.2f},
+		{AutoController::ROTATE_TO, -180, 0.2f},
+
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 30, 0.2f}
+	};
+	const AutoController::InstructionSet EXCHANGE = {EXCHANGE_STEPS, 7};
+
+	// Place block in exchange
+	const AutoController::Instruction EXCHANGE_STEPS[] =
+	{
+		{AutoController::DRIVE_TO, 1, .3f},
 		{AutoController::ROTATE_TO, -90, 0.2f},
 
 		{AutoController::RESET_DIST_0, 0, 0},
