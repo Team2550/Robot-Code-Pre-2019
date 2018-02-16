@@ -1,5 +1,12 @@
 #include "CameraTracking.h"
 
+int CameraTracking::imgWidth = 480;
+int CameraTracking::imgHeight = 360;
+int CameraTracking::imgExposure = 100;
+
+Vector2 CameraTracking::targetPositionRelative = {0, 0};
+bool CameraTracking::targetIsVisible = false;
+
 CameraTracking::CameraTracking(int imgWidth, int imgHeight, int imgExposure)
 {
 	CameraTracking::imgWidth = imgWidth;
@@ -23,18 +30,18 @@ void CameraTracking::VisionThread()
 	// start streaming to dashboard
 
 	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
-	camera.SetResolution(imgWidth, imgHeight);
-	camera.SetExposureManual(imgExposure);
+	camera.SetResolution(540, 360);
+	camera.SetExposureManual(50);
 	cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
-	cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray", imgWidth, imgHeight);
+	cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray", 540, 360);
 	cv::Mat source;
 	cv::Mat output;
 
 	while (true)
 	{
 		cvSink.GrabFrame(source);
-		cvtColor(source, output, cv::COLOR_BGR2GRAY);
-		outputStreamstd.PutFrame(output);
+		//cvtColor(source, output, cv::COLOR_BGR2GRAY);
+		outputStreamstd.PutFrame(source);
 
 		//targetIsVisible = false;
 	}

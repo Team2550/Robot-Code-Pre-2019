@@ -6,7 +6,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
 #include <iostream>
-#include "GripPipeline.h"
+#include "grip/GripPipeline.h"
 
 struct Vector2
 {
@@ -35,6 +35,7 @@ private:
 	static bool targetIsVisible;
 
 	static void VisionThread();
+
 };
 
 #endif
