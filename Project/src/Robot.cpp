@@ -76,14 +76,16 @@ void Robot::TeleopPeriodic()
 		solenoidToggle = true;
 		pneumaticDelay.Reset();
 	}
+	else
+		solenoidToggle = false;
 
 	if (solenoidToggle)
 	{
-		if (pneumaticDelay.Get() < 0.5)
+		if (pneumaticDelay.Get() < 0.1)
 			solenoid.Set(frc::DoubleSolenoid::kForward);
-		else if (pneumaticDelay.Get() < 1)
+		else if (pneumaticDelay.Get() < 0.25)
 			solenoid.Set(frc::DoubleSolenoid::kOff);
-		else if (pneumaticDelay.Get() < 1.5)
+		else if (pneumaticDelay.Get() < 0.5)
 			solenoid.Set(frc::DoubleSolenoid::kReverse);
 		else
 		{
@@ -91,7 +93,11 @@ void Robot::TeleopPeriodic()
 			solenoidToggle = false;
 		}
 	}
+/**	if (frc::DoubleSolenoid::kForward)
+		std::cout << "solenoid set foward" << std::endl;
 
+	if (frc::DoubleSolenoid::kReverse)
+		std::cout << "solenoid set reverse" << std::endl; **/
 	driveBase.Drive(leftSpeed * baseSpeed,
 					rightSpeed * baseSpeed);
 }
