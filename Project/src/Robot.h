@@ -28,6 +28,8 @@ private:
 	int buttonBoost;
 	int buttonTurtle;
 	int buttonSolenoidToggle;
+	int manualPneumaticReverse;
+	int manualSolenoidIn;
 	int pneumaticTimeStamp;
 	bool solenoidToggle;
 

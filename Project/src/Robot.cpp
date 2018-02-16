@@ -16,6 +16,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 	buttonSolenoidToggle = xbox::btn::rb;
+	manualPneumaticReverse = xbox::btn::lb;
 
 	pneumaticTimeStamp = 0;
 	solenoidToggle = false;
@@ -70,36 +71,34 @@ void Robot::TeleopPeriodic()
 	else if (driveController.GetRawButton(buttonBoost))
 		baseSpeed = speedBoost;
 
+	driveBase.Drive(leftSpeed * baseSpeed,
+					rightSpeed * baseSpeed);
+
 	//When the right bumper is pressed, the solenoid is turned on for .5 sec then turned off and the controller rubles on the right side for the duration of the if statement
 	if (perifController.GetRawButton(buttonSolenoidToggle))
-	{
 		solenoidToggle = true;
-		pneumaticDelay.Reset();
-	}
 	else
 		solenoidToggle = false;
 
+	if (perifController.GetRawButtonPressed(buttonSolenoidToggle))
+		pneumaticDelay.Reset();
+
 	if (solenoidToggle)
 	{
-		if (pneumaticDelay.Get() < 0.1)
+		if (pneumaticDelay.Get() < 0.5)
 			solenoid.Set(frc::DoubleSolenoid::kForward);
-		else if (pneumaticDelay.Get() < 0.25)
+		else if (pneumaticDelay.Get() < 1)
 			solenoid.Set(frc::DoubleSolenoid::kOff);
-		else if (pneumaticDelay.Get() < 0.5)
-			solenoid.Set(frc::DoubleSolenoid::kReverse);
 		else
 		{
-			solenoid.Set(frc::DoubleSolenoid::kOff);
+			solenoid.Set(frc::DoubleSolenoid::kReverse);
 			solenoidToggle = false;
 		}
 	}
-/**	if (frc::DoubleSolenoid::kForward)
-		std::cout << "solenoid set foward" << std::endl;
-
-	if (frc::DoubleSolenoid::kReverse)
-		std::cout << "solenoid set reverse" << std::endl; **/
-	driveBase.Drive(leftSpeed * baseSpeed,
-					rightSpeed * baseSpeed);
+	else
+	{
+		solenoid.Set(frc::DoubleSolenoid::kReverse);
+	}
 }
 
 void Robot::DisabledInit()
