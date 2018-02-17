@@ -36,16 +36,12 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet RIGHTEXCHANGE = {RIGHT_EXCHANGE_STEPS, 13};
 
-	//Gets to the exchange zone from the left side placement on the field
+	// Gets to the exchange zone from the left side placement on the field
 	const AutoController::Instruction LEFT_EXCHANGE_STEPS[] =
 	{
 		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 30 degrees.
 		{AutoController::DRIVE_TO, 36, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, 30, AUTO_ROTATE_SPEED},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 68.4, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, 60, AUTO_ROTATE_SPEED},
+		{AutoController::ROTATE_TO, 45, AUTO_ROTATE_SPEED},
 
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 68.4, AUTO_DRIVE_SPEED},
@@ -64,61 +60,11 @@ namespace AUTO_STRATEGIES
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 30 - 16.92, AUTO_DRIVE_SPEED}
 	};
-	const AutoController::InstructionSet LEFTEXCHANGE = {LEFT_EXCHANGE_STEPS, 16};
+	const AutoController::InstructionSet LEFTEXCHANGE = {LEFT_EXCHANGE_STEPS, 13};
 
 	// Do nothing
 	const AutoController::Instruction NOTHING_STEPS[] = {};
 	const AutoController::InstructionSet NOTHING = {NOTHING_STEPS, 0};
-
-	const AutoController::Instruction AUTOLINE_STEPS[] =
-	{
-			{AutoController::DRIVE_TO, 144, AUTO_ROTATE_SPEED}
-	};
-	const AutoController::InstructionSet AUTOLINE = {AUTOLINE_STEPS, 1};
-
-	//This makes the robot drive around the switch twice
-	const AutoController::Instruction LOOKDANGCOOL_STEPS[] =
-	{
-		{AutoController::DRIVE_TO, 144, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -90, AUTO_ROTATE_SPEED},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 228, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -180, AUTO_ROTATE_SPEED},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 120, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -270, AUTO_ROTATE_SPEED},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 228, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -360, AUTO_ROTATE_SPEED},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 120, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -450, AUTO_ROTATE_SPEED},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 228, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -540, AUTO_ROTATE_SPEED},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 120, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -630, AUTO_ROTATE_SPEED},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 228, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -720, AUTO_ROTATE_SPEED}
-	};
-	const AutoController::InstructionSet LOOKDANGCOOL = {LOOKDANGCOOL_STEPS, 23};
-
-	//Rotate around one then back to starting position
-	const AutoController::Instruction ROTATE_STEPS[] =
-	{
-			{AutoController::ROTATE_TO, -360, AUTO_ROTATE_SPEED},
-			{AutoController::ROTATE_TO, 0, AUTO_ROTATE_SPEED}
-	};
-	const AutoController::InstructionSet ROTATE = {ROTATE_STEPS, 2};
 }
 
 #endif

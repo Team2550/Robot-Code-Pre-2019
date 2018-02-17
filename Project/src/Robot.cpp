@@ -187,12 +187,9 @@ void Robot::UpdatePreferences()
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
 	// Setup autonomous strategy chooser
-	autoStrategyChooser.AddDefault("Auto Line", &AUTO_STRATEGIES::AUTOLINE);
-	autoStrategyChooser.AddObject("Right Exchange", &AUTO_STRATEGIES::RIGHTEXCHANGE);
-	autoStrategyChooser.AddObject("Left Exchange", &AUTO_STRATEGIES::LEFTEXCHANGE);
-	autoStrategyChooser.AddObject("Do nothing", &AUTO_STRATEGIES::NOTHING);
-	autoStrategyChooser.AddObject("Look Dang Cool!", &AUTO_STRATEGIES::LOOKDANGCOOL);
-	autoStrategyChooser.AddObject("Rotate", &AUTO_STRATEGIES::ROTATE);
+	autoStrategyChooser.AddObject("Exchange - Start Right", &AUTO_STRATEGIES::RIGHTEXCHANGE);
+	autoStrategyChooser.AddObject("Exchange - Start Left", &AUTO_STRATEGIES::LEFTEXCHANGE);
+	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoStrategyChooser);
 
 	selectedAutoStrategy = autoStrategyChooser.GetSelected();
