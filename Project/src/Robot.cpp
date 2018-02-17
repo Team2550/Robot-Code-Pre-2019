@@ -18,6 +18,8 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBulldozerExtend = xbox::btn::rb;
 	buttonBulldozerPulse = xbox::btn::lb;
 
+	bulldozerPulseToggle = false;
+
 	prefs = Preferences::GetInstance();
 }
 
@@ -68,10 +70,16 @@ void Robot::TeleopPeriodic()
 					rightSpeed * baseSpeed);
 
 	// Bulldozer
+	if (perifController.GetRawButton(buttonBulldozerPulse))
+		bulldozerPulseToggle = true;
+
 	if (perifController.GetRawButton(buttonBulldozerExtend))
+	{
 		bulldozer.Extend();
-	else if (perifController.GetRawButton(buttonBulldozerPulse))
-		bulldozer.Pulse(0);
+		bulldozerPulseToggle = false;
+	}
+	else if (bulldozerPulseToggle)
+		bulldozerPulseToggle = !bulldozer.Pulse(0); // Disables toggle if pulse is complete
 	else
 		bulldozer.Retract();
 }

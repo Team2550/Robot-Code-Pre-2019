@@ -47,7 +47,7 @@ void Bulldozer::Retract()
 		solenoid.Set(frc::DoubleSolenoid::kOff);
 }
 
-void Bulldozer::Pulse(double pauseTime)
+bool Bulldozer::Pulse(double pauseTime)
 {
 	if (!pulsing)
 	{
@@ -74,6 +74,11 @@ void Bulldozer::Pulse(double pauseTime)
 		if (delay.Get() < extensionTime)
 			solenoid.Set(frc::DoubleSolenoid::kReverse);
 		else
+		{
 			solenoid.Set(frc::DoubleSolenoid::kOff);
+			return true;
+		}
 	}
+
+	return false;
 }

@@ -31,6 +31,8 @@ private:
 	int buttonBulldozerExtend;
 	int buttonBulldozerPulse;
 
+	bool bulldozerPulseToggle;
+
 	Preferences *prefs;
 
 	Joystick driveController;

@@ -11,7 +11,7 @@ public:
 	void Extend();
 	void Retract();
 	void Stop();
-	void Pulse(double pauseTime);
+	bool Pulse(double pauseTime); // Returns true if complete
 
 private:
 	enum State { RETRACT, EXTEND };
