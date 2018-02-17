@@ -188,6 +188,7 @@ void Robot::UpdatePreferences()
 
 	// Setup autonomous strategy chooser
 	autoStrategyChooser.AddDefault("Exchange", &AUTO_STRATEGIES::EXCHANGE);
+	autoStrategyChooser.AddObject("Auto Line", &AUTO_STRATEGIES::AUTOLINE);
 	autoStrategyChooser.AddObject("Do nothing", &AUTO_STRATEGIES::NOTHING);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoStrategyChooser);
 

@@ -36,6 +36,14 @@ namespace AUTO_STRATEGIES
 	// Do nothing
 	const AutoController::Instruction NOTHING_STEPS[] = {};
 	const AutoController::InstructionSet NOTHING = {NOTHING_STEPS, 0};
+
+	const AutoController::Instruction AUTOLINE_STEPS[] =
+	{
+
+			{AutoController::DRIVE_TO, 144, .2f}
+	};
+	const AutoController::InstructionSet AUTOLINE = {AUTOLINE_STEPS, 1};
+
 }
 
 #endif
