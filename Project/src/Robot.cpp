@@ -43,9 +43,9 @@ void Robot::AutonomousInit()
 {
 	UpdatePreferences();
 
-	gyroscope.Reset();
-
 	driveBase.Stop();
+
+	bulldozer.Reset();
 
 	autoTimer.Reset();
 	autoTimer.Start();
@@ -58,6 +58,7 @@ void Robot::AutonomousInit()
 	}
 	else
 	{
+		std::cout << "Selected strategy is blank" << std::endl;
 		autoStrategyCompleted = true;
 	}
 }
@@ -76,10 +77,14 @@ void Robot::AutonomousPeriodic()
 
 		if (autoStrategyCompleted)
 			std::cout << "Finished at " << autoTimer.Get() << " seconds" << std::endl;
+
+		bulldozer.Retract();
 	}
 	else
 	{
 		driveBase.Stop();
+
+		bulldozer.Extend();
 	}
 }
 
@@ -91,6 +96,8 @@ void Robot::TeleopInit()
 
 	driveBase.Stop();
 	driveBase.ResetDistance();
+
+	bulldozer.Reset();
 }
 
 void Robot::TeleopPeriodic()
@@ -206,8 +213,8 @@ void Robot::UpdatePreferences()
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
 	// Setup autonomous strategy chooser
-	autoStrategyChooser.AddObject("Exchange - Start Right", &AUTO_STRATEGIES::RIGHTEXCHANGE);
-	autoStrategyChooser.AddObject("Exchange - Start Left", &AUTO_STRATEGIES::LEFTEXCHANGE);
+	autoStrategyChooser.AddObject("Exchange Right", &AUTO_STRATEGIES::RIGHTEXCHANGE);
+	autoStrategyChooser.AddObject("Exchange Left", &AUTO_STRATEGIES::LEFTEXCHANGE);
 	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoStrategyChooser);
 

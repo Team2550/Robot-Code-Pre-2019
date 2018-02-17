@@ -12,9 +12,16 @@ Bulldozer::Bulldozer(int retractPort, int extendPort, double extensionTime) : so
 	delay.Reset();
 	delay.Start();
 
-	lastState = RETRACT;
+	lastState = UNKNOWN;
 	pulsing = false;
 	this->extensionTime = extensionTime;
+}
+
+void Bulldozer::Reset()
+{
+	lastState = UNKNOWN;
+	solenoid.Set(frc::DoubleSolenoid::kOff);
+	delay.Reset();
 }
 
 void Bulldozer::Extend()
