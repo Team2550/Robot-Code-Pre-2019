@@ -73,16 +73,49 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet AUTOLINE = {AUTOLINE_STEPS, 1};
 
-	/**const AutoController::Instruction LOOKDANGCOOL_STEPS[] =
+	//This makes the robot drive around the switch twice
+	const AutoController::Instruction LOOKDANGCOOL_STEPS[] =
 	{
-			{AutoController::DRIVE_TO, 144, .2f},
-			{AutoController::ROTATE_TO, -90, .2f},
+		{AutoController::DRIVE_TO, 144, .2f},
+		{AutoController::ROTATE_TO, -90, .2f},
 
-			{AutoController::RESET_DIST_0, 0, 0},
-			{AutoController::DRIVE_TO, 144, .2f},
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 235, .2f},
+		{AutoController::ROTATE_TO, -180, .2f},
 
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 144 - 36, .2f},
+		{AutoController::ROTATE_TO, -270, .2f},
 
-	};**/
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 235, .2f},
+		{AutoController::ROTATE_TO, 0, .2f},
+
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 144 - 36, .2f},
+		{AutoController::ROTATE_TO, -90, .2f},
+
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 235, .2f},
+		{AutoController::ROTATE_TO, -180, .2f},
+
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 144 - 36, .2f},
+		{AutoController::ROTATE_TO, -270, .2f},
+
+		{AutoController::RESET_DIST_0, 0, 0},
+		{AutoController::DRIVE_TO, 235, .2f},
+		{AutoController::ROTATE_TO, 0, .2f}
+	};
+	const AutoController::InstructionSet LOOKDANGCOOL = {LOOKDANGCOOL_STEPS, 23};
+
+	//Rotate around one then back to starting position
+	const AutoController::Instruction ROTATE_STEPS[] =
+		{
+				{AutoController::ROTATE_TO, -360, .2f},
+				{AutoController::ROTATE_TO, 0, .2f}
+		};
+	const AutoController::InstructionSet ROTATE = {ROTATE_STEPS, 2};
 }
 
 #endif
