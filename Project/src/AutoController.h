@@ -23,7 +23,11 @@ public:
 		unsigned int count;
 	};
 
+#ifndef PRACTICE_ROBOT
 	AutoController(DriveBase* driveBase, ADXRS450_Gyro* gyroscope);
+#else
+	AutoController(DriveBase* driveBase, AnalogGyro* gyroscope);
+#endif
 	~AutoController();
 
 	// Name:	Execute
@@ -38,7 +42,11 @@ public:
 
 private:
 	DriveBase* driveBase;
+#ifndef PRACTICE_ROBOT
 	ADXRS450_Gyro* gyroscope;
+#else
+	AnalogGyro* gyroscope;
+#endif
 
 	Timer timer;
 

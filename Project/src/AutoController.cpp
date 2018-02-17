@@ -146,12 +146,6 @@ bool AutoController::AutoRotateToAngle( double speed, double targetAngle )
 	// Get sensor data
 	double currentAngleOffset = gyroscope->GetAngle() - targetAngle;
 
-	// Scale the speed based on the angle offset. Smaller offset = smaller speed.
-	//double scaledSpeed = speed;
-
-	//if (abs(currentAngleOffset) < 45)
-	//	scaledSpeed *= 0.5 + abs(currentAngleOffset) / 90; // Minimum scale of 50%. Max of 100%
-
 	if ( currentAngleOffset > 3 )
 		driveBase->Drive(-speed, speed); //scaledSpeed, scaledSpeed);
 	else if ( currentAngleOffset < 3 )
