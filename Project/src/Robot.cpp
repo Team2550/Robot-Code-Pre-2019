@@ -9,7 +9,7 @@ Robot::Robot() : driveController(0), perifController(1),
 				 gyroscope(frc::SPI::Port::kOnboardCS0),
 				 driveBase(0, 1, 0, 1, 2, 3,
 						   (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
-						   1.13 * (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings
+						   (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings 1.13 *
                  autoController(&driveBase, &gyroscope)
 {
 	axisTankLeft = xbox::axis::leftY;
@@ -34,14 +34,16 @@ void Robot::RobotInit()
 	std::cout << "Gyro calibrated" << std::endl;
 }
 
-void Robot::RobotPeriodic()
-{
-
-}
-
 void Robot::AutonomousInit()
 {
 	UpdatePreferences();
+
+	gyroscope.Reset();
+
+	driveBase.Stop();
+
+	autoTimer.Reset();
+	autoTimer.Start();
 
 	if (selectedAutoStrategy != NULL)
 	{
@@ -53,16 +55,19 @@ void Robot::AutonomousInit()
 	{
 		autoStrategyCompleted = true;
 	}
-
-	autoTimer.Reset();
-	autoTimer.Start();
 }
 
 void Robot::AutonomousPeriodic()
 {
 	if (!autoStrategyCompleted)
 	{
+		std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
+		          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << ' '
+				  << "Angle: " << std::setw(5) << gyroscope.GetAngle() << std::endl;
+
 		autoStrategyCompleted = autoController.Execute();
+
+		std::cout << driveBase.GetLeftSpeed() << ' ' << driveBase.GetRightSpeed() << std::endl;
 
 		if (autoStrategyCompleted)
 			std::cout << "Finished at " << autoTimer.Get() << " seconds" << std::endl;
@@ -131,11 +136,6 @@ void Robot::TeleopPeriodic()
 	}
 }
 
-void Robot::DisabledInit()
-{
-
-}
-
 /*==============================================================
 Name: GetGameData
 Desc: Gets game data from the field management system that tells
@@ -190,7 +190,6 @@ void Robot::UpdatePreferences()
 	autoStrategyChooser.AddDefault("Auto Line", &AUTO_STRATEGIES::AUTOLINE);
 	autoStrategyChooser.AddObject("Right Exchange", &AUTO_STRATEGIES::RIGHTEXCHANGE);
 	autoStrategyChooser.AddObject("Left Exchange", &AUTO_STRATEGIES::LEFTEXCHANGE);
-	autoStrategyChooser.AddObject("Auto Line", &AUTO_STRATEGIES::AUTOLINE);
 	autoStrategyChooser.AddObject("Do nothing", &AUTO_STRATEGIES::NOTHING);
 	autoStrategyChooser.AddObject("Look Dang Cool!", &AUTO_STRATEGIES::LOOKDANGCOOL);
 	autoStrategyChooser.AddObject("Rotate", &AUTO_STRATEGIES::ROTATE);

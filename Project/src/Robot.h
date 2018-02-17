@@ -19,12 +19,10 @@ public:
 	Robot();
 	~Robot();
 	void RobotInit();
-	void RobotPeriodic();
 	void AutonomousInit();
 	void AutonomousPeriodic();
 	void TeleopInit();
 	void TeleopPeriodic();
-	void DisabledInit();
 	void GetGameData(Position data[3]);
 	void UpdatePreferences();
 

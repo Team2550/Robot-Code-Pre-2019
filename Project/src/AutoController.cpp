@@ -11,7 +11,7 @@ AutoController::AutoController(DriveBase* driveBase, ADXRS450_Gyro* gyroscope)
 	currentInstruction = 0;
 	instructionStartTime = 0;
 	instructionStartDistance = 0;
-	instructionStartAngle = 0;
+	instructionTargetAngle = 0;
 }
 
 AutoController::~AutoController()
@@ -27,10 +27,13 @@ void AutoController::Init(InstructionSet instructionSet)
 	this->instructionSet.steps = instructionSet.steps;
 	this->instructionSet.count = instructionSet.count;
 
+	driveBase->ResetDistance();
+	gyroscope->Reset();
+
 	currentInstruction = 0;
 	instructionStartTime = 0;
-	instructionStartDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2;
-	instructionStartAngle = gyroscope->GetAngle();
+	instructionStartDistance = 0;
+	instructionTargetAngle = 0;
 }
 
 bool AutoController::Execute()
@@ -58,18 +61,21 @@ bool AutoController::Execute()
 	case DRIVE_DIST:
 		target += instructionStartDistance;
 	case DRIVE_TO:
-		instructionCompleted = AutoDriveToDist( speed, target, instructionStartAngle );
+		std::cout << "Driving to " << target << " and angle of " << instructionTargetAngle << std::endl;
+		instructionCompleted = AutoDriveToDist( speed, target, instructionTargetAngle );
 		break;
 
 	case ROTATE_DEG:
-		target += instructionStartAngle;
+		target += instructionTargetAngle;
 	case ROTATE_TO:
+		std::cout << "Rotating to " << target << std::endl;
 		instructionCompleted = AutoRotateToAngle( speed, target );
 		break;
 
 	case RESET_DIST_0:
 		driveBase->ResetDistance();
 		driveBase->Stop();
+		std::cout << "Reset dist" << std::endl;
 		instructionCompleted = true;
 		break;
 
@@ -86,12 +92,10 @@ bool AutoController::Execute()
 	if (instructionCompleted)
 	{
 		instructionStartTime = timer.Get();
-		instructionStartDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2;
+		instructionStartDistance = driveBase->GetRightDistance(); //(driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2;
 
 		if (instructionType == ROTATE_DEG || instructionType == ROTATE_TO)
-			instructionStartAngle = target;
-		else
-			instructionStartAngle = gyroscope->GetAngle();
+			instructionTargetAngle = target;
 
 		currentInstruction++;
 	}
@@ -106,11 +110,11 @@ bool AutoController::Execute()
 bool AutoController::AutoDriveToDist( double speed, double targetDistance, double targetAngle )
 {
 	// Get sensor data
-	double currentDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
+	double currentDistance = driveBase->GetRightDistance(); //(driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
 	double currentAngle = gyroscope->GetAngle();
 
 	// Get the angle that the robot has drifted from its target as a percentage out of 90 degrees
-	double angleOffsetPercent = (currentAngle - targetAngle) / 90;
+	double angleOffsetPercent = (currentAngle - targetAngle) / 10;
 
 	// Limit angle offset to range of -90 to 90 (-100% to 100%)
 	if (angleOffsetPercent > 1)
@@ -128,8 +132,8 @@ bool AutoController::AutoDriveToDist( double speed, double targetDistance, doubl
 	if (currentDistance > targetDistance)
 		scaledSpeed *= -1;
 
-	if (abs(currentDistance - targetDistance) < 24)
-		scaledSpeed *= abs(currentDistance - targetDistance) / 24;
+	if (fabs(targetDistance - currentDistance) < 12)
+		scaledSpeed *= fabs(targetDistance - currentDistance) / 12;
 
 	driveBase->Drive(scaledSpeed - rightSpeedOffset, scaledSpeed + rightSpeedOffset);
 
@@ -143,15 +147,15 @@ bool AutoController::AutoRotateToAngle( double speed, double targetAngle )
 	double currentAngleOffset = gyroscope->GetAngle() - targetAngle;
 
 	// Scale the speed based on the angle offset. Smaller offset = smaller speed.
-	double scaledSpeed = speed;
+	//double scaledSpeed = speed;
 
-	if (abs(currentAngleOffset) < 45)
-		scaledSpeed *= 0.5 + abs(currentAngleOffset) / 90; // Minimum scale of 50%. Max of 100%
+	//if (abs(currentAngleOffset) < 45)
+	//	scaledSpeed *= 0.5 + abs(currentAngleOffset) / 90; // Minimum scale of 50%. Max of 100%
 
-	if ( currentAngleOffset > 5 )
-		driveBase->Drive(scaledSpeed, -scaledSpeed);
-	else if ( currentAngleOffset < 5 )
-		driveBase->Drive(-scaledSpeed, scaledSpeed);
+	if ( currentAngleOffset > 3 )
+		driveBase->Drive(-speed, speed); //scaledSpeed, scaledSpeed);
+	else if ( currentAngleOffset < 3 )
+		driveBase->Drive(speed, -speed); //scaledSpeed, -scaledSpeed);
 	else
 		driveBase->Drive(0, 0);
 

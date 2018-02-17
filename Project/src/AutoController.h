@@ -2,6 +2,7 @@
 #define AUTONOMOUS_H
 
 #include <WPILib.h>
+#include <iostream>
 #include "DriveBase.h"
 
 class AutoController
@@ -46,7 +47,7 @@ private:
 	unsigned int currentInstruction;
 	double instructionStartTime;
 	double instructionStartDistance;
-	double instructionStartAngle;
+	double instructionTargetAngle;
 
 	bool AutoDriveToDist( double speed, double targetDistance, double targetAngle );
 	bool AutoRotateToAngle( double speed, double targetAngle );
