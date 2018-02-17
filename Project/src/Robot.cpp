@@ -4,18 +4,23 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
+				 autoController(&driveBase, &gyroscope),
+				 bumperSwitch(0, LimitSwitch::LOW),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
-                 bumperSwitch(0, LimitSwitch::LOW),
 				 gyroscope(frc::SPI::Port::kOnboardCS0),
 				 driveBase(0, 1, 0, 1, 2, 3,
 						   (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
 						   (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings 1.13 *
-                 autoController(&driveBase, &gyroscope)
+				 bulldozer(0, 1, 0.5)
 {
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
+	buttonBulldozerExtend = xbox::btn::rb;
+	buttonBulldozerPulse = xbox::btn::lb;
+
+	bulldozerPulseToggle = false;
 
 	selectedAutoStrategy = NULL;
 
@@ -134,6 +139,20 @@ void Robot::TeleopPeriodic()
 		driveBase.Drive(leftSpeed * baseSpeed,
 						rightSpeed * baseSpeed);
 	}
+
+	// Bulldozer
+	if (perifController.GetRawButton(buttonBulldozerPulse))
+		bulldozerPulseToggle = true;
+
+	if (perifController.GetRawButton(buttonBulldozerExtend))
+	{
+		bulldozer.Extend();
+		bulldozerPulseToggle = false;
+	}
+	else if (bulldozerPulseToggle)
+		bulldozerPulseToggle = !bulldozer.Pulse(0); // Disables toggle if pulse is complete
+	else
+		bulldozer.Retract();
 }
 
 /*==============================================================

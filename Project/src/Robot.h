@@ -8,6 +8,7 @@
 #include "AutoController.h"
 #include "AutoStrategies.h"
 #include "DriveBase.h"
+#include "Bulldozer.h"
 #include "UltrasonicAnalog.h"
 #include "LimitSwitch.h"
 
@@ -41,6 +42,10 @@ private:
 	int axisTankRight;
 	int buttonBoost;
 	int buttonTurtle;
+	int buttonBulldozerExtend;
+	int buttonBulldozerPulse;
+
+	bool bulldozerPulseToggle;
 
 	Preferences *prefs;
 	frc::SendableChooser<const AutoController::InstructionSet*> autoStrategyChooser;
@@ -49,14 +54,15 @@ private:
 
 	Joystick driveController;
 	Joystick perifController;
+	AutoController autoController;
 	Timer autoTimer;
 
-	UltrasonicAnalog ultrasonic;
 	LimitSwitch bumperSwitch;
+	UltrasonicAnalog ultrasonic;
 	ADXRS450_Gyro gyroscope;
 
 	DriveBase driveBase;
-	AutoController autoController;
+	Bulldozer bulldozer;
 
 };
 
