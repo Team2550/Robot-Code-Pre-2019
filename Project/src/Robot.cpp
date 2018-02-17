@@ -5,7 +5,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-                 solenoid(1, 0), driveBase(0, 1)
+                 driveBase(0, 1), bulldozer(0, 1, 0.5)
 {
 	speedNormal = 0.5f;
 	speedTurtle = 0.25f;
@@ -15,11 +15,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	axisTankRight = xbox::axis::rightY;
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
-	buttonSolenoidToggle = xbox::btn::rb;
-	manualPneumaticReverse = xbox::btn::lb;
-
-	pneumaticTimeStamp = 0;
-	solenoidToggle = false;
+	buttonBulldozerExtend = xbox::btn::rb;
 
 	prefs = Preferences::GetInstance();
 }
@@ -32,11 +28,6 @@ Robot::~Robot()
 void Robot::RobotInit()
 {
 	UpdatePreferences();
-
-	pneumaticDelay.Reset();
-	pneumaticDelay.Start();
-
-
 }
 
 void Robot::AutonomousInit()
@@ -61,6 +52,7 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic()
 {
+	// Drivebase
 	float leftSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankLeft));
 	float rightSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankRight));
 
@@ -74,31 +66,11 @@ void Robot::TeleopPeriodic()
 	driveBase.Drive(leftSpeed * baseSpeed,
 					rightSpeed * baseSpeed);
 
-	//When the right bumper is pressed, the solenoid is turned on for .5 sec then turned off and the controller rubles on the right side for the duration of the if statement
-	if (perifController.GetRawButton(buttonSolenoidToggle))
-		solenoidToggle = true;
+	// Bulldozer
+	if (perifController.GetRawButton(buttonBulldozerExtend))
+		bulldozer.Extend();
 	else
-		solenoidToggle = false;
-
-	if (perifController.GetRawButtonPressed(buttonSolenoidToggle))
-		pneumaticDelay.Reset();
-
-	if (solenoidToggle)
-	{
-		if (pneumaticDelay.Get() < 0.5)
-			solenoid.Set(frc::DoubleSolenoid::kForward);
-		else if (pneumaticDelay.Get() < 1)
-			solenoid.Set(frc::DoubleSolenoid::kOff);
-		else
-		{
-			solenoid.Set(frc::DoubleSolenoid::kReverse);
-			solenoidToggle = false;
-		}
-	}
-	else
-	{
-		solenoid.Set(frc::DoubleSolenoid::kReverse);
-	}
+		bulldozer.Retract();
 }
 
 void Robot::DisabledInit()

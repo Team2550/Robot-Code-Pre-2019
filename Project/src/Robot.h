@@ -4,6 +4,7 @@
 #include <WPILib.h>
 #include "xBox.h"
 #include "DriveBase.h"
+#include "Bulldozer.h"
 
 class Robot: public IterativeRobot
 {
@@ -27,25 +28,17 @@ private:
 	int axisTankRight;
 	int buttonBoost;
 	int buttonTurtle;
-	int buttonSolenoidToggle;
-	int manualPneumaticReverse;
-	int manualSolenoidIn;
-	int pneumaticTimeStamp;
-	bool solenoidToggle;
-
+	int buttonBulldozerExtend;
 
 	Preferences *prefs;
 
 	Joystick driveController;
 	Joystick perifController;
 
-	DoubleSolenoid solenoid;
-
 	Timer autoTimer;
-	Timer pneumaticDelay;
 
 	DriveBase driveBase;
-
+	Bulldozer bulldozer;
 };
 
 #endif
