@@ -29,6 +29,7 @@ private:
 	int buttonBoost;
 	int buttonTurtle;
 	int buttonBulldozerExtend;
+	int buttonBulldozerPulse;
 
 	Preferences *prefs;
 

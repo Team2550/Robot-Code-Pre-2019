@@ -16,6 +16,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBoost = xbox::btn::lb;
 	buttonTurtle = xbox::btn::rb;
 	buttonBulldozerExtend = xbox::btn::rb;
+	buttonBulldozerPulse = xbox::btn::lb;
 
 	prefs = Preferences::GetInstance();
 }
@@ -69,6 +70,8 @@ void Robot::TeleopPeriodic()
 	// Bulldozer
 	if (perifController.GetRawButton(buttonBulldozerExtend))
 		bulldozer.Extend();
+	else if (perifController.GetRawButton(buttonBulldozerPulse))
+		bulldozer.Pulse(0);
 	else
 		bulldozer.Retract();
 }
