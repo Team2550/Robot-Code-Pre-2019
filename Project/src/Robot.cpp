@@ -7,7 +7,11 @@ Robot::Robot() : driveController(0), perifController(1),
 				 autoController(&driveBase, &gyroscope),
 				 bumperSwitch(0, LimitSwitch::LOW),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
+#ifndef PRACTICE_ROBOT
 				 gyroscope(frc::SPI::Port::kOnboardCS0),
+#else
+				 gyroscope(0),
+#endif
 				 driveBase(0, 1, 0, 1, 2, 3,
 						   (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
 						   (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings 1.13 *

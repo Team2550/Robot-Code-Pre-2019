@@ -1,6 +1,6 @@
 #include <AutoController.h>
 
-AutoController::AutoController(DriveBase* driveBase, ADXRS450_Gyro* gyroscope)
+AutoController::AutoController(DriveBase* driveBase, Gyro* gyroscope)
 {
 	this->driveBase = driveBase;
 	this->gyroscope = gyroscope;
@@ -47,7 +47,8 @@ bool AutoController::Execute()
 	// Instruction Information
 	InstructionType instructionType = (instructionSet.steps + currentInstruction)->type;
 	double target = (instructionSet.steps + currentInstruction)->target;
-	double speed = (instructionSet.steps + currentInstruction)->speed;
+	double leftSpeed = (instructionSet.steps + currentInstruction)->leftSpeed;
+	double rightSpeed = (instructionSet.steps + currentInstruction)->rightSpeed;
 
 	switch (instructionType)
 	{
@@ -62,14 +63,14 @@ bool AutoController::Execute()
 		target += instructionStartDistance;
 	case DRIVE_TO:
 		std::cout << "Driving to " << target << " and angle of " << instructionTargetAngle << std::endl;
-		instructionCompleted = AutoDriveToDist( speed, target, instructionTargetAngle );
+		instructionCompleted = AutoDriveToDist( leftSpeed, rightSpeed, target, instructionTargetAngle );
 		break;
 
 	case ROTATE_DEG:
 		target += instructionTargetAngle;
 	case ROTATE_TO:
 		std::cout << "Rotating to " << target << std::endl;
-		instructionCompleted = AutoRotateToAngle( speed, target );
+		instructionCompleted = AutoRotateToAngle( leftSpeed, rightSpeed, target );
 		break;
 
 	case RESET_DIST_0:
@@ -79,11 +80,11 @@ bool AutoController::Execute()
 		instructionCompleted = true;
 		break;
 
-	case RESET_DIST_ULTRA:
-		driveBase->ResetDistance(); // TODO: Add a way to reset the distance to the current ultrasonic reading
-		driveBase->Stop();
-		instructionCompleted = true;
-		break;
+	//case RESET_DIST_ULTRA:
+	//	driveBase->ResetDistance(); // TODO: Add a way to reset the distance to the current ultrasonic reading
+	//	driveBase->Stop();
+	//	instructionCompleted = true;
+	//	break;
 
 	default:
 		driveBase->Stop();
@@ -107,7 +108,7 @@ bool AutoController::Execute()
 		return false;
 }
 
-bool AutoController::AutoDriveToDist( double speed, double targetDistance, double targetAngle )
+bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle )
 {
 	// Get sensor data
 	double currentDistance = driveBase->GetRightDistance(); //(driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
@@ -123,33 +124,35 @@ bool AutoController::AutoDriveToDist( double speed, double targetDistance, doubl
 		angleOffsetPercent = -1;
 
 	// Set speed offset to the speed multiplied by the percent that the robot is to 90 degrees off target
-	double rightSpeedOffset = angleOffsetPercent * speed;
+	double leftSpeedOffset = 1 - angleOffsetPercent;
+	double rightSpeedOffset = 1 + angleOffsetPercent;
 
 	// Scale the speed based on distance to target
-	double scaledSpeed = speed;
+	double speedMultiplier;
 
 	// Passed target, back up
 	if (currentDistance > targetDistance)
-		scaledSpeed *= -1;
+		speedMultiplier = -1;
 
+	// Slow down on approach
 	if (fabs(targetDistance - currentDistance) < 12)
-		scaledSpeed *= fabs(targetDistance - currentDistance) / 12;
+		speedMultiplier = fabs(targetDistance - currentDistance) / 12;
 
-	driveBase->Drive(scaledSpeed - rightSpeedOffset, scaledSpeed + rightSpeedOffset);
+	driveBase->Drive(leftSpeed * speedMultiplier * leftSpeedOffset, rightSpeed * speedMultiplier * rightSpeedOffset);
 
 	// Returns true if distance to target is less than 6 (1 foot range)
 	return abs( currentDistance - targetDistance ) < 6;
 }
 
-bool AutoController::AutoRotateToAngle( double speed, double targetAngle )
+bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle )
 {
 	// Get sensor data
 	double currentAngleOffset = gyroscope->GetAngle() - targetAngle;
 
 	if ( currentAngleOffset > 3 )
-		driveBase->Drive(-speed, speed); //scaledSpeed, scaledSpeed);
+		driveBase->Drive(-leftSpeed, rightSpeed);
 	else if ( currentAngleOffset < 3 )
-		driveBase->Drive(speed, -speed); //scaledSpeed, -scaledSpeed);
+		driveBase->Drive(leftSpeed, -rightSpeed);
 	else
 		driveBase->Drive(0, 0);
 

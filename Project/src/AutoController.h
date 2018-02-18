@@ -8,13 +8,14 @@
 class AutoController
 {
 public:
-	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, RESET_DIST_ULTRA  };
+	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0 }; //, RESET_DIST_ULTRA  };
 
 	struct Instruction
 	{
 		InstructionType type;
 		double target; // Distance or angle, depending on instruction
-		double speed;
+		double leftSpeed; // Acts as speed of both sides if only one specified.
+		double rightSpeed = leftSpeed; // Default to both sides sharing the same speed
 	};
 
 	struct InstructionSet
@@ -23,11 +24,7 @@ public:
 		unsigned int count;
 	};
 
-#ifndef PRACTICE_ROBOT
-	AutoController(DriveBase* driveBase, ADXRS450_Gyro* gyroscope);
-#else
-	AutoController(DriveBase* driveBase, AnalogGyro* gyroscope);
-#endif
+	AutoController(DriveBase* driveBase, Gyro* gyroscope);
 	~AutoController();
 
 	// Name:	Execute
@@ -42,11 +39,7 @@ public:
 
 private:
 	DriveBase* driveBase;
-#ifndef PRACTICE_ROBOT
-	ADXRS450_Gyro* gyroscope;
-#else
-	AnalogGyro* gyroscope;
-#endif
+	Gyro* gyroscope;
 
 	Timer timer;
 
@@ -57,8 +50,8 @@ private:
 	double instructionStartDistance;
 	double instructionTargetAngle;
 
-	bool AutoDriveToDist( double speed, double targetDistance, double targetAngle );
-	bool AutoRotateToAngle( double speed, double targetAngle );
+	bool AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle );
+	bool AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle );
 
 };
 
