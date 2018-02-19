@@ -169,6 +169,7 @@ bool AutoController::AutoRotateToAngle( double speed, double targetAngle )
 }
 bool AutoController::AutoDribble( int xAxis, int yAxis, int points, int speed, int pointsAngle ) //xAxis is the x distace given in inches, yAxis is the y distance given in inches, points are how many sections wanted to get to the x and y axis
 {
+	pointsReached = 0;
 	// Get sensor data
 	double currentDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
 	double currentAngle = gyroscope->GetAngle();
@@ -194,6 +195,7 @@ bool AutoController::AutoDribble( int xAxis, int yAxis, int points, int speed, i
 		AutoRotateToAngle( speed, pointsAngle );
 		driveBase->ResetDistance();
 		driveBase->Stop();
+		pointsReached++;
 
 	}
 }

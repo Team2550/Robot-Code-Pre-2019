@@ -14,7 +14,7 @@ public:
 		InstructionType type;
 		double target; // Distance or angle, depending on instruction
 		double speed;
-		double xAxis;
+		//double xAxis;
 		double yAxis;
 		double points;
 		double pointsAngle;
