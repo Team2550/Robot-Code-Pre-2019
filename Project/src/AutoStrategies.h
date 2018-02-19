@@ -5,10 +5,10 @@
 
 namespace AUTO_STRATEGIES
 {
-	const float AUTO_DRIVE_SPEED = 0.4f;
+	const float AUTO_DRIVE_SPEED = 0.45f; // Increased from 0.4 to better grip block while moving
 	const float AUTO_ROTATE_SPEED = 0.35f;
 	const float ROBOT_WIDTH = 31.25f;
-	const float PLAYER_STATION_WIDTH = 69.0f;
+	const float PLAYER_STATION_WIDTH = 69.0f; // 6 inches wider than stated width of table
 	const float EXCHANGE_WIDTH = 48.0f;
 	const float EXCHANGE_OFFSET = -5.0f;
 
@@ -28,7 +28,7 @@ namespace AUTO_STRATEGIES
 		// Drive left down field to put robot center over exchange hole.
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO,
-				PLAYER_STATION_WIDTH + EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)),
+				PLAYER_STATION_WIDTH + EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)) + 8,
 				AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -135, 0, AUTO_ROTATE_SPEED},
 
@@ -38,7 +38,7 @@ namespace AUTO_STRATEGIES
 
 		// Drive towards wall for 30 inches (slightly less than three feet).
 		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 36 - (24 / sqrt(2)), AUTO_DRIVE_SPEED}
+		{AutoController::DRIVE_TO, 32 - (24 / sqrt(2)), AUTO_DRIVE_SPEED}
 	};
 	const AutoController::InstructionSet RIGHTEXCHANGE = {RIGHT_EXCHANGE_STEPS, 13};
 

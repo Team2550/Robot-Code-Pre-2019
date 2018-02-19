@@ -107,7 +107,8 @@ void Robot::TeleopInit()
 void Robot::TeleopPeriodic()
 {
 	std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
-	          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << std::endl;
+	          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << ' '
+			  << "Angle: " << std::setw(5) << gyroscope.GetAngle() << std::endl;
 
 	int controllerPOV = driveController.GetPOV();
 

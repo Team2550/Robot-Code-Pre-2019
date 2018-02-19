@@ -49,6 +49,7 @@ bool AutoController::Execute()
 	double target = (instructionSet.steps + currentInstruction)->target;
 	double leftSpeed = (instructionSet.steps + currentInstruction)->leftSpeed;
 	double rightSpeed = (instructionSet.steps + currentInstruction)->rightSpeed;
+	std::cout << "Left Speed: " << leftSpeed << " Right Speed: " << rightSpeed << std::endl;
 
 	switch (instructionType)
 	{
@@ -123,16 +124,18 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	if (angleOffsetPercent < -1)
 		angleOffsetPercent = -1;
 
-	// Set speed offset to the speed multiplied by the percent that the robot is to 90 degrees off target
-	double leftSpeedMult = 1.0 - angleOffsetPercent;
-	double rightSpeedMult = 1.0 + angleOffsetPercent;
-
 	// Scale the speed based on distance to target
-	double speedMultiplier;
+	double speedMultiplier = 1;
 
 	// Back up if passed target
 	if (currentDistance > targetDistance)
+	{
 		speedMultiplier = -1;
+	}
+
+	// Set speed offset to the speed multiplied by the percent that the robot is to 90 degrees off target
+	double leftSpeedMult = 1.0 - angleOffsetPercent * speedMultiplier;
+	double rightSpeedMult = 1.0 + angleOffsetPercent * speedMultiplier;
 
 	// Slow down on approach
 	if (fabs(targetDistance - currentDistance) < 12)
