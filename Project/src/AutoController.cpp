@@ -46,7 +46,7 @@ bool AutoController::Execute()
 	InstructionType instructionType = (instructionSet.steps + currentInstruction)->type;
 	double target = (instructionSet.steps + currentInstruction)->target;
 	double speed = (instructionSet.steps + currentInstruction)->speed;
-	int xAxis = (instructionSet.steps + currentInstruction)->xAxis;
+	//int xAxis = (instructionSet.steps + currentInstruction)->xAxis;
 	int yAxis = (instructionSet.steps + currentInstruction)->yAxis;
 	int points = (instructionSet.steps + currentInstruction)->points;
 	int pointsAngle = (instructionSet.steps + currentInstruction)->pointsAngle;
@@ -85,7 +85,7 @@ bool AutoController::Execute()
 		break;
 
 	case DRIBBLE:
-		instructionCompleted = AutoDribble( xAxis, yAxis, points, speed, pointsAngle );
+		instructionCompleted = AutoDribble( target, yAxis, points, speed, pointsAngle );
 		break;
 
 	default:
