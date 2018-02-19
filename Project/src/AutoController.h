@@ -53,7 +53,7 @@ private:
 
 	bool AutoDriveToDist( double speed, double targetDistance, double targetAngle );
 	bool AutoRotateToAngle( double speed, double targetAngle );
-	bool AutoDrivePoints( int xAxis, int yAxis, int points );
+	bool AutoDrivePoints( int xAxis, int yAxis, int points, int speed );
 
 	double hypotneuse;
 	double pointsReached;

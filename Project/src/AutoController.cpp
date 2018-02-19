@@ -84,7 +84,7 @@ bool AutoController::Execute()
 		break;
 
 	case DRIVE_POINTS:
-		instructionCompleted = AutoDrivePoints( xAxis, yAxis, points );
+		instructionCompleted = AutoDrivePoints( xAxis, yAxis, points, speed );
 		break;
 
 	default:
@@ -166,7 +166,7 @@ bool AutoController::AutoRotateToAngle( double speed, double targetAngle )
 	// Return true if angle is within range of (targetAngle - 5, targetAngle + 5))
 	return abs( currentAngleOffset ) < 5;
 }
-bool AutoController::AutoDrivePoints( int xAxis, int yAxis, int points ) //xAxis is the x distace given in inches, yAxis is the y distance given in inches, points are how many sections wanted to get to the x and y axis
+bool AutoController::AutoDrivePoints( int xAxis, int yAxis, int points, int speed ) //xAxis is the x distace given in inches, yAxis is the y distance given in inches, points are how many sections wanted to get to the x and y axis
 {
 	// Get sensor data
 	double currentDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
@@ -181,12 +181,12 @@ bool AutoController::AutoDrivePoints( int xAxis, int yAxis, int points ) //xAxis
 	// Gets robot to given x and y distance in sections (points)
 	while ( pointsReached <= points ){
 
-		AutoDriveToDist( .2f, yAxis/points, instructionStartAngle );
-		AutoRotateToAngle( .2f, angle/points );
+		AutoDriveToDist( speed, yAxis/points, instructionStartAngle );
+		AutoRotateToAngle( speed, angle/points );
 		driveBase->ResetDistance();
 		driveBase->Stop();
-		AutoDriveToDist( .2f, hypotneuse/points, instructionStartAngle );
-		AutoRotateToAngle( .2f, angle/points );
+		AutoDriveToDist( speed, hypotneuse/points, instructionStartAngle );
+		AutoRotateToAngle( speed, angle/points );
 		driveBase->ResetDistance();
 		driveBase->Stop();
 
