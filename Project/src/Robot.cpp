@@ -215,7 +215,9 @@ void Robot::UpdatePreferences()
 
 	// Setup autonomous strategy chooser
 	autoStrategyChooser.AddObject("Exchange Right", &AUTO_STRATEGIES::RIGHTEXCHANGE);
-	autoStrategyChooser.AddObject("Exchange Left", &AUTO_STRATEGIES::LEFTEXCHANGE);
+	//autoStrategyChooser.AddObject("Exchange Left", &AUTO_STRATEGIES::LEFTEXCHANGE);
+	autoStrategyChooser.AddObject("Backup", &AUTO_STRATEGIES::BACKUP);
+	autoStrategyChooser.AddObject("Ram", &AUTO_STRATEGIES::RAM);
 	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoStrategyChooser);
 

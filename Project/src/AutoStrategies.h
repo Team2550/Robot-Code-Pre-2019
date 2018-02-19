@@ -28,7 +28,7 @@ namespace AUTO_STRATEGIES
 		// Drive left down field to put robot center over exchange hole.
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO,
-				PLAYER_STATION_WIDTH + EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)) + 8,
+				PLAYER_STATION_WIDTH + EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)), // + 8,
 				AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -135, 0, AUTO_ROTATE_SPEED},
 
@@ -46,12 +46,12 @@ namespace AUTO_STRATEGIES
 
 		// Retract and backup to auto line
 		{AutoController::RETRACT, 0, 0},
-		{AutoController::DRIVE_DIST, -50, AUTO_DRIVE_SPEED}
+		{AutoController::DRIVE_DIST, -86, AUTO_DRIVE_SPEED}
 	};
-	const AutoController::InstructionSet RIGHTEXCHANGE = {RIGHT_EXCHANGE_STEPS, 17};
+	const AutoController::InstructionSet RIGHTEXCHANGE = {RIGHT_EXCHANGE_STEPS, 19};
 
 	// Gets to the exchange zone from the left side placement on the field
-	const AutoController::Instruction LEFT_EXCHANGE_STEPS[] =
+	/*const AutoController::Instruction LEFT_EXCHANGE_STEPS[] =
 	{
 		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 45 degrees.
 		{AutoController::DRIVE_TO, 42 - (24 / sqrt(2)), AUTO_DRIVE_SPEED},
@@ -74,7 +74,22 @@ namespace AUTO_STRATEGIES
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 36 - (24 / sqrt(2)), AUTO_DRIVE_SPEED}
 	};
-	const AutoController::InstructionSet LEFTEXCHANGE = {LEFT_EXCHANGE_STEPS, 13};
+	const AutoController::InstructionSet LEFTEXCHANGE = {LEFT_EXCHANGE_STEPS, 13};*/
+
+	// Backup
+	const AutoController::Instruction BACKUP_STEPS[] =
+	{
+		{AutoController::DRIVE_TO, -120, AUTO_DRIVE_SPEED}
+	};
+	const AutoController::InstructionSet BACKUP = {BACKUP_STEPS, 1};
+
+	// Ram
+	const AutoController::Instruction RAM_STEPS[] =
+	{
+		{AutoController::DRIVE_TO, 48, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_TO, 100, 1}
+	};
+	const AutoController::InstructionSet RAM = {RAM_STEPS, 2};
 
 	// Do nothing
 	const AutoController::Instruction NOTHING_STEPS[] = {};

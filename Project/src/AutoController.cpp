@@ -157,7 +157,7 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 
 	// Slow down on approach
 	if (fabs(targetDistance - currentDistance) < 12)
-		speedMultiplier = fabs(targetDistance - currentDistance) / 12;
+		speedMultiplier *= fabs(targetDistance - currentDistance) / 12;
 
 	driveBase->Drive(leftSpeed * speedMultiplier * leftSpeedMult, rightSpeed * speedMultiplier * rightSpeedMult);
 
