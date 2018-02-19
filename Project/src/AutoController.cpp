@@ -1,8 +1,9 @@
 #include <AutoController.h>
 
-AutoController::AutoController(DriveBase* driveBase, Gyro* gyroscope)
+AutoController::AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro* gyroscope)
 {
 	this->driveBase = driveBase;
+	this->bulldozer = bulldozer;
 	this->gyroscope = gyroscope;
 
 	instructionSet.steps = NULL;
@@ -12,6 +13,7 @@ AutoController::AutoController(DriveBase* driveBase, Gyro* gyroscope)
 	instructionStartTime = 0;
 	instructionStartDistance = 0;
 	instructionTargetAngle = 0;
+	bulldozerExtended = false;
 }
 
 AutoController::~AutoController()
@@ -34,6 +36,7 @@ void AutoController::Init(InstructionSet instructionSet)
 	instructionStartTime = 0;
 	instructionStartDistance = 0;
 	instructionTargetAngle = 0;
+	bulldozerExtended = false;
 }
 
 bool AutoController::Execute()
@@ -81,6 +84,16 @@ bool AutoController::Execute()
 		instructionCompleted = true;
 		break;
 
+	case EXTEND:
+		bulldozerExtended = true;
+		instructionCompleted = true;
+		break;
+
+	case RETRACT:
+		bulldozerExtended = false;
+		instructionCompleted = true;
+		break;
+
 	//case RESET_DIST_ULTRA:
 	//	driveBase->ResetDistance(); // TODO: Add a way to reset the distance to the current ultrasonic reading
 	//	driveBase->Stop();
@@ -90,6 +103,11 @@ bool AutoController::Execute()
 	default:
 		driveBase->Stop();
 	}
+
+	if (bulldozerExtended)
+		bulldozer->Extend();
+	else
+		bulldozer->Retract();
 
 	if (instructionCompleted)
 	{

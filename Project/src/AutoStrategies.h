@@ -38,9 +38,17 @@ namespace AUTO_STRATEGIES
 
 		// Drive towards wall for 30 inches (slightly less than three feet).
 		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 32 - (24 / sqrt(2)), AUTO_DRIVE_SPEED}
+		{AutoController::DRIVE_TO, 32 - (24 / sqrt(2)), AUTO_DRIVE_SPEED},
+
+		// Extend bulldozer and wait
+		{AutoController::EXTEND, 0, 0},
+		{AutoController::WAIT_TIME, 1, 0},
+
+		// Retract and backup to auto line
+		{AutoController::RETRACT, 0, 0},
+		{AutoController::DRIVE_DIST, -50, AUTO_DRIVE_SPEED}
 	};
-	const AutoController::InstructionSet RIGHTEXCHANGE = {RIGHT_EXCHANGE_STEPS, 13};
+	const AutoController::InstructionSet RIGHTEXCHANGE = {RIGHT_EXCHANGE_STEPS, 17};
 
 	// Gets to the exchange zone from the left side placement on the field
 	const AutoController::Instruction LEFT_EXCHANGE_STEPS[] =

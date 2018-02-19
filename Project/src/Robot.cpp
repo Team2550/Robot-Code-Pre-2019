@@ -4,7 +4,7 @@
 // driveBase:  (float) max power, (float) max boost power, (int) left motor port,
 //             (int) right motor port
 Robot::Robot() : driveController(0), perifController(1),
-				 autoController(&driveBase, &gyroscope),
+				 autoController(&driveBase, &bulldozer, &gyroscope),
 				 bumperSwitch(0, LimitSwitch::LOW),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
 #ifndef PRACTICE_ROBOT
@@ -81,14 +81,10 @@ void Robot::AutonomousPeriodic()
 
 		if (autoStrategyCompleted)
 			std::cout << "Finished at " << autoTimer.Get() << " seconds" << std::endl;
-
-		bulldozer.Retract();
 	}
 	else
 	{
 		driveBase.Stop();
-
-		bulldozer.Extend();
 	}
 }
 

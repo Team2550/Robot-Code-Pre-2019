@@ -4,11 +4,12 @@
 #include <WPILib.h>
 #include <iostream>
 #include "DriveBase.h"
+#include "Bulldozer.h"
 
 class AutoController
 {
 public:
-	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0 }; //, RESET_DIST_ULTRA  };
+	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, EXTEND, RETRACT }; //, RESET_DIST_ULTRA  };
 
 	struct Instruction
 	{
@@ -24,7 +25,7 @@ public:
 		unsigned int count;
 	};
 
-	AutoController(DriveBase* driveBase, Gyro* gyroscope);
+	AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro* gyroscope);
 	~AutoController();
 
 	// Name:	Execute
@@ -39,6 +40,7 @@ public:
 
 private:
 	DriveBase* driveBase;
+	Bulldozer* bulldozer;
 	Gyro* gyroscope;
 
 	Timer timer;
@@ -49,6 +51,7 @@ private:
 	double instructionStartTime;
 	double instructionStartDistance;
 	double instructionTargetAngle;
+	bool bulldozerExtended;
 
 	bool AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle );
 	bool AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle );

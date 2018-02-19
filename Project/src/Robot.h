@@ -51,6 +51,7 @@ private:
 	frc::SendableChooser<const AutoController::InstructionSet*> autoStrategyChooser;
 	const AutoController::InstructionSet* selectedAutoStrategy;
 	bool autoStrategyCompleted;
+	bool autoStartedBackup;
 
 	Joystick driveController;
 	Joystick perifController;
