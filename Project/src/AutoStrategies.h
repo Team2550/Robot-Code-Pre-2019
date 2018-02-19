@@ -76,6 +76,13 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet LEFTEXCHANGE = {LEFT_EXCHANGE_STEPS, 13};*/
 
+	// Cross line
+	const AutoController::Instruction CROSS_STEPS[] =
+	{
+		{AutoController::DRIVE_TO, 102, AUTO_DRIVE_SPEED}
+	};
+	const AutoController::InstructionSet CROSS = {CROSS_STEPS, 1};
+
 	// Backup
 	const AutoController::Instruction BACKUP_STEPS[] =
 	{
