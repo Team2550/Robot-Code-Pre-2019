@@ -17,6 +17,7 @@ public:
 		double xAxis;
 		double yAxis;
 		double points;
+		double pointsAngle;
 	};
 
 	struct InstructionSet
@@ -53,7 +54,7 @@ private:
 
 	bool AutoDriveToDist( double speed, double targetDistance, double targetAngle );
 	bool AutoRotateToAngle( double speed, double targetAngle );
-	bool AutoDrivePoints( int xAxis, int yAxis, int points, int speed );
+	bool AutoDrivePoints( int xAxis, int yAxis, int points, int speed, int pointsAngle );
 
 	double hypotneuse;
 	double pointsReached;

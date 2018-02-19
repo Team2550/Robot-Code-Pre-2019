@@ -49,6 +49,7 @@ bool AutoController::Execute()
 	int xAxis = (instructionSet.steps + currentInstruction)->xAxis;
 	int yAxis = (instructionSet.steps + currentInstruction)->yAxis;
 	int points = (instructionSet.steps + currentInstruction)->points;
+	int pointsAngle = (instructionSet.steps + currentInstruction)->pointsAngle;
 
 	switch (instructionType)
 	{
@@ -84,7 +85,7 @@ bool AutoController::Execute()
 		break;
 
 	case DRIVE_POINTS:
-		instructionCompleted = AutoDrivePoints( xAxis, yAxis, points, speed );
+		instructionCompleted = AutoDrivePoints( xAxis, yAxis, points, speed, pointsAngle );
 		break;
 
 	default:
@@ -166,7 +167,7 @@ bool AutoController::AutoRotateToAngle( double speed, double targetAngle )
 	// Return true if angle is within range of (targetAngle - 5, targetAngle + 5))
 	return abs( currentAngleOffset ) < 5;
 }
-bool AutoController::AutoDrivePoints( int xAxis, int yAxis, int points, int speed ) //xAxis is the x distace given in inches, yAxis is the y distance given in inches, points are how many sections wanted to get to the x and y axis
+bool AutoController::AutoDrivePoints( int xAxis, int yAxis, int points, int speed, int pointsAngle ) //xAxis is the x distace given in inches, yAxis is the y distance given in inches, points are how many sections wanted to get to the x and y axis
 {
 	// Get sensor data
 	double currentDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
@@ -174,19 +175,23 @@ bool AutoController::AutoDrivePoints( int xAxis, int yAxis, int points, int spee
 
 	hypotneuse = sqrt(((xAxis)*(xAxis)) + ((yAxis)*(yAxis)));
 
+	pointsAngle = pointsAngle / points;
 	// angle of the triangle based on the x and y distances given
-	angle = yAxis*yAxis + xAxis*xAxis - hypotneuse*hypotneuse / 2 * yAxis*xAxis;
-	angle = acos (angle);
+	/**angle = yAxis*yAxis + xAxis*xAxis - hypotneuse*hypotneuse / 2 * yAxis*xAxis;
+	angle = acos (angle);**/
 
 	// Gets robot to given x and y distance in sections (points)
 	while ( pointsReached <= points ){
 
+		driveBase->ResetDistance();
 		AutoDriveToDist( speed, yAxis/points, instructionStartAngle );
-		AutoRotateToAngle( speed, angle/points );
+		pointsAngle = pointsAngle + pointsAngle;
+		AutoRotateToAngle( speed, pointsAngle );
 		driveBase->ResetDistance();
 		driveBase->Stop();
 		AutoDriveToDist( speed, hypotneuse/points, instructionStartAngle );
-		AutoRotateToAngle( speed, angle/points );
+		pointsAngle = pointsAngle + pointsAngle;
+		AutoRotateToAngle( speed, pointsAngle );
 		driveBase->ResetDistance();
 		driveBase->Stop();
 
