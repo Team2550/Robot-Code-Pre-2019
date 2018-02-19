@@ -10,13 +10,8 @@ namespace AUTO_STRATEGIES
 	// Place block in exchange
 	const AutoController::Instruction RIGHT_EXCHANGE_STEPS[] =
 	{
-		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 45 degrees.
-		{AutoController::DRIVE_TO, 36 - 16.92, 0.2f},
-		{AutoController::ROTATE_TO, -45, 0.2f},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 24, 0.2f},
-		{AutoController::ROTATE_TO, -90, 0.2f},
+		// Drive a x distance of 33.84 inches and y distance of 30 inches at a pace of 6 sections
+		{AutoController::DRIVE_POINTS, -33.84, 36, 6},
 
 		// Drive left down field 12.011 feet.
 		{AutoController::RESET_DIST_0, 0, 0},
@@ -36,17 +31,8 @@ namespace AUTO_STRATEGIES
 	//Gets to the exchange zone from the left side placement on the field
 	const AutoController::Instruction LEFT_EXCHANGE_STEPS[] =
 	{
-		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 30 degrees.
-		{AutoController::DRIVE_TO, 36, 0.2f},
-		{AutoController::ROTATE_TO, 30, 0.2f},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 68.4, 0.2f},
-		{AutoController::ROTATE_TO, 60, 0.2f},
-
-		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_TO, 68.4, 0.2f},
-		{AutoController::ROTATE_TO, 90, 0.2f},
+		// Drive a x distance of 33.84 inches and y distance of 30 inches at a pace of 6 sections
+		{AutoController::DRIVE_POINTS, 33.84, 30, 6},
 
 		// Drive left down field 10.989 feet.
 		{AutoController::RESET_DIST_0, 0, 0},

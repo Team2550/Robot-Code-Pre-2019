@@ -7,13 +7,16 @@
 class AutoController
 {
 public:
-	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, RESET_DIST_ULTRA  };
+	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, RESET_DIST_ULTRA, DRIVE_POINTS  };
 
 	struct Instruction
 	{
 		InstructionType type;
 		double target; // Distance or angle, depending on instruction
 		double speed;
+		double xAxis;
+		double yAxis;
+		double points;
 	};
 
 	struct InstructionSet
@@ -50,6 +53,11 @@ private:
 
 	bool AutoDriveToDist( double speed, double targetDistance, double targetAngle );
 	bool AutoRotateToAngle( double speed, double targetAngle );
+	bool AutoDrivePoints( int xAxis, int yAxis, int points );
+
+	double hypotneuse;
+	double pointsReached;
+	double angle;
 
 };
 

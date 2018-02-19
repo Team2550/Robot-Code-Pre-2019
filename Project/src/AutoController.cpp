@@ -1,4 +1,5 @@
 #include <AutoController.h>
+#include "math.h"
 
 AutoController::AutoController(DriveBase* driveBase, ADXRS450_Gyro* gyroscope)
 {
@@ -45,6 +46,9 @@ bool AutoController::Execute()
 	InstructionType instructionType = (instructionSet.steps + currentInstruction)->type;
 	double target = (instructionSet.steps + currentInstruction)->target;
 	double speed = (instructionSet.steps + currentInstruction)->speed;
+	int xAxis = (instructionSet.steps + currentInstruction)->xAxis;
+	int yAxis = (instructionSet.steps + currentInstruction)->yAxis;
+	int points = (instructionSet.steps + currentInstruction)->points;
 
 	switch (instructionType)
 	{
@@ -77,6 +81,10 @@ bool AutoController::Execute()
 		driveBase->ResetDistance(); // TODO: Add a way to reset the distance to the current ultrasonic reading
 		driveBase->Stop();
 		instructionCompleted = true;
+		break;
+
+	case DRIVE_POINTS:
+		instructionCompleted = AutoDrivePoints( xAxis, yAxis, points );
 		break;
 
 	default:
@@ -157,4 +165,28 @@ bool AutoController::AutoRotateToAngle( double speed, double targetAngle )
 
 	// Return true if angle is within range of (targetAngle - 5, targetAngle + 5))
 	return abs( currentAngleOffset ) < 5;
+}
+bool AutoController::AutoDrivePoints( int xAxis, int yAxis, int points ) //xAxis is the x distace given in inches, yAxis is the y distance given in inches, points are how many sections wanted to get to the x and y axis
+{
+	// Get sensor data
+	double currentDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
+	double currentAngle = gyroscope->GetAngle();
+
+	hypotneuse = sqrt(((xAxis)*(xAxis)) + ((yAxis)*(yAxis)));
+
+	// angle of the triangle based on the x and y distances given
+	angle = yAxis*yAxis + xAxis*xAxis - hypotneuse*hypotneuse / 2 * yAxis*xAxis;
+	angle = acos (angle);
+
+	// Gets robot to given x and y distance in sections (points)
+	while ( pointsReached <= points ){
+
+		AutoDriveToDist( .2f, yAxis/points, instructionStartAngle );
+		AutoRotateToAngle( .2f, angle/points );
+		driveBase->ResetDistance();
+		driveBase->Stop();
+		AutoDriveToDist( .2f, hypotneuse/points, instructionStartAngle );
+		AutoRotateToAngle( .2f, angle/points );
+
+	}
 }
