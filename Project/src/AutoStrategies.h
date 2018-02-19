@@ -11,14 +11,14 @@ namespace AUTO_STRATEGIES
 	const AutoController::Instruction RIGHT_EXCHANGE_STEPS[] =
 	{
 		// Drive a x distance of 33.84 inches and y distance of 30 inches at a pace of 6 sections
-		{AutoController::DRIVE_POINTS, 33.84, 36, 6, .2f, -90},
+		{AutoController::DRIBBLE, 33.84, 36, 6, .2f, -90},
 
 		// Drive left down field 12.011 feet.
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 144.132 - 33.84, 0.2f},
 
 		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_POINTS, 33.84, 36, 6, .2f, -180},
+		{AutoController::DRIBBLE, 33.84, 36, 6, .2f, -180},
 
 		// Drive towards wall for 30 inches (slightly less than three feet).
 		{AutoController::RESET_DIST_0, 0, 0},
@@ -30,14 +30,14 @@ namespace AUTO_STRATEGIES
 	const AutoController::Instruction LEFT_EXCHANGE_STEPS[] =
 	{
 		// Drive a x distance of 33.84 inches and y distance of 30 inches at a pace of 6 sections
-		{AutoController::DRIVE_POINTS, 33.84, 30, 6, .2f, 90},
+		{AutoController::DRIBBLE, 33.84, 30, 6, .2f, 90},
 
 		// Drive left down field 10.989 feet.
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 131.868 - 33.84, 0.2f},
 
 		{AutoController::RESET_DIST_0, 0, 0},
-		{AutoController::DRIVE_POINTS, 33.84, 30, 6, .2f, 180},
+		{AutoController::DRIBBLE, 33.84, 30, 6, .2f, 180},
 
 		// Drive towards wall for 30 inches (slightly less than three feet).
 		{AutoController::RESET_DIST_0, 0, 0},

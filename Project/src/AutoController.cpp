@@ -84,8 +84,8 @@ bool AutoController::Execute()
 		instructionCompleted = true;
 		break;
 
-	case DRIVE_POINTS:
-		instructionCompleted = AutoDrivePoints( xAxis, yAxis, points, speed, pointsAngle );
+	case DRIBBLE:
+		instructionCompleted = AutoDribble( xAxis, yAxis, points, speed, pointsAngle );
 		break;
 
 	default:
@@ -167,7 +167,7 @@ bool AutoController::AutoRotateToAngle( double speed, double targetAngle )
 	// Return true if angle is within range of (targetAngle - 5, targetAngle + 5))
 	return abs( currentAngleOffset ) < 5;
 }
-bool AutoController::AutoDrivePoints( int xAxis, int yAxis, int points, int speed, int pointsAngle ) //xAxis is the x distace given in inches, yAxis is the y distance given in inches, points are how many sections wanted to get to the x and y axis
+bool AutoController::AutoDribble( int xAxis, int yAxis, int points, int speed, int pointsAngle ) //xAxis is the x distace given in inches, yAxis is the y distance given in inches, points are how many sections wanted to get to the x and y axis
 {
 	// Get sensor data
 	double currentDistance = (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
