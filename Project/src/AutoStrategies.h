@@ -12,10 +12,7 @@ namespace AUTO_STRATEGIES
 	const float EXCHANGE_WIDTH = 48.0f;
 	const float EXCHANGE_OFFSET = -5.0f;
 
-	// Instruction Format: Type, Target, Speed / Left Speed, Right Speed
-	// Speed values are multipliers to each side. The signs of turning instructions are managed later on, having a negative speed on a rotate instruction
-	// infers that both sides will be moving the same direction instead of opposite directions. Be careful when doing this, as it can lead to the robot
-	// spinning and never achieving the target angle.
+	// Instruction Format: Type, Target, Left Speed, Right Speed (Defaults to equal left speed)
 
 	// Place block in exchange, starting just to the right of the center player, from their perspective.
 	const AutoController::Instruction RIGHT_EXCHANGE_STEPS[] =
@@ -50,20 +47,20 @@ namespace AUTO_STRATEGIES
 	{
 		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 45 degrees.
 		{AutoController::DRIVE_TO, 42 - (24 / sqrt(2)), AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, 45, AUTO_ROTATE_SPEED},
+		{AutoController::ROTATE_TO, 45, AUTO_ROTATE_SPEED, 0},
 
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 24, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, 90, 0, AUTO_ROTATE_SPEED},
+		{AutoController::ROTATE_TO, 90, AUTO_ROTATE_SPEED, 0},
 
 		// Drive right down field 12.011 feet.
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 134.868 - (48 / sqrt(2)), AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, 135, 0, AUTO_ROTATE_SPEED},
+		{AutoController::ROTATE_TO, 135, AUTO_ROTATE_SPEED, 0},
 
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 24, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, 180, 0, AUTO_ROTATE_SPEED},
+		{AutoController::ROTATE_TO, 180, AUTO_ROTATE_SPEED, 0},
 
 		// Drive towards wall for 30 inches (slightly less than three feet).
 		{AutoController::RESET_DIST_0, 0, 0},

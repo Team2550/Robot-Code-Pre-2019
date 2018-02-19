@@ -124,13 +124,13 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 		angleOffsetPercent = -1;
 
 	// Set speed offset to the speed multiplied by the percent that the robot is to 90 degrees off target
-	double leftSpeedOffset = 1 - angleOffsetPercent;
-	double rightSpeedOffset = 1 + angleOffsetPercent;
+	double leftSpeedMult = 1.0 - angleOffsetPercent;
+	double rightSpeedMult = 1.0 + angleOffsetPercent;
 
 	// Scale the speed based on distance to target
 	double speedMultiplier;
 
-	// Passed target, back up
+	// Back up if passed target
 	if (currentDistance > targetDistance)
 		speedMultiplier = -1;
 
@@ -138,7 +138,7 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	if (fabs(targetDistance - currentDistance) < 12)
 		speedMultiplier = fabs(targetDistance - currentDistance) / 12;
 
-	driveBase->Drive(leftSpeed * speedMultiplier * leftSpeedOffset, rightSpeed * speedMultiplier * rightSpeedOffset);
+	driveBase->Drive(leftSpeed * speedMultiplier * leftSpeedMult, rightSpeed * speedMultiplier * rightSpeedMult);
 
 	// Returns true if distance to target is less than 6 (1 foot range)
 	return abs( currentDistance - targetDistance ) < 6;
@@ -146,16 +146,34 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 
 bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle )
 {
+	// If left and right speeds are equal, assume directions are meant to be opposite
+	if (leftSpeed == rightSpeed)
+		rightSpeed *= -1;
+
+	// If speeds would cause robot to rotate counter-clockwise, invert them because the sign of speeds should rotate clockwise
+	if (rightSpeed > leftSpeed)
+	{
+		rightSpeed *= -1;
+		leftSpeed *= -1;
+	}
+
 	// Get sensor data
-	double currentAngleOffset = gyroscope->GetAngle() - targetAngle;
+	double targetAngleOffset = targetAngle - gyroscope->GetAngle();
 
-	if ( currentAngleOffset > 3 )
-		driveBase->Drive(-leftSpeed, rightSpeed);
-	else if ( currentAngleOffset < 3 )
-		driveBase->Drive(leftSpeed, -rightSpeed);
+
+	// Turn clockwise
+	if ( targetAngleOffset > 4 )
+		driveBase->Drive(leftSpeed, rightSpeed);
+
+	// Turn counter-clockwise
+	else if ( targetAngleOffset < -4 )
+		driveBase->Drive(-leftSpeed, -rightSpeed);
+
+	// Stop
 	else
-		driveBase->Drive(0, 0);
+		driveBase->Stop();
 
-	// Return true if angle is within range of (targetAngle - 5, targetAngle + 5))
-	return abs( currentAngleOffset ) < 5;
+
+	// Return true if angle is within range of (targetAngle - 4, targetAngle + 4))
+	return abs( targetAngleOffset ) < 4;
 }
