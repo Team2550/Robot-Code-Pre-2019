@@ -187,6 +187,8 @@ bool AutoController::AutoDrivePoints( int xAxis, int yAxis, int points ) //xAxis
 		driveBase->Stop();
 		AutoDriveToDist( .2f, hypotneuse/points, instructionStartAngle );
 		AutoRotateToAngle( .2f, angle/points );
+		driveBase->ResetDistance();
+		driveBase->Stop();
 
 	}
 }
