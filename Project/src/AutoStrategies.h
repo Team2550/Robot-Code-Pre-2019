@@ -28,7 +28,7 @@ namespace AUTO_STRATEGIES
 		// Drive left down field to put robot center over exchange hole.
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO,
-				PLAYER_STATION_WIDTH + EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)) + 2,
+				PLAYER_STATION_WIDTH + EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)), // + 2,
 				AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -135, 0, AUTO_ROTATE_SPEED},
 
@@ -46,7 +46,7 @@ namespace AUTO_STRATEGIES
 
 		// Retract and backup to auto line
 		{AutoController::RETRACT, 0, 0},
-		{AutoController::DRIVE_DIST, -92, AUTO_DRIVE_SPEED}
+		{AutoController::DRIVE_DIST, -95, AUTO_DRIVE_SPEED}
 	};
 	const AutoController::InstructionSet RIGHT_EXCHANGE = {RIGHT_EXCHANGE_STEPS, 19};
 

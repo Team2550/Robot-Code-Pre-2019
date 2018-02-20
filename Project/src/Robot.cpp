@@ -7,14 +7,15 @@ Robot::Robot() : driveController(0), perifController(1),
 				 autoController(&driveBase, &bulldozer, &gyroscope),
 				 bumperSwitch(0, LimitSwitch::LOW),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
-#ifndef PRACTICE_ROBOT
 				 gyroscope(frc::SPI::Port::kOnboardCS0),
-#else
-				 gyroscope(0),
-#endif
 				 driveBase(0, 1, 0, 1, 2, 3,
+#ifndef PRACTICE_ROBOT
 						   (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
 						   (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings 1.13 *
+#else // Practice robot encoders read faster
+						   1.095 * (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
+						   1.095 * (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings 1.13 *
+#endif
 				 bulldozer(0, 1, 0.5)
 {
 	axisTankLeft = xbox::axis::leftY;
@@ -80,7 +81,12 @@ void Robot::AutonomousPeriodic()
 		std::cout << driveBase.GetLeftSpeed() << ' ' << driveBase.GetRightSpeed() << std::endl;
 
 		if (autoStrategyCompleted)
+		{
 			std::cout << "Finished at " << autoTimer.Get() << " seconds" << std::endl;
+			std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
+			          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << ' '
+					  << "Angle: " << std::setw(5) << gyroscope.GetAngle() << std::endl;
+		}
 	}
 	else
 	{

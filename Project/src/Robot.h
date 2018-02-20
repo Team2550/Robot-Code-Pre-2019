@@ -60,11 +60,7 @@ private:
 
 	LimitSwitch bumperSwitch;
 	UltrasonicAnalog ultrasonic;
-#ifndef PRACTICE_ROBOT
 	ADXRS450_Gyro gyroscope;
-#else
-	AnalogGyro gyroscope;
-#endif
 
 	DriveBase driveBase;
 	Bulldozer bulldozer;

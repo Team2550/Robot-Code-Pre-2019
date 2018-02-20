@@ -156,13 +156,17 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	double rightSpeedMult = 1.0 + angleOffsetPercent * speedMultiplier;
 
 	// Slow down on approach
-	if (fabs(targetDistance - currentDistance) < 12)
-		speedMultiplier *= fabs(targetDistance - currentDistance) / 12;
+	if (fabs(targetDistance - currentDistance) < 24)
+		speedMultiplier *= fabs(targetDistance - currentDistance) / 24;
+
+	// Prevent robot from driving too slowly
+	if (fabs(speedMultiplier) < 0.65)
+		speedMultiplier *= 0.65 / fabs(speedMultiplier);
 
 	driveBase->Drive(leftSpeed * speedMultiplier * leftSpeedMult, rightSpeed * speedMultiplier * rightSpeedMult);
 
-	// Returns true if distance to target is less than 6 (1 foot range)
-	return abs( currentDistance - targetDistance ) < 6;
+	// Returns true if distance to target is less than 3 (0.5 foot range)
+	return abs( currentDistance - targetDistance ) < 3;
 }
 
 bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle )

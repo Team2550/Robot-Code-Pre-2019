@@ -1,5 +1,4 @@
 #include "DriveBase.h"
-#include "Utility.h"
 
 DriveBase::DriveBase(int leftMotorPort, int rightMotorPort,
 					 int leftEncoderPortA, int leftEncoderPortB,
