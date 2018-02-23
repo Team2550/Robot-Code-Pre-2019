@@ -27,8 +27,10 @@ DriveBase::DriveBase(int leftMotorPort, int rightMotorPort,
 	leftEncoder.SetMinRate(1);
 	rightEncoder.SetMinRate(1);
 
-	leftTrim = 1;
-	rightTrim = 1;
+	leftForwardTrim = 1;
+	rightForwardTrim = 1;
+	leftReverseTrim = 1;
+	rightReverseTrim = 1;
 }
 
 double DriveBase::GetLeftSpeed()
@@ -49,8 +51,15 @@ double DriveBase::GetRightSpeed()
 
 void DriveBase::Drive(double leftSpeed, double rightSpeed)
 {
-	leftMotor.Set(leftSpeed * leftTrim);
-	rightMotor.Set(rightSpeed * rightTrim);
+	if (leftSpeed > 0)
+		leftMotor.Set(leftSpeed * leftForwardTrim);
+	else
+		leftMotor.Set(leftSpeed * leftReverseTrim);
+
+	if (rightSpeed > 0)
+		rightMotor.Set(rightSpeed * rightForwardTrim);
+	else
+		rightMotor.Set(rightSpeed * rightReverseTrim);
 }
 
 void DriveBase::Drive(double speed)
@@ -84,8 +93,10 @@ double DriveBase::GetRightDistance()
 	return rightEncoder.GetDistance();
 }
 
-void DriveBase::SetTrim(float leftTrim, float rightTrim)
+void DriveBase::SetTrim(float leftForwardTrim, float rightForwardTrim, float leftReverseTrim, float rightReverseTrim)
 {
-	this->leftTrim = leftTrim;
-	this->rightTrim = rightTrim;
+	this->leftForwardTrim = leftForwardTrim;
+	this->rightForwardTrim = rightForwardTrim;
+	this->leftReverseTrim = leftReverseTrim;
+	this->rightReverseTrim = rightReverseTrim;
 }

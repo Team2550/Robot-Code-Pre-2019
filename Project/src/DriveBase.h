@@ -22,7 +22,7 @@ public:
 	void ResetDistance();
 	double GetLeftDistance();
 	double GetRightDistance();
-	void SetTrim(float leftTrim, float rightTrim);
+	void SetTrim(float leftForwardTrim, float rightForwardTrim, float leftReverseTrim, float rightReverseTrim);
 
 private:
 	Victor leftMotor;
@@ -31,8 +31,10 @@ private:
 	Encoder leftEncoder;
 	Encoder rightEncoder;
 
-	float leftTrim;
-	float rightTrim;
+	float leftForwardTrim;
+	float rightForwardTrim;
+	float leftReverseTrim;
+	float rightReverseTrim;
 
 };
 
