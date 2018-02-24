@@ -226,6 +226,7 @@ void Robot::UpdatePreferences()
 
 	// Setup autonomous strategy chooser
 	autoStrategyChooser.AddObject("Exchange Right", &AUTO_STRATEGIES::RIGHT_EXCHANGE);
+	autoStrategyChooser.AddObject("Braytonsanity", &AUTO_STRATEGIES::BRAYTONSANITY);
 	autoStrategyChooser.AddObject("Cross Line", &AUTO_STRATEGIES::CROSS);
 	autoStrategyChooser.AddObject("Backup", &AUTO_STRATEGIES::BACKUP);
 	autoStrategyChooser.AddObject("Ram", &AUTO_STRATEGIES::RAM);

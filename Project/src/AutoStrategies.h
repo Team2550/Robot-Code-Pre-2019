@@ -60,6 +60,38 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet RIGHT_EXCHANGE = {RIGHT_EXCHANGE_STEPS, 25};
 
+	// Braytonsanity
+	const AutoController::Instruction BRAYTONSANITY_STEPS[] =
+	{
+		// Ram into switch
+		{AutoController::DRIVE_TO, 48, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_TO, 100, 1},
+
+		// Backup and drive around switch
+		{AutoController::DRIVE_DIST, -24, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, 90, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, 36, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, 0, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, 72, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -90, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, 174, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -180, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, 72, AUTO_DRIVE_SPEED},
+
+		// Drive diagonally towards the exchange
+		{AutoController::ROTATE_TO, -225, 0, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, 72, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -180, AUTO_ROTATE_SPEED, 0},
+		{AutoController::DRIVE_DIST, 72, AUTO_DRIVE_SPEED},
+
+		// Extend the bulldozer
+		{AutoController::EXTEND, 0, 0},
+		{AutoController::WAIT_TIME, 0.5, 0},
+		{AutoController::RETRACT, 0, 0},
+		{AutoController::DRIVE_DIST, -98, AUTO_DRIVE_SPEED * 1.2}
+	};
+	const AutoController::InstructionSet BRAYTONSANITY = {BRAYTONSANITY_STEPS, 19};
+
 	// Cross line
 	const AutoController::Instruction CROSS_STEPS[] =
 	{
