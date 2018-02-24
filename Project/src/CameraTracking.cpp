@@ -26,24 +26,40 @@ CameraTracking::~CameraTracking()
 
 void CameraTracking::VisionThread()
 {
-	// Get the USB camera from CameraServer,
-	// start streaming to dashboard
+	// Get the USB camera from CameraServer
+	cs::UsbCamera camera =
+			CameraServer::GetInstance()
+					->StartAutomaticCapture();
+	// Set the resolution
+	camera.SetResolution(640, 480);
 
-	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
-	camera.SetResolution(540, 360);
-	camera.SetExposureManual(50);
+	// Get a CvSink. This will capture Mats from the Camera
 	cs::CvSink cvSink = CameraServer::GetInstance()->GetVideo();
-	cs::CvSource outputStreamstd = CameraServer::GetInstance()->PutVideo("Gray", 540, 360);
-	cv::Mat source;
-	cv::Mat output;
+	// Setup a CvSource. This will send images back to the Dashboard
+	cs::CvSource outputStream =
+			CameraServer::GetInstance()->PutVideo(
+					"Rectangle", 640, 480);
+
+	// Mats are very memory expensive. Lets reuse this Mat.
+	cv::Mat mat;
 
 	while (true)
 	{
-		cvSink.GrabFrame(source);
-		//cvtColor(source, output, cv::COLOR_BGR2GRAY);
-		outputStreamstd.PutFrame(source);
-
-		//targetIsVisible = false;
+		// Tell the CvSink to grab a frame from the camera and
+		// put it
+		// in the source mat.  If there is an error notify the
+		// output.
+		if (cvSink.GrabFrame(mat) == 0) {
+			// Send the output the error.
+			outputStream.NotifyError(cvSink.GetError());
+			// skip the rest of the current iteration
+			continue;
+		}
+		// Put a rectangle on the image
+		rectangle(mat, cv::Point(100, 100), cv::Point(400, 400),
+				cv::Scalar(255, 255, 255), 5);
+		// Give the output stream a new image to display
+		outputStream.PutFrame(mat);
 	}
 }
 
