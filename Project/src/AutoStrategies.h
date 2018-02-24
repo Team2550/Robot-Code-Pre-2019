@@ -60,45 +60,51 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet RIGHT_EXCHANGE = {RIGHT_EXCHANGE_STEPS, 25};
 
-	// Braytonsanity
-	const AutoController::Instruction BRAYTONSANITY_STEPS[] =
+	// Right Ram and Grab
+	const AutoController::Instruction RIGHT_RAM_AND_GRAB_STEPS[] =
 	{
 		// Ram into switch
-		{AutoController::DRIVE_TO, 48, AUTO_DRIVE_SPEED},
-		{AutoController::DRIVE_TO, 100, 1},
+		{AutoController::DRIVE_TO, 50, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_TO, 100, AUTO_DRIVE_SPEED * 1.2}, //1},
 
 		// Backup and drive around switch
-		{AutoController::DRIVE_DIST, -24, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, 90, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 60, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, 0, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 104, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -90, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 161, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -135, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 26, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -90, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 33, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -135, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, -24, AUTO_DRIVE_SPEED}, // Backup
+		{AutoController::ROTATE_TO, 90, AUTO_ROTATE_SPEED}, // Turn to the right
+		{AutoController::DRIVE_DIST, 48, AUTO_DRIVE_SPEED}, // Drive past switch
+		{AutoController::ROTATE_TO, 0, AUTO_ROTATE_SPEED}, // Turn forward
+		{AutoController::DRIVE_DIST, 132, AUTO_DRIVE_SPEED}, // Drive past switch
+		{AutoController::ROTATE_TO, -90, AUTO_ROTATE_SPEED}, // Turn left
+		{AutoController::RESET_DIST_0, 0, 0}, // Drive toward block
+		{AutoController::DRIVE_TO, 105, AUTO_DRIVE_SPEED * 1.2}, // Drive toward block
+		{AutoController::DRIVE_TO, 150, AUTO_DRIVE_SPEED}, // Drive toward block
+
+		// Push block
+		{AutoController::ROTATE_TO, -135, AUTO_ROTATE_SPEED}, // Turn toward block
+		{AutoController::DRIVE_DIST, 24, AUTO_DRIVE_SPEED}, // Drive and push block
+		{AutoController::ROTATE_TO, -90, AUTO_ROTATE_SPEED, 0}, // Rotate right side backwards
+		//{AutoController::DRIVE_DIST, 24, AUTO_DRIVE_SPEED}, // Drive left
+
+		// Drive around left side of switch
+		{AutoController::ROTATE_TO, -135, 0, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, 24, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -180, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 72, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -180, 0, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, 50, AUTO_DRIVE_SPEED},
 
 		// Drive diagonally towards the exchange
 		{AutoController::ROTATE_TO, -225, 0, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 112, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 100, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -180, AUTO_ROTATE_SPEED, 0},
-		{AutoController::DRIVE_DIST, 40, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 12, AUTO_DRIVE_SPEED},
 
 		// Extend the bulldozer
 		{AutoController::EXTEND, 0, 0},
 		{AutoController::WAIT_TIME, 0.5, 0},
 		{AutoController::RETRACT, 0, 0},
-		{AutoController::DRIVE_DIST, -40, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -225, 0, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, -112, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, -20, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -225, -AUTO_ROTATE_SPEED, 0},
+		{AutoController::DRIVE_DIST, -120, AUTO_DRIVE_SPEED},
 	};
-	const AutoController::InstructionSet BRAYTONSANITY = {BRAYTONSANITY_STEPS, 27};
+	const AutoController::InstructionSet RIGHT_RAM_AND_GRAB = {RIGHT_RAM_AND_GRAB_STEPS, 28};
 
 	// Cross line
 	const AutoController::Instruction CROSS_STEPS[] =
