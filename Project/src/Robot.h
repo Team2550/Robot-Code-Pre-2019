@@ -48,7 +48,7 @@ private:
 	bool bulldozerPulseToggle;
 
 	Preferences *prefs;
-	frc::SendableChooser<const AutoController::InstructionSet*> autoStrategyChooser;
+	frc::SendableChooser<const AutoController::PositionOptions*> autoStrategyChooser;
 	const AutoController::InstructionSet* selectedAutoStrategy;
 	bool autoStrategyCompleted;
 	bool autoStartedBackup;

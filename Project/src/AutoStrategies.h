@@ -106,6 +106,10 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet RIGHT_RAM_AND_GRAB = {RIGHT_RAM_AND_GRAB_STEPS, 28};
 
+	// Right Position Options
+	const AutoController::PositionOptions RIGHT_OPTIONS = {&RIGHT_EXCHANGE, &RIGHT_RAM_AND_GRAB};
+
+
 	// Cross line
 	const AutoController::Instruction CROSS_STEPS[] =
 	{
@@ -113,24 +117,16 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet CROSS = {CROSS_STEPS, 1};
 
-	// Backup
-	const AutoController::Instruction BACKUP_STEPS[] =
-	{
-		{AutoController::DRIVE_TO, -120, AUTO_DRIVE_SPEED}
-	};
-	const AutoController::InstructionSet BACKUP = {BACKUP_STEPS, 1};
+	// Cross Only Options
+	const AutoController::PositionOptions CROSS_OPTIONS = {&CROSS, &CROSS};
 
-	// Ram
-	const AutoController::Instruction RAM_STEPS[] =
-	{
-		{AutoController::DRIVE_TO, 48, AUTO_DRIVE_SPEED},
-		{AutoController::DRIVE_TO, 100, 1}
-	};
-	const AutoController::InstructionSet RAM = {RAM_STEPS, 2};
 
 	// Do nothing
 	const AutoController::Instruction NOTHING_STEPS[] = {};
 	const AutoController::InstructionSet NOTHING = {NOTHING_STEPS, 0};
+
+	// Do nothing options
+	const AutoController::PositionOptions NOTHING_OPTIONS = {&NOTHING, &NOTHING};
 }
 
 #endif

@@ -25,6 +25,12 @@ public:
 		unsigned int count;
 	};
 
+	struct PositionOptions
+	{
+		const InstructionSet* leftOption;
+		const InstructionSet* rightOption;
+	};
+
 	AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro* gyroscope);
 	~AutoController();
 

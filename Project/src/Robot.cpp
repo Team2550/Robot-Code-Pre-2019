@@ -225,15 +225,24 @@ void Robot::UpdatePreferences()
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
 	// Setup autonomous strategy chooser
-	autoStrategyChooser.AddObject("Exchange Right", &AUTO_STRATEGIES::RIGHT_EXCHANGE);
-	autoStrategyChooser.AddObject("Braytonsanity", &AUTO_STRATEGIES::BRAYTONSANITY);
-	autoStrategyChooser.AddObject("Cross Line", &AUTO_STRATEGIES::CROSS);
-	autoStrategyChooser.AddObject("Backup", &AUTO_STRATEGIES::BACKUP);
-	autoStrategyChooser.AddObject("Ram", &AUTO_STRATEGIES::RAM);
-	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING);
+	autoStrategyChooser.AddObject("Right", &AUTO_STRATEGIES::RIGHT_OPTIONS);
+	autoStrategyChooser.AddObject("Cross Line", &AUTO_STRATEGIES::CROSS_OPTIONS);
+	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING_OPTIONS);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoStrategyChooser);
 
-	selectedAutoStrategy = autoStrategyChooser.GetSelected();
+	// Determine switch setup to select strategy.
+	Position gameData[3];
+	GetGameData(gameData);
+
+	if (autoStrategyChooser.GetSelected())
+	{
+		if (gameData[0] == LEFT)
+			selectedAutoStrategy = autoStrategyChooser.GetSelected()->leftOption;
+		else
+			selectedAutoStrategy = autoStrategyChooser.GetSelected()->rightOption;
+	}
+	else
+		selectedAutoStrategy = NULL;
 
 	std::cout << "Updated Preferences" << std::endl;
 }
