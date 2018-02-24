@@ -170,6 +170,15 @@ void Robot::TeleopPeriodic()
 		bulldozerPulseToggle = !bulldozer.Pulse(0); // Disables toggle if pulse is complete
 	else
 		bulldozer.Retract();
+
+	// Accelerometer
+	std::cout << "Accel: " << accelerometer.GetX() << ' ' << accelerometer.GetY() << ' ' << accelerometer.GetZ() << std::endl;
+
+	double totalAccel = sqrt(accelerometer.GetX() * accelerometer.GetX() +
+	                         accelerometer.GetY() * accelerometer.GetY() +
+	                         accelerometer.GetZ() * accelerometer.GetZ());
+
+	Utility::SetRumble(driveController, Utility::BOTH, 1 - 1 / (1 + totalAccel));
 }
 
 /*==============================================================

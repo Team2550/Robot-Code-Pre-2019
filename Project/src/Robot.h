@@ -4,6 +4,7 @@
 #include <WPILib.h>
 #include <iostream>
 #include <iomanip>
+#include <math.h>
 #include "xBox.h"
 #include "AutoController.h"
 #include "AutoStrategies.h"
@@ -61,6 +62,7 @@ private:
 	LimitSwitch bumperSwitch;
 	UltrasonicAnalog ultrasonic;
 	ADXRS450_Gyro gyroscope;
+	BuiltInAccelerometer accelerometer;
 
 	DriveBase driveBase;
 	Bulldozer bulldozer;
