@@ -70,27 +70,35 @@ namespace AUTO_STRATEGIES
 		// Backup and drive around switch
 		{AutoController::DRIVE_DIST, -24, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, 90, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 36, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 60, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, 0, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 72, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 104, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -90, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 174, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 161, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -135, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, 26, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -90, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, 33, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -135, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, 24, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -180, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, 72, AUTO_DRIVE_SPEED},
 
 		// Drive diagonally towards the exchange
 		{AutoController::ROTATE_TO, -225, 0, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 72, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 112, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -180, AUTO_ROTATE_SPEED, 0},
-		{AutoController::DRIVE_DIST, 72, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 40, AUTO_DRIVE_SPEED},
 
 		// Extend the bulldozer
 		{AutoController::EXTEND, 0, 0},
 		{AutoController::WAIT_TIME, 0.5, 0},
 		{AutoController::RETRACT, 0, 0},
-		{AutoController::DRIVE_DIST, -98, AUTO_DRIVE_SPEED * 1.2}
+		{AutoController::DRIVE_DIST, -40, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -225, 0, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, -112, AUTO_DRIVE_SPEED},
 	};
-	const AutoController::InstructionSet BRAYTONSANITY = {BRAYTONSANITY_STEPS, 19};
+	const AutoController::InstructionSet BRAYTONSANITY = {BRAYTONSANITY_STEPS, 27};
 
 	// Cross line
 	const AutoController::Instruction CROSS_STEPS[] =
