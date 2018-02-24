@@ -41,6 +41,9 @@ void Robot::RobotInit()
 	std::cout << "Calibrating gyro..." << std::endl;
 	gyroscope.Calibrate();
 	std::cout << "Gyro calibrated" << std::endl;
+
+	// Start Video Stream
+	CameraServer::GetInstance()->StartAutomaticCapture();
 }
 
 void Robot::AutonomousInit()
