@@ -19,8 +19,8 @@ Robot::Robot() : driveController(0), perifController(1),
 {
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
-	buttonBoost = xbox::btn::lb;
-	buttonTurtle = xbox::btn::rb;
+	buttonBoost = xbox::btn::rb;
+	buttonTurtle = xbox::btn::lb;
 	buttonBulldozerExtend = xbox::btn::rb;
 	buttonBulldozerPulse = xbox::btn::lb;
 
