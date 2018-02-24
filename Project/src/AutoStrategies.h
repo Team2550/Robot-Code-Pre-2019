@@ -18,23 +18,33 @@ namespace AUTO_STRATEGIES
 	const AutoController::Instruction RIGHT_EXCHANGE_STEPS[] =
 	{
 		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 45 degrees.
-		{AutoController::DRIVE_TO, 42 - (24 / sqrt(2)), AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_TO, 40 - (24 / sqrt(2)), AUTO_DRIVE_SPEED},
+		{AutoController::WAIT_TIME, 0.1, 0},
 		{AutoController::ROTATE_TO, -45, 0, AUTO_ROTATE_SPEED},
+		{AutoController::WAIT_TIME, 0.05, 0},
 
+		// Diagonal
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 24, AUTO_DRIVE_SPEED},
+		{AutoController::WAIT_TIME, 0.1, 0},
 		{AutoController::ROTATE_TO, -90, 0, AUTO_ROTATE_SPEED},
+		{AutoController::WAIT_TIME, 0.05, 0},
 
 		// Drive left down field to put robot center over exchange hole.
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO,
-				PLAYER_STATION_WIDTH + EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)), // + 2,
+				PLAYER_STATION_WIDTH + EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)),
 				AUTO_DRIVE_SPEED},
+		{AutoController::WAIT_TIME, 0.1, 0},
 		{AutoController::ROTATE_TO, -135, 0, AUTO_ROTATE_SPEED},
+		{AutoController::WAIT_TIME, 0.05, 0},
 
+		// Diagonal
 		{AutoController::RESET_DIST_0, 0, 0},
 		{AutoController::DRIVE_TO, 24, AUTO_DRIVE_SPEED},
+		{AutoController::WAIT_TIME, 0.1, 0},
 		{AutoController::ROTATE_TO, -180, 0, AUTO_ROTATE_SPEED},
+		{AutoController::WAIT_TIME, 0.05, 0},
 
 		// Drive towards wall for 30 inches (slightly less than three feet).
 		{AutoController::RESET_DIST_0, 0, 0},
@@ -42,13 +52,13 @@ namespace AUTO_STRATEGIES
 
 		// Extend bulldozer and wait
 		{AutoController::EXTEND, 0, 0},
-		{AutoController::WAIT_TIME, 1, 0},
+		{AutoController::WAIT_TIME, 0.8, 0},
 
 		// Retract and backup to auto line
 		{AutoController::RETRACT, 0, 0},
-		{AutoController::DRIVE_DIST, -95, AUTO_DRIVE_SPEED}
+		{AutoController::DRIVE_DIST, -98, AUTO_DRIVE_SPEED * 1.2}
 	};
-	const AutoController::InstructionSet RIGHT_EXCHANGE = {RIGHT_EXCHANGE_STEPS, 19};
+	const AutoController::InstructionSet RIGHT_EXCHANGE = {RIGHT_EXCHANGE_STEPS, 25};
 
 	// Cross line
 	const AutoController::Instruction CROSS_STEPS[] =

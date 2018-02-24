@@ -156,12 +156,12 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	double rightSpeedMult = 1.0 + angleOffsetPercent * speedMultiplier;
 
 	// Slow down on approach
-	if (fabs(targetDistance - currentDistance) < 24)
-		speedMultiplier *= fabs(targetDistance - currentDistance) / 24;
+	if (fabs(targetDistance - currentDistance) < 18)
+		speedMultiplier *= fabs(targetDistance - currentDistance) / 18;
 
 	// Prevent robot from driving too slowly
-	if (fabs(speedMultiplier) < 0.65)
-		speedMultiplier *= 0.65 / fabs(speedMultiplier);
+	if (fabs(speedMultiplier) < 0.5)
+		speedMultiplier *= 0.5 / fabs(speedMultiplier);
 
 	driveBase->Drive(leftSpeed * speedMultiplier * leftSpeedMult, rightSpeed * speedMultiplier * rightSpeedMult);
 
