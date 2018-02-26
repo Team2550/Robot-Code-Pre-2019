@@ -50,16 +50,19 @@ bool AutoController::Execute()
 	// Instruction Information
 	InstructionType instructionType = (instructionSet.steps + currentInstruction)->type;
 	double target = (instructionSet.steps + currentInstruction)->target;
+	bool stopAtTarget = (instructionSet.steps + currentInstruction)->stopAtTarget;
 	double leftSpeed = (instructionSet.steps + currentInstruction)->leftSpeed;
 	double rightSpeed = (instructionSet.steps + currentInstruction)->rightSpeed;
 	std::cout << "Left Speed: " << leftSpeed << " Right Speed: " << rightSpeed << std::endl;
+
+	// Default driving speed to the specified left and right speed.
+	driveBase->Drive(leftSpeed, rightSpeed);
 
 	switch (instructionType)
 	{
 	case WAIT_TIME:
 		target += instructionStartTime;
 	case WAIT_UNTIL:
-		driveBase->Stop();
 		instructionCompleted = (timer.Get() >= target);
 		break;
 
@@ -67,14 +70,14 @@ bool AutoController::Execute()
 		target += instructionStartDistance;
 	case DRIVE_TO:
 		std::cout << "Driving to " << target << " and angle of " << instructionTargetAngle << std::endl;
-		instructionCompleted = AutoDriveToDist( leftSpeed, rightSpeed, target, instructionTargetAngle );
+		instructionCompleted = AutoDriveToDist( leftSpeed, rightSpeed, target, instructionTargetAngle, stopAtTarget );
 		break;
 
 	case ROTATE_DEG:
 		target += instructionTargetAngle;
 	case ROTATE_TO:
 		std::cout << "Rotating to " << target << std::endl;
-		instructionCompleted = AutoRotateToAngle( leftSpeed, rightSpeed, target );
+		instructionCompleted = AutoRotateToAngle( leftSpeed, rightSpeed, target, stopAtTarget );
 		break;
 
 	case RESET_DIST_0:
@@ -122,12 +125,15 @@ bool AutoController::Execute()
 
 	// Check if all instructions are complete
 	if (currentInstruction >= instructionSet.count)
+	{
+		driveBase->Stop();
 		return true;
+	}
 	else
 		return false;
 }
 
-bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle )
+bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle, bool stopAtTarget )
 {
 	// Get sensor data
 	double currentDistance = driveBase->GetRightDistance(); //(driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
@@ -155,13 +161,17 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	double leftSpeedMult = 1.0 - angleOffsetPercent * speedMultiplier;
 	double rightSpeedMult = 1.0 + angleOffsetPercent * speedMultiplier;
 
-	// Slow down on approach
-	if (fabs(targetDistance - currentDistance) < 18)
-		speedMultiplier *= fabs(targetDistance - currentDistance) / 18;
+	// If robot should stop after reaching target
+	if (stopAtTarget)
+	{
+		// Slow down on approach
+		if (fabs(targetDistance - currentDistance) < 18)
+			speedMultiplier *= fabs(targetDistance - currentDistance) / 18;
 
-	// Prevent robot from driving too slowly
-	if (fabs(speedMultiplier) < 0.5)
-		speedMultiplier *= 0.5 / fabs(speedMultiplier);
+		// Prevent robot from driving too slowly
+		if (fabs(speedMultiplier) < 0.5)
+			speedMultiplier *= 0.5 / fabs(speedMultiplier);
+	}
 
 	driveBase->Drive(leftSpeed * speedMultiplier * leftSpeedMult, rightSpeed * speedMultiplier * rightSpeedMult);
 
@@ -169,7 +179,7 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	return abs( currentDistance - targetDistance ) < 3;
 }
 
-bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle )
+bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle, bool stopAtTarget )
 {
 	// If left and right speeds are equal, assume directions are meant to be opposite
 	if (leftSpeed == rightSpeed)
@@ -195,7 +205,7 @@ bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, dou
 		driveBase->Drive(-leftSpeed, -rightSpeed);
 
 	// Stop
-	else
+	else if (stopAtTarget)
 		driveBase->Stop();
 
 

@@ -14,8 +14,9 @@ public:
 	struct Instruction
 	{
 		InstructionType type;
-		double target; // Distance or angle, depending on instruction
-		double leftSpeed; // Acts as speed of both sides if only one specified.
+		double target = 0; // Distance or angle, depending on instruction
+		bool stopAtTarget = true; // Slow down/stop near target.
+		double leftSpeed = 0; // Acts as speed of both sides if only one specified.
 		double rightSpeed = leftSpeed; // Default to both sides sharing the same speed
 	};
 
@@ -59,8 +60,8 @@ private:
 	double instructionTargetAngle;
 	bool bulldozerExtended;
 
-	bool AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle );
-	bool AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle );
+	bool AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle, bool stopAtTarget );
+	bool AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle, bool stopAtTarget );
 
 };
 
