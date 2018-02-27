@@ -101,7 +101,7 @@ namespace AUTO_STRATEGIES
 
 		// Drive left down field to put robot center over exchange hole.
 		{AutoController::DRIVE_DIST,
-				EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)),
+				PLAYER_STATION_WIDTH - ROBOT_WIDTH + EXCHANGE_WIDTH / 2 + EXCHANGE_OFFSET - ROBOT_WIDTH / 2 - (48 / sqrt(2)),
 				true, AUTO_DRIVE_SPEED},
 		{AutoController::WAIT_TIME, 0.05},
 		{AutoController::ROTATE_TO, 135, true, 0, AUTO_ROTATE_SPEED},
@@ -127,21 +127,18 @@ namespace AUTO_STRATEGIES
 	// Right Ram and Grab
 	const AutoController::Instruction LEFT_RAM_AND_GRAB_STEPS[] =
 	{
-		// Ram into switch
-		{AutoController::DRIVE_TO, 50, false, AUTO_DRIVE_SPEED},
-		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 12, false, AUTO_DRIVE_SPEED * 1.2}, //1},
+		// Drive to the area to the left of the switch
+		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH / 2 - ROBOT_LENGTH / 2, true, AUTO_DRIVE_SPEED * 1.2},
 
-		// Backup
-		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 36, true, AUTO_DRIVE_SPEED},
+		// Rotate to face the switch and backup in preparation to ram switch
+		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, -24, true, AUTO_DRIVE_SPEED},
 
-		// Drive around switch
-		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED}, // Turn to the right
-		{AutoController::DRIVE_DIST, 36, true, AUTO_DRIVE_SPEED}, // Drive past switch
-		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED}, // Turn forward
-		{AutoController::DRIVE_DIST, SWITCH_WIDTH + 48 + ROBOT_LENGTH, true, AUTO_DRIVE_SPEED}, // Drive past switch
-		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED}, // Turn left
+		// Ram switch
+		{AutoController::DRIVE_DIST, 75.935 - ROBOT_LENGTH, false, 1},
+		{AutoController::DRIVE_DIST, -6, true, AUTO_DRIVE_SPEED * 0.75}
 	};
-	const AutoController::InstructionSet LEFT_RAM_AND_GRAB = {LEFT_RAM_AND_GRAB_STEPS, 8};
+	const AutoController::InstructionSet LEFT_RAM_AND_GRAB = {LEFT_RAM_AND_GRAB_STEPS, 5};
 
 	const AutoController::PositionOptions LEFT_OPTIONS = {&LEFT_RAM_AND_GRAB, &LEFT_EXCHANGE};
 
