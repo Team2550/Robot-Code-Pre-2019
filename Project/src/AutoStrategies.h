@@ -15,6 +15,8 @@ namespace AUTO_STRATEGIES
 	const float EXCHANGE_WIDTH = 48.0f;
 	const float EXCHANGE_OFFSET = 5.0f; // Exchange slot is slightly offset from the center of the exchange
 
+	const float SWITCH_DIST = 140.0f;
+
 	const float SWITCH_WIDTH = 56.0f;
 	const float SWITCH_LENGTH = 152.88f;
 
@@ -64,14 +66,14 @@ namespace AUTO_STRATEGIES
 	{
 		// Ram into switch
 		{AutoController::DRIVE_TO, 50, false, AUTO_DRIVE_SPEED},
-		{AutoController::DRIVE_TO, 140 - ROBOT_LENGTH - 12, true, AUTO_DRIVE_SPEED * 1.2}, //1},
+		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 12, false, AUTO_DRIVE_SPEED * 1.2}, //1},
 
 		// Backup
-		{AutoController::DRIVE_DIST, -24, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 36, true, AUTO_DRIVE_SPEED},
 
 		// Drive around switch
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED}, // Turn to the right
-		{AutoController::DRIVE_DIST, 50, true, AUTO_DRIVE_SPEED}, // Drive past switch
+		{AutoController::DRIVE_DIST, 60, true, AUTO_DRIVE_SPEED}, // Drive past switch
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED}, // Turn forward
 		{AutoController::DRIVE_DIST, SWITCH_WIDTH + 48 + ROBOT_LENGTH, true, AUTO_DRIVE_SPEED}, // Drive past switch
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED}, // Turn left
@@ -86,7 +88,7 @@ namespace AUTO_STRATEGIES
 	// Cross line
 	const AutoController::Instruction CROSS_STEPS[] =
 	{
-		{AutoController::DRIVE_TO, 102, true, AUTO_DRIVE_SPEED}
+		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 12, true, AUTO_DRIVE_SPEED}
 	};
 	const AutoController::InstructionSet CROSS = {CROSS_STEPS, 1};
 
