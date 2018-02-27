@@ -164,9 +164,12 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	// If robot should stop after reaching target
 	if (stopAtTarget)
 	{
+		// Distance to decelerate is greater for higher speeds
+		double decelerateDistance = 40 * (fabs(leftSpeed) + fabs(rightSpeed)) / 2;
+
 		// Slow down on approach
-		if (fabs(targetDistance - currentDistance) < 18)
-			speedMultiplier *= fabs(targetDistance - currentDistance) / 18;
+		if (fabs(targetDistance - currentDistance) < decelerateDistance)
+			speedMultiplier *= fabs(targetDistance - currentDistance) / decelerateDistance;
 
 		// Prevent robot from driving too slowly
 		if (fabs(speedMultiplier) < 0.5)
