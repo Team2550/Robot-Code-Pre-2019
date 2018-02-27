@@ -13,6 +13,7 @@ namespace AUTO_STRATEGIES
 
 	const float PLAYER_STATION_WIDTH = 72.0f;
 	const float EXCHANGE_WIDTH = 48.0f;
+	const float EXCHANGE_DEPTH = 36.0f;
 	const float EXCHANGE_OFFSET = 5.0f; // Exchange slot is slightly offset from the center of the exchange
 
 	const float SWITCH_DIST = 140.0f;
@@ -25,7 +26,7 @@ namespace AUTO_STRATEGIES
 
 	// Place block in exchange, starting just to the right of the center player, from their perspective.
 
-	// Right Position Options
+	// Right Exchange
 	const AutoController::Instruction RIGHT_EXCHANGE_STEPS[] =
 	{
 		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 45 degrees.
@@ -63,15 +64,18 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet RIGHT_EXCHANGE = {RIGHT_EXCHANGE_STEPS, 17};
 
-	// Right Ram and Grab
-	const AutoController::Instruction RIGHT_RAM_AND_GRAB_STEPS[] =
+	const AutoController::PositionOptions RIGHT_EXCHANGE_OPTIONS = {&RIGHT_EXCHANGE, &RIGHT_EXCHANGE};
+
+
+	// Right Starting Position - Block on Switch
+	// Right side of switch
+	const AutoController::Instruction RIGHT_SAME_SIDE_SWITCH_STEPS[] =
 	{
 		// Ram into switch
+		{AutoController::RESET_DIST_0},
 		{AutoController::DRIVE_TO, 50, false, AUTO_DRIVE_SPEED},
-		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 12, false, AUTO_DRIVE_SPEED * 1.2}, //1},
-
-		// Backup
-		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 36, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 12, false, 1},
+		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 24, true, AUTO_DRIVE_SPEED},
 
 		// Drive around switch
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED}, // Turn to the right
@@ -81,12 +85,32 @@ namespace AUTO_STRATEGIES
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED}, // Turn left
 		{AutoController::DRIVE_TO, SWITCH_LENGTH, true, AUTO_DRIVE_SPEED * 1.2}, // Drive along length of switch
 	};
-	const AutoController::InstructionSet RIGHT_RAM_AND_GRAB = {RIGHT_RAM_AND_GRAB_STEPS, 9};
+	const AutoController::InstructionSet RIGHT_SAME_SIDE_SWITCH = {RIGHT_SAME_SIDE_SWITCH_STEPS, 10};
 
-	const AutoController::PositionOptions RIGHT_OPTIONS = {&RIGHT_EXCHANGE, &RIGHT_RAM_AND_GRAB};
+	// Left side of switch
+	const AutoController::Instruction RIGHT_OTHER_SIDE_SWITCH_STEPS[] =
+	{
+			// Drive around to left side of switch
+			{AutoController::DRIVE_DIST, EXCHANGE_DEPTH + 12, true, AUTO_DRIVE_SPEED},
+			{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED},
+			{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2, true, AUTO_DRIVE_SPEED * 1.2},
+			{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
+			{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH / 2 - ROBOT_LENGTH / 2 - EXCHANGE_DEPTH - 12, true, AUTO_DRIVE_SPEED},
+			{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
+
+			// Ram into switch
+			{AutoController::DRIVE_DIST, -24, true, AUTO_DRIVE_SPEED * 0.8},
+			{AutoController::RESET_DIST_0},
+			{AutoController::DRIVE_TO, 50, false, AUTO_DRIVE_SPEED},
+			{AutoController::DRIVE_TO, 79.56 - ROBOT_LENGTH - 12, false, 1},
+			{AutoController::DRIVE_TO, 79.56 - ROBOT_LENGTH - 36, true, AUTO_DRIVE_SPEED}
+	};
+	const AutoController::InstructionSet RIGHT_OTHER_SIDE_SWITCH = {RIGHT_OTHER_SIDE_SWITCH_STEPS, 11};
+
+	const AutoController::PositionOptions RIGHT_SWITCH_OPTIONS = {&RIGHT_OTHER_SIDE_SWITCH, &RIGHT_SAME_SIDE_SWITCH};
 
 
-	// Left Position Options
+	// Left Exchange
 	const AutoController::Instruction LEFT_EXCHANGE_STEPS[] =
 	{
 		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 45 degrees.
@@ -124,23 +148,43 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet LEFT_EXCHANGE = {LEFT_EXCHANGE_STEPS, 17};
 
-	// Right Ram and Grab
-	const AutoController::Instruction LEFT_RAM_AND_GRAB_STEPS[] =
+	const AutoController::PositionOptions LEFT_EXCHANGE_OPTIONS = {&LEFT_EXCHANGE, &LEFT_EXCHANGE};
+
+
+	// Left Starting Position - Block on Switch
+	// Right side of switch
+	const AutoController::Instruction LEFT_OTHER_SIDE_SWITCH_STEPS[] =
 	{
-		// Drive to the area to the left of the switch
+			// Drive around to right side of switch
+			{AutoController::DRIVE_DIST, EXCHANGE_DEPTH + 12, true, AUTO_DRIVE_SPEED},
+			{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
+			{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
+			{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
+
+			// Ram into switch
+			{AutoController::DRIVE_DIST, -24, true, AUTO_DRIVE_SPEED * 0.8},
+			{AutoController::RESET_DIST_0},
+			{AutoController::DRIVE_TO, 50, false, AUTO_DRIVE_SPEED},
+			{AutoController::DRIVE_TO, SWITCH_DIST - EXCHANGE_DEPTH - ROBOT_LENGTH - 24, false, 1},
+			{AutoController::DRIVE_TO, SWITCH_DIST - EXCHANGE_DEPTH - ROBOT_LENGTH - 36, true, AUTO_DRIVE_SPEED}
+	};
+	const AutoController::InstructionSet LEFT_OTHER_SIDE_SWITCH = {LEFT_OTHER_SIDE_SWITCH_STEPS, 9};
+
+	// Left side of switch
+	const AutoController::Instruction LEFT_SAME_SIDE_SWITCH_STEPS[] =
+	{
 		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH / 2 - ROBOT_LENGTH / 2, true, AUTO_DRIVE_SPEED * 1.2},
 
-		// Rotate to face the switch and backup in preparation to ram switch
-		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, -24, true, AUTO_DRIVE_SPEED},
-
-		// Ram switch
-		{AutoController::DRIVE_DIST, 75.935 - ROBOT_LENGTH, false, 1},
-		{AutoController::DRIVE_DIST, -6, true, AUTO_DRIVE_SPEED * 0.75}
+		// Ram into switch
+		{AutoController::DRIVE_DIST, -24, true, AUTO_DRIVE_SPEED * 0.8},
+		{AutoController::RESET_DIST_0},
+		{AutoController::DRIVE_TO, 50, false, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_TO, 79.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 12, false, 1},
+		{AutoController::DRIVE_TO, 79.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 36, true, AUTO_DRIVE_SPEED}
 	};
-	const AutoController::InstructionSet LEFT_RAM_AND_GRAB = {LEFT_RAM_AND_GRAB_STEPS, 5};
+	const AutoController::InstructionSet LEFT_SAME_SIDE_SWITCH = {LEFT_SAME_SIDE_SWITCH_STEPS, 6};
 
-	const AutoController::PositionOptions LEFT_OPTIONS = {&LEFT_RAM_AND_GRAB, &LEFT_EXCHANGE};
+	const AutoController::PositionOptions LEFT_SWITCH_OPTIONS = {&LEFT_SAME_SIDE_SWITCH, &LEFT_OTHER_SIDE_SWITCH};
 
 
 	// Cross line
