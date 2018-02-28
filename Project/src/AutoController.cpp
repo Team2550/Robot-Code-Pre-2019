@@ -55,14 +55,12 @@ bool AutoController::Execute()
 	double rightSpeed = (instructionSet.steps + currentInstruction)->rightSpeed;
 	std::cout << "Left Speed: " << leftSpeed << " Right Speed: " << rightSpeed << std::endl;
 
-	// Default driving speed to the specified left and right speed.
-	driveBase->Drive(leftSpeed, rightSpeed);
-
 	switch (instructionType)
 	{
 	case WAIT_TIME:
 		target += instructionStartTime;
 	case WAIT_UNTIL:
+		driveBase->Drive(leftSpeed, rightSpeed);
 		instructionCompleted = (timer.Get() >= target);
 		break;
 
@@ -88,11 +86,13 @@ bool AutoController::Execute()
 		break;
 
 	case EXTEND:
+		driveBase->Stop();
 		bulldozerExtended = true;
 		instructionCompleted = true;
 		break;
 
 	case RETRACT:
+		driveBase->Stop();
 		bulldozerExtended = false;
 		instructionCompleted = true;
 		break;
@@ -142,7 +142,7 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	// Get the angle that the robot has drifted from its target as a percentage out of 90 degrees
 	double angleOffsetPercent = (currentAngle - targetAngle) / 10;
 
-	// Limit angle offset to range of -90 to 90 (-100% to 100%)
+	// Limit angle offset to range of -10 to 10 (-100% to 100%)
 	if (angleOffsetPercent > 1)
 		angleOffsetPercent = 1;
 	if (angleOffsetPercent < -1)
@@ -198,14 +198,18 @@ bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, dou
 	// Get sensor data
 	double targetAngleOffset = targetAngle - gyroscope->GetAngle();
 
+	double speedMult = 1;
+
+	if (fabs(targetAngleOffset) < 15)
+		speedMult = fabs(targetAngleOffset) / 15.0;
 
 	// Turn clockwise
 	if ( targetAngleOffset > 4 )
-		driveBase->Drive(leftSpeed, rightSpeed);
+		driveBase->Drive(leftSpeed * speedMult, rightSpeed * speedMult);
 
 	// Turn counter-clockwise
 	else if ( targetAngleOffset < -4 )
-		driveBase->Drive(-leftSpeed, -rightSpeed);
+		driveBase->Drive(-leftSpeed * speedMult, -rightSpeed * speedMult);
 
 	// Stop
 	else if (stopAtTarget)
