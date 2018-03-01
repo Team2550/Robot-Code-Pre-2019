@@ -74,7 +74,8 @@ namespace AUTO_STRATEGIES
 		// Ram into switch
 		{AutoController::RESET_DIST_0},
 		{AutoController::DRIVE_TO, 12, false, AUTO_DRIVE_SPEED},
-		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 12, false, 1},
+		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 12, false, 0.5},
+		{AutoController::KICK},
 		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 36, true, AUTO_DRIVE_SPEED},
 
 		// Drive around switch
@@ -86,7 +87,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::DRIVE_DIST, SWITCH_LENGTH, true, AUTO_DRIVE_SPEED * 1.2}, // Drive along length of switch
 	};
-	const AutoController::InstructionSet RIGHT_SAME_SIDE_SWITCH = {RIGHT_SAME_SIDE_SWITCH_STEPS, 11};
+	const AutoController::InstructionSet RIGHT_SAME_SIDE_SWITCH = {RIGHT_SAME_SIDE_SWITCH_STEPS, 12};
 
 	// Left side of switch
 	const AutoController::Instruction RIGHT_OTHER_SIDE_SWITCH_STEPS[] =
@@ -104,10 +105,11 @@ namespace AUTO_STRATEGIES
 			{AutoController::DRIVE_DIST, -24, true, AUTO_DRIVE_SPEED * 0.8},
 			{AutoController::RESET_DIST_0},
 			{AutoController::DRIVE_TO, 12, false, AUTO_DRIVE_SPEED},
-			{AutoController::DRIVE_TO, 79.56 - ROBOT_LENGTH - 12, false, 1},
+			{AutoController::DRIVE_TO, 79.56 - ROBOT_LENGTH - 12, false, 0.5},
+			{AutoController::KICK},
 			{AutoController::DRIVE_TO, 79.56 - ROBOT_LENGTH - 36, true, AUTO_DRIVE_SPEED}
 	};
-	const AutoController::InstructionSet RIGHT_OTHER_SIDE_SWITCH = {RIGHT_OTHER_SIDE_SWITCH_STEPS, 12};
+	const AutoController::InstructionSet RIGHT_OTHER_SIDE_SWITCH = {RIGHT_OTHER_SIDE_SWITCH_STEPS, 13};
 
 	const AutoController::PositionOptions RIGHT_SWITCH_OPTIONS = {&RIGHT_OTHER_SIDE_SWITCH, &RIGHT_SAME_SIDE_SWITCH};
 
@@ -167,10 +169,11 @@ namespace AUTO_STRATEGIES
 			// Ram into switch
 			{AutoController::RESET_DIST_0},
 			{AutoController::DRIVE_TO, 12, false, AUTO_DRIVE_SPEED},
-			{AutoController::DRIVE_TO, SWITCH_DIST - EXCHANGE_DEPTH - ROBOT_LENGTH - 24, false, 1},
+			{AutoController::DRIVE_TO, SWITCH_DIST - EXCHANGE_DEPTH - ROBOT_LENGTH - 24, false, 0.5},
+			{AutoController::KICK},
 			{AutoController::DRIVE_TO, SWITCH_DIST - EXCHANGE_DEPTH - ROBOT_LENGTH - 24, true, AUTO_DRIVE_SPEED}
 	};
-	const AutoController::InstructionSet LEFT_OTHER_SIDE_SWITCH = {LEFT_OTHER_SIDE_SWITCH_STEPS, 9};
+	const AutoController::InstructionSet LEFT_OTHER_SIDE_SWITCH = {LEFT_OTHER_SIDE_SWITCH_STEPS, 10};
 
 	// Left side of switch
 	const AutoController::Instruction LEFT_SAME_SIDE_SWITCH_STEPS[] =
@@ -182,10 +185,11 @@ namespace AUTO_STRATEGIES
 		{AutoController::DRIVE_DIST, -24, true, AUTO_DRIVE_SPEED * 0.8},
 		{AutoController::RESET_DIST_0},
 		{AutoController::DRIVE_TO, 12, false, AUTO_DRIVE_SPEED},
-		{AutoController::DRIVE_TO, 79.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 12, false, 1},
+		{AutoController::DRIVE_TO, 79.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 12, false, 0.5},
+		{AutoController::KICK},
 		{AutoController::DRIVE_TO, 79.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 36, true, AUTO_DRIVE_SPEED}
 	};
-	const AutoController::InstructionSet LEFT_SAME_SIDE_SWITCH = {LEFT_SAME_SIDE_SWITCH_STEPS, 7};
+	const AutoController::InstructionSet LEFT_SAME_SIDE_SWITCH = {LEFT_SAME_SIDE_SWITCH_STEPS, 8};
 
 	const AutoController::PositionOptions LEFT_SWITCH_OPTIONS = {&LEFT_SAME_SIDE_SWITCH, &LEFT_OTHER_SIDE_SWITCH};
 
