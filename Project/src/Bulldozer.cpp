@@ -13,6 +13,9 @@ Bulldozer::Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOu
 	bulldozerDelay.Reset();
 	bulldozerDelay.Start();
 
+	kickerDelay.Reset();
+	kickerDelay.Start();
+
 	bulldozerLastState = UNKNOWN;
 	bulldozerPulsing = false;
 

@@ -15,7 +15,7 @@ Robot::Robot() : driveController(0), perifController(1),
 				 driveBase(0, 1, 0, 1, 2, 3,
 						   (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
 						   (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings 1.13 *
-				 bulldozer(0, 1, 2, 3, 0.5)
+				 bulldozer(0, 1, 4, 5, 0.5)
 {
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
