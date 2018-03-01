@@ -176,7 +176,7 @@ void Robot::TeleopPeriodic()
 		bulldozerKickToggle = true;
 
 	if (bulldozerKickToggle)
-		bulldozerKickToggle = bulldozer.Kick(0.1);
+		bulldozerKickToggle = !bulldozer.Kick(0.1);
 }
 
 /*==============================================================

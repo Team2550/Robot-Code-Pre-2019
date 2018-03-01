@@ -14,6 +14,7 @@ AutoController::AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro*
 	instructionStartDistance = 0;
 	instructionTargetAngle = 0;
 	bulldozerExtended = false;
+	bulldozerKicking = false;
 }
 
 AutoController::~AutoController()
@@ -80,20 +81,22 @@ bool AutoController::Execute()
 
 	case RESET_DIST_0:
 		driveBase->ResetDistance();
-		driveBase->Stop();
 		std::cout << "Reset dist" << std::endl;
 		instructionCompleted = true;
 		break;
 
 	case EXTEND:
-		driveBase->Stop();
 		bulldozerExtended = true;
 		instructionCompleted = true;
 		break;
 
 	case RETRACT:
-		driveBase->Stop();
 		bulldozerExtended = false;
+		instructionCompleted = true;
+		break;
+
+	case KICK:
+		bulldozerKicking = true;
 		instructionCompleted = true;
 		break;
 
@@ -111,6 +114,9 @@ bool AutoController::Execute()
 		bulldozer->Extend();
 	else
 		bulldozer->Retract();
+
+	if (bulldozerKicking)
+		bulldozerKicking = !bulldozer->Kick(0);
 
 	if (instructionCompleted)
 	{

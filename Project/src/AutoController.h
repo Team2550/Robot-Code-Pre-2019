@@ -9,7 +9,7 @@
 class AutoController
 {
 public:
-	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, EXTEND, RETRACT }; //, RESET_DIST_ULTRA  };
+	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, EXTEND, RETRACT, KICK }; //, RESET_DIST_ULTRA  };
 
 	struct Instruction
 	{
@@ -59,6 +59,7 @@ private:
 	double instructionStartDistance;
 	double instructionTargetAngle;
 	bool bulldozerExtended;
+	bool bulldozerKicking;
 
 	bool AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle, bool stopAtTarget );
 	bool AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle, bool stopAtTarget );
