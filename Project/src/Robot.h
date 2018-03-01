@@ -44,8 +44,10 @@ private:
 	int buttonTurtle;
 	int buttonBulldozerExtend;
 	int buttonBulldozerPulse;
+	int buttonBulldozerKick;
 
 	bool bulldozerPulseToggle;
+	bool bulldozerKickToggle;
 
 	Preferences *prefs;
 	frc::SendableChooser<const AutoController::PositionOptions*> autoStrategyChooser;

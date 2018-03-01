@@ -16,7 +16,7 @@ Robot::Robot() : driveController(0), perifController(1),
 						   1.095 * (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
 						   1.095 * (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings 1.13 *
 #endif
-				 bulldozer(0, 1, 0.5)
+				 bulldozer(0, 1, 4, 5, 0.5)
 {
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
@@ -24,6 +24,7 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonTurtle = xbox::btn::lb;
 	buttonBulldozerExtend = xbox::btn::rb;
 	buttonBulldozerPulse = xbox::btn::lb;
+	buttonBulldozerKick = xbox::btn::a;
 
 	bulldozerPulseToggle = false;
 
@@ -170,6 +171,12 @@ void Robot::TeleopPeriodic()
 		bulldozerPulseToggle = !bulldozer.Pulse(0); // Disables toggle if pulse is complete
 	else
 		bulldozer.Retract();
+
+	if (perifController.GetRawButton(buttonBulldozerKick))
+		bulldozerKickToggle = true;
+
+	if (bulldozerKickToggle)
+		bulldozerKickToggle = bulldozer.Kick(0.1);
 }
 
 /*==============================================================
