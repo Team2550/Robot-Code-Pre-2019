@@ -187,7 +187,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
 
 		// Place block on switch
-		{AutoController::DRIVE_TO, 55.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 8, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 55.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 8, true, AUTO_DRIVE_SPEED},
 		{AutoController::EXTEND},
 		{AutoController::WAIT_TIME, 1},
 		{AutoController::KICK},
