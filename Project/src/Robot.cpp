@@ -238,6 +238,8 @@ void Robot::UpdatePreferences()
 	autoStrategyChooser.AddObject("Left-Switch", &AUTO_STRATEGIES::LEFT_SWITCH_OPTIONS);
 	autoStrategyChooser.AddObject("Cross Line", &AUTO_STRATEGIES::CROSS_OPTIONS);
 	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING_OPTIONS);
+	autoStrategyChooser.AddObject("Cross Right", &AUTO_STRATEGIES::CROSS_RIGHT_OPTIONS);
+	autoStrategyChooser.AddObject("Cross Left", &AUTO_STRATEGIES::CROSS_LEFT_OPTIONS);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoStrategyChooser);
 
 	// Determine switch setup to select strategy.

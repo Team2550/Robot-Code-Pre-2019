@@ -214,6 +214,14 @@ namespace AUTO_STRATEGIES
 	const AutoController::InstructionSet NOTHING = {NOTHING_STEPS, 0};
 
 	const AutoController::PositionOptions NOTHING_OPTIONS = {&NOTHING, &NOTHING};
+
+
+	// Cross Right Only
+	const AutoController::PositionOptions CROSS_RIGHT_OPTIONS = {&NOTHING, &CROSS};
+
+
+	// Cross Left Only
+	const AutoController::PositionOptions CROSS_LEFT_OPTIONS = {&CROSS, &NOTHING};
 }
 
 #endif
