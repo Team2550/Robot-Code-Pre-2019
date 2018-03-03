@@ -252,7 +252,48 @@ void Robot::UpdatePreferences()
 			selectedAutoStrategy = autoStrategyChooser.GetSelected()->rightOption;
 	}
 	else
-		selectedAutoStrategy = NULL;
+	{
+		selectedAutoStrategy = &AUTO_STRATEGIES::NOTHING;
+		std::cout << "No strategy found" << std::endl;
+	}
+
+	// Backup strategy selection for older driver station
+	SmartDashboard::SetDefaultString("AutoStrategyBackup", "nothing");
+
+	if (selectedAutoStrategy == &AUTO_STRATEGIES::NOTHING)
+	{
+		std::string selectedAutoStrategyKey = SmartDashboard::GetString("AutoStrategyBackup", "nothing");
+
+		if (selectedAutoStrategyKey.length() > 0)
+		{
+			const AutoController::PositionOptions* autoPosition = NULL;
+
+			std::cout << "Using backup auto strategy " << selectedAutoStrategyKey << std::endl;
+
+			if (selectedAutoStrategyKey == "nothing")
+				autoPosition = &AUTO_STRATEGIES::NOTHING_OPTIONS;
+			else if (selectedAutoStrategyKey == "cross")
+				autoPosition = &AUTO_STRATEGIES::CROSS_OPTIONS;
+			else if (selectedAutoStrategyKey == "leftswitch")
+				autoPosition = &AUTO_STRATEGIES::LEFT_SWITCH_OPTIONS;
+			else if (selectedAutoStrategyKey == "rightswitch")
+				autoPosition = &AUTO_STRATEGIES::RIGHT_SWITCH_OPTIONS;
+			else if (selectedAutoStrategyKey == "leftexchange")
+				autoPosition = &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS;
+			else if (selectedAutoStrategyKey == "rightexchange")
+				autoPosition = &AUTO_STRATEGIES::RIGHT_EXCHANGE_OPTIONS;
+			else
+				std::cout << "No strategy exists with that name" << std::endl;
+
+			if (autoPosition)
+			{
+				if (gameData[0] == LEFT)
+					selectedAutoStrategy = autoPosition->leftOption;
+				else
+					selectedAutoStrategy = autoPosition->rightOption;
+			}
+		}
+	}
 
 	std::cout << "Updated Preferences" << std::endl;
 }
