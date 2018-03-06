@@ -30,6 +30,9 @@ void Bulldozer::Reset()
 	bulldozerLastState = UNKNOWN;
 	bulldozerSolenoid.Set(frc::DoubleSolenoid::kOff);
 	bulldozerDelay.Reset();
+	kickerLastState = UNKNOWN;
+	kickerSolenoid.Set(frc::DoubleSolenoid::kOff);
+	kickerDelay.Reset();
 }
 
 void Bulldozer::Extend()

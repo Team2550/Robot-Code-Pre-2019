@@ -206,8 +206,14 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet CROSS = {CROSS_STEPS, 1};
 
-	const AutoController::PositionOptions CROSS_OPTIONS = {&CROSS, &CROSS};
+	// Cross line time-based
+	const AutoController::Instruction CROSS_TIME_STEPS[] =
+	{
+		{AutoController::WAIT_TIME, 4, true, AUTO_DRIVE_SPEED * 0.8}
+	};
+	const AutoController::InstructionSet CROSS_TIME = {CROSS_TIME_STEPS, 1};
 
+	const AutoController::PositionOptions CROSS_OPTIONS = {&CROSS_TIME, &CROSS_TIME};
 
 	// Do nothing
 	const AutoController::Instruction NOTHING_STEPS[] = {};
@@ -217,11 +223,11 @@ namespace AUTO_STRATEGIES
 
 
 	// Cross Right Only
-	const AutoController::PositionOptions CROSS_RIGHT_OPTIONS = {&NOTHING, &CROSS};
+	const AutoController::PositionOptions CROSS_RIGHT_OPTIONS = {&CROSS_TIME, &CROSS};
 
 
 	// Cross Left Only
-	const AutoController::PositionOptions CROSS_LEFT_OPTIONS = {&CROSS, &NOTHING};
+	const AutoController::PositionOptions CROSS_LEFT_OPTIONS = {&CROSS, &CROSS_TIME};
 }
 
 #endif
