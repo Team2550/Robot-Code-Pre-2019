@@ -25,7 +25,7 @@ namespace AUTO_STRATEGIES
 	//                     Left Speed (Default = 0), Right Speed (Default = left speed)
 
 	// =========================== EXCHANGE OPTIONS ===========================
-	// Right Exchange
+	// Right Starting Position
 	const AutoController::Instruction RIGHT_EXCHANGE_STEPS[] =
 	{
 		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 45 degrees.
@@ -66,7 +66,7 @@ namespace AUTO_STRATEGIES
 	const AutoController::PositionOptions RIGHT_EXCHANGE_OPTIONS = {&RIGHT_EXCHANGE, &RIGHT_EXCHANGE};
 
 
-	// Left Exchange
+	// Left Starting Position
 	const AutoController::Instruction LEFT_EXCHANGE_STEPS[] =
 	{
 		// Drive from wall to distance of three feet from wall. Drives along hypotenuse of length two feet at angle of 45 degrees.
@@ -108,7 +108,8 @@ namespace AUTO_STRATEGIES
 
 
 	// =========================== SWITCH OPTIONS ===========================
-	// Right side of switch
+	// Right Starting Position
+	// Ownership of right side of switch
 	const AutoController::Instruction RIGHT_SWITCH_SAME_SIDE_STEPS[] =
 	{
 		// Push block onto switch
@@ -132,7 +133,8 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet RIGHT_SWITCH_SAME_SIDE = {RIGHT_SWITCH_SAME_SIDE_STEPS, 15};
 
-	// Left side of switch
+	// Ownership of left side of switch
+	// Inner route
 	const AutoController::Instruction RIGHT_SWITCH_OTHER_SIDE_INNER_STEPS[] =
 	{
 		// Drive around to left side of switch
@@ -154,11 +156,15 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet RIGHT_SWITCH_OTHER_SIDE_INNER = {RIGHT_SWITCH_OTHER_SIDE_INNER_STEPS, 13};
 
+	// TODO: Outer Route
+
+
 	const AutoController::PositionOptions RIGHT_SWITCH_INNER_OPTIONS = {&RIGHT_SWITCH_OTHER_SIDE_INNER, &RIGHT_SWITCH_SAME_SIDE};
 
 
-	// Left Starting Position - Block on Switch
-	// Right side of switch
+	// Left Starting Position
+	// Ownership of right side of switch
+	// Inner route
 	const AutoController::Instruction LEFT_SWITCH_OTHER_SIDE_INNER_STEPS[] =
 	{
 		// Drive around to right side of switch
@@ -178,7 +184,9 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_INNER = {LEFT_SWITCH_OTHER_SIDE_INNER_STEPS, 11};
 
-	// Left side of switch
+	// TODO: Outer route
+
+	// Ownership of left side of switch
 	const AutoController::Instruction LEFT_SWITCH_SAME_SIDE_STEPS[] =
 	{
 		// Drive forward and face switch
@@ -195,7 +203,8 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet LEFT_SWITCH_SAME_SIDE = {LEFT_SWITCH_SAME_SIDE_STEPS, 8};
 
-	const AutoController::PositionOptions LEFT_SWITCH_OPTIONS = {&LEFT_SWITCH_SAME_SIDE, &LEFT_SWITCH_OTHER_SIDE_INNER};
+
+	const AutoController::PositionOptions LEFT_SWITCH_INNER_OPTIONS = {&LEFT_SWITCH_SAME_SIDE, &LEFT_SWITCH_OTHER_SIDE_INNER};
 
 
 	// =========================== FALLBACK OPTIONS ===========================
@@ -206,6 +215,8 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet CROSS = {CROSS_STEPS, 1};
 
+	const AutoController::PositionOptions CROSS_OPTIONS = {&CROSS, &CROSS};
+
 	// Cross line time-based
 	const AutoController::Instruction CROSS_TIME_STEPS[] =
 	{
@@ -213,7 +224,7 @@ namespace AUTO_STRATEGIES
 	};
 	const AutoController::InstructionSet CROSS_TIME = {CROSS_TIME_STEPS, 1};
 
-	const AutoController::PositionOptions CROSS_OPTIONS = {&CROSS_TIME, &CROSS_TIME};
+	const AutoController::PositionOptions CROSS_TIME_OPTIONS = {&CROSS_TIME, &CROSS_TIME};
 
 	// Do nothing
 	const AutoController::Instruction NOTHING_STEPS[] = {};
@@ -224,7 +235,6 @@ namespace AUTO_STRATEGIES
 	// Side-dependent line crossing options
 	// Cross Right Only
 	const AutoController::PositionOptions CROSS_RIGHT_OPTIONS = {&CROSS_TIME, &CROSS};
-
 
 	// Cross Left Only
 	const AutoController::PositionOptions CROSS_LEFT_OPTIONS = {&CROSS, &CROSS_TIME};
