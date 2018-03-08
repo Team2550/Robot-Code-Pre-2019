@@ -11,7 +11,7 @@ public:
 	DriveBase(int leftMotorPort, int rightMotorPort,
 			  int leftEncoderPortA, int leftEncoderPortB,
 			  int rightEncoderPortA, int rightEncoderPortB,
-			  double leftPulseDist, double rightPulseDist);
+			  double wheelCircumference, int encoderPulsesPerRotation);
 
 	double GetLeftSpeed();
 	double GetRightSpeed();
