@@ -225,12 +225,15 @@ void Robot::UpdatePreferences()
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
 	// Setup autonomous strategy chooser
-	autoStrategyChooser.AddObject("Right-Exchange", &AUTO_STRATEGIES::RIGHT_EXCHANGE_OPTIONS);
-	autoStrategyChooser.AddObject("Left-Exchange", &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS);
-	autoStrategyChooser.AddObject("Right-Switch", &AUTO_STRATEGIES::RIGHT_SWITCH_OPTIONS);
-	autoStrategyChooser.AddObject("Left-Switch", &AUTO_STRATEGIES::LEFT_SWITCH_OPTIONS);
+	autoStrategyChooser.AddObject("R Exchange", &AUTO_STRATEGIES::RIGHT_EXCHANGE_OPTIONS);
+	autoStrategyChooser.AddObject("L Exchange", &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS);
+	autoStrategyChooser.AddObject("R Inner Switch", &AUTO_STRATEGIES::RIGHT_SWITCH_INNER_OPTIONS);
+	autoStrategyChooser.AddObject("L Inner Switch", &AUTO_STRATEGIES::LEFT_SWITCH_INNER_OPTIONS);
 	autoStrategyChooser.AddObject("Cross Line", &AUTO_STRATEGIES::CROSS_OPTIONS);
+	autoStrategyChooser.AddObject("Cross Line Time", &AUTO_STRATEGIES::CROSS_TIME_OPTIONS);
 	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING_OPTIONS);
+	autoStrategyChooser.AddObject("R Same Side Cross", &AUTO_STRATEGIES::CROSS_RIGHT_OPTIONS);
+	autoStrategyChooser.AddObject("L Same Side Cross", &AUTO_STRATEGIES::CROSS_LEFT_OPTIONS);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoStrategyChooser);
 
 	// Determine switch setup to select strategy.
@@ -245,12 +248,15 @@ void Robot::UpdatePreferences()
 			selectedAutoStrategy = autoStrategyChooser.GetSelected()->rightOption;
 	}
 	else
-		selectedAutoStrategy = NULL;
+	{
+		selectedAutoStrategy = &AUTO_STRATEGIES::NOTHING;
+		std::cout << "No strategy found" << std::endl;
+	}
 
 	// Backup strategy selection for older driver station
 	SmartDashboard::SetDefaultString("AutoStrategyBackup", "nothing");
 
-	if (!selectedAutoStrategy || selectedAutoStrategy == &AUTO_STRATEGIES::NOTHING)
+	if (selectedAutoStrategy == &AUTO_STRATEGIES::NOTHING)
 	{
 		std::string selectedAutoStrategyKey = SmartDashboard::GetString("AutoStrategyBackup", "nothing");
 
@@ -264,13 +270,13 @@ void Robot::UpdatePreferences()
 				autoPosition = &AUTO_STRATEGIES::NOTHING_OPTIONS;
 			else if (selectedAutoStrategyKey == "cross")
 				autoPosition = &AUTO_STRATEGIES::CROSS_OPTIONS;
-			else if (selectedAutoStrategyKey == "left switch")
-				autoPosition = &AUTO_STRATEGIES::LEFT_SWITCH_OPTIONS;
-			else if (selectedAutoStrategyKey == "right switch")
-				autoPosition = &AUTO_STRATEGIES::RIGHT_SWITCH_OPTIONS;
-			else if (selectedAutoStrategyKey == "left exchange")
+			else if (selectedAutoStrategyKey == "leftswitch")
+				autoPosition = &AUTO_STRATEGIES::LEFT_SWITCH_INNER_OPTIONS;
+			else if (selectedAutoStrategyKey == "rightswitch")
+				autoPosition = &AUTO_STRATEGIES::RIGHT_SWITCH_INNER_OPTIONS;
+			else if (selectedAutoStrategyKey == "leftexchange")
 				autoPosition = &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS;
-			else if (selectedAutoStrategyKey == "right exchange")
+			else if (selectedAutoStrategyKey == "rightexchange")
 				autoPosition = &AUTO_STRATEGIES::RIGHT_EXCHANGE_OPTIONS;
 			else
 				std::cout << "No strategy exists with that name" << std::endl;
