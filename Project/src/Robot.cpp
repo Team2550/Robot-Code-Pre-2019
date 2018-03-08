@@ -234,7 +234,7 @@ void Robot::UpdatePreferences()
 	// Setup autonomous strategy chooser
 	autoStrategyChooser.AddObject("Right-Exchange", &AUTO_STRATEGIES::RIGHT_EXCHANGE_OPTIONS);
 	autoStrategyChooser.AddObject("Left-Exchange", &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS);
-	autoStrategyChooser.AddObject("Right-Switch", &AUTO_STRATEGIES::RIGHT_SWITCH_OPTIONS);
+	autoStrategyChooser.AddObject("Right-Switch", &AUTO_STRATEGIES::RIGHT_SWITCH_INNER_OPTIONS);
 	autoStrategyChooser.AddObject("Left-Switch", &AUTO_STRATEGIES::LEFT_SWITCH_OPTIONS);
 	autoStrategyChooser.AddObject("Cross Line", &AUTO_STRATEGIES::CROSS_OPTIONS);
 	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING_OPTIONS);
@@ -279,7 +279,7 @@ void Robot::UpdatePreferences()
 			else if (selectedAutoStrategyKey == "leftswitch")
 				autoPosition = &AUTO_STRATEGIES::LEFT_SWITCH_OPTIONS;
 			else if (selectedAutoStrategyKey == "rightswitch")
-				autoPosition = &AUTO_STRATEGIES::RIGHT_SWITCH_OPTIONS;
+				autoPosition = &AUTO_STRATEGIES::RIGHT_SWITCH_INNER_OPTIONS;
 			else if (selectedAutoStrategyKey == "leftexchange")
 				autoPosition = &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS;
 			else if (selectedAutoStrategyKey == "rightexchange")
