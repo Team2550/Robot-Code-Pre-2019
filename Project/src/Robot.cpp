@@ -236,6 +236,8 @@ void Robot::UpdatePreferences()
 	autoStrategyChooser.AddObject("L Exchange", &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS);
 	autoStrategyChooser.AddObject("R Inner Switch", &AUTO_STRATEGIES::RIGHT_SWITCH_INNER_OPTIONS);
 	autoStrategyChooser.AddObject("L Inner Switch", &AUTO_STRATEGIES::LEFT_SWITCH_INNER_OPTIONS);
+	autoStrategyChooser.AddObject("R Outer Switch", &AUTO_STRATEGIES::RIGHT_SWITCH_OUTER_OPTIONS);
+	autoStrategyChooser.AddObject("L Outer Switch", &AUTO_STRATEGIES::LEFT_SWITCH_OUTER_OPTIONS);
 	autoStrategyChooser.AddObject("Cross Line", &AUTO_STRATEGIES::CROSS_OPTIONS);
 	autoStrategyChooser.AddObject("Cross Line Time", &AUTO_STRATEGIES::CROSS_TIME_OPTIONS);
 	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING_OPTIONS);
