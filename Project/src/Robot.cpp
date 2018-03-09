@@ -8,14 +8,7 @@ Robot::Robot() : driveController(0), perifController(1),
 				 bumperSwitch(0, LimitSwitch::LOW),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
 				 gyroscope(frc::SPI::Port::kOnboardCS0),
-				 driveBase(0, 1, 0, 1, 2, 3,
-#ifndef PRACTICE_ROBOT
-						   (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
-						   (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings 1.13 *
-#else // Practice robot encoders read faster
-						   1.095 * (6 * M_PI) / 360, // (circumference / 360 pulses per rotation)
-						   1.095 * (6 * M_PI) / 360), // Multiplied by 1.13 to adjust for incorrect readings 1.13 *
-#endif
+				 driveBase(0, 1, 0, 1, 2, 3, 6 * M_PI, 512), // Pulses per rotation is set by encoder DIP switch. 512 PPR uses DIP switch configuration 0001.
 				 bulldozer(0, 1, 4, 5, 0.5)
 {
 	axisTankLeft = xbox::axis::leftY;
@@ -232,14 +225,15 @@ void Robot::UpdatePreferences()
 	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
 	// Setup autonomous strategy chooser
-	autoStrategyChooser.AddObject("Right-Exchange", &AUTO_STRATEGIES::RIGHT_EXCHANGE_OPTIONS);
-	autoStrategyChooser.AddObject("Left-Exchange", &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS);
-	autoStrategyChooser.AddObject("Right-Switch", &AUTO_STRATEGIES::RIGHT_SWITCH_OPTIONS);
-	autoStrategyChooser.AddObject("Left-Switch", &AUTO_STRATEGIES::LEFT_SWITCH_OPTIONS);
+	autoStrategyChooser.AddObject("R Exchange", &AUTO_STRATEGIES::RIGHT_EXCHANGE_OPTIONS);
+	autoStrategyChooser.AddObject("L Exchange", &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS);
+	autoStrategyChooser.AddObject("R Inner Switch", &AUTO_STRATEGIES::RIGHT_SWITCH_INNER_OPTIONS);
+	autoStrategyChooser.AddObject("L Inner Switch", &AUTO_STRATEGIES::LEFT_SWITCH_INNER_OPTIONS);
 	autoStrategyChooser.AddObject("Cross Line", &AUTO_STRATEGIES::CROSS_OPTIONS);
+	autoStrategyChooser.AddObject("Cross Line Time", &AUTO_STRATEGIES::CROSS_TIME_OPTIONS);
 	autoStrategyChooser.AddDefault("Do nothing", &AUTO_STRATEGIES::NOTHING_OPTIONS);
-	autoStrategyChooser.AddObject("Cross Right", &AUTO_STRATEGIES::CROSS_RIGHT_OPTIONS);
-	autoStrategyChooser.AddObject("Cross Left", &AUTO_STRATEGIES::CROSS_LEFT_OPTIONS);
+	autoStrategyChooser.AddObject("R Same Side Cross", &AUTO_STRATEGIES::CROSS_RIGHT_OPTIONS);
+	autoStrategyChooser.AddObject("L Same Side Cross", &AUTO_STRATEGIES::CROSS_LEFT_OPTIONS);
 	frc::SmartDashboard::PutData("Autonomous Strategies", &autoStrategyChooser);
 
 	// Determine switch setup to select strategy.
@@ -277,9 +271,9 @@ void Robot::UpdatePreferences()
 			else if (selectedAutoStrategyKey == "cross")
 				autoPosition = &AUTO_STRATEGIES::CROSS_OPTIONS;
 			else if (selectedAutoStrategyKey == "leftswitch")
-				autoPosition = &AUTO_STRATEGIES::LEFT_SWITCH_OPTIONS;
+				autoPosition = &AUTO_STRATEGIES::LEFT_SWITCH_INNER_OPTIONS;
 			else if (selectedAutoStrategyKey == "rightswitch")
-				autoPosition = &AUTO_STRATEGIES::RIGHT_SWITCH_OPTIONS;
+				autoPosition = &AUTO_STRATEGIES::RIGHT_SWITCH_INNER_OPTIONS;
 			else if (selectedAutoStrategyKey == "leftexchange")
 				autoPosition = &AUTO_STRATEGIES::LEFT_EXCHANGE_OPTIONS;
 			else if (selectedAutoStrategyKey == "rightexchange")
