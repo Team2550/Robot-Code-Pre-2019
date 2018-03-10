@@ -11,6 +11,7 @@ namespace AUTO_STRATEGIES
 	const float ROBOT_WIDTH = 31.25f;
 	const float ROBOT_LENGTH = 24.0f;
 
+	const float BACK_WALL_WIDTH = 264.0f;
 	const float PLAYER_STATION_WIDTH = 72.0f;
 	const float EXCHANGE_WIDTH = 48.0f;
 	const float EXCHANGE_DEPTH = 36.0f;
@@ -159,24 +160,27 @@ namespace AUTO_STRATEGIES
 	// Outer route
 	const AutoController::Instruction RIGHT_SWITCH_OTHER_SIDE_OUTER_STEPS[] =
 	{
-		// Drive around to left side of switch
-		{AutoController::DRIVE_DIST, EXCHANGE_DEPTH + 12, true, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED},
-		{AutoController::WAIT_TIME, 0.25},
-		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2, true, AUTO_DRIVE_SPEED * 1.2},
+		// Drive around right side of switch to get to left side
+		{AutoController::DRIVE_DIST, 24, true, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, 45, true, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, sqrt(2)*(PLAYER_STATION_WIDTH), true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH / 2 - ROBOT_LENGTH / 2 - EXCHANGE_DEPTH - 12, true, AUTO_DRIVE_SPEED},
-		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH - PLAYER_STATION_WIDTH + 24, true, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
+		{AutoController::ROTATE_TO, -180, true, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, SWITCH_WIDTH / 2 + ROBOT_LENGTH / 2 + 24, true, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, -270, true, AUTO_ROTATE_SPEED},
 
 		// Place block on switch
-		{AutoController::DRIVE_DIST, 55.56 - ROBOT_LENGTH - 8, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 55.56 - ROBOT_LENGTH - 12, true, AUTO_DRIVE_SPEED},
 		{AutoController::EXTEND},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::KICK},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet RIGHT_SWITCH_OTHER_SIDE_OUTER = {RIGHT_SWITCH_OTHER_SIDE_OUTER_STEPS, 13};
+	const AutoController::InstructionSet RIGHT_SWITCH_OTHER_SIDE_OUTER = {RIGHT_SWITCH_OTHER_SIDE_OUTER_STEPS, 16};
 
 	const AutoController::PositionOptions RIGHT_SWITCH_INNER_OPTIONS = {&RIGHT_SWITCH_OTHER_SIDE_INNER, &RIGHT_SWITCH_SAME_SIDE};
 	const AutoController::PositionOptions RIGHT_SWITCH_OUTER_OPTIONS = {&RIGHT_SWITCH_OTHER_SIDE_OUTER, &RIGHT_SWITCH_SAME_SIDE};
@@ -208,21 +212,23 @@ namespace AUTO_STRATEGIES
 	const AutoController::Instruction LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS[] =
 	{
 		// Drive around to right side of switch
-		{AutoController::DRIVE_DIST, EXCHANGE_DEPTH + 12, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH + 24, true, AUTO_DRIVE_SPEED * 1.2},
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
 		{AutoController::WAIT_TIME, 0.25},
-		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
-		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
+		{AutoController::ROTATE_TO, 180, true, AUTO_ROTATE_SPEED},
+		{AutoController::DRIVE_DIST, SWITCH_WIDTH / 2 + ROBOT_LENGTH / 2 + 24, true, AUTO_DRIVE_SPEED},
+		{AutoController::ROTATE_TO, 270, true, AUTO_ROTATE_SPEED},
 
 		// Place block on switch
-		{AutoController::DRIVE_DIST, SWITCH_DIST - ROBOT_LENGTH - EXCHANGE_DEPTH - 20, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 55.56 - ROBOT_LENGTH - 12, true, AUTO_DRIVE_SPEED},
 		{AutoController::EXTEND},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::KICK},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_OUTER = {LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS, 11};
+	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_OUTER = {LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS, 13};
 
 	// Ownership of left side of switch
 	const AutoController::Instruction LEFT_SWITCH_SAME_SIDE_STEPS[] =
