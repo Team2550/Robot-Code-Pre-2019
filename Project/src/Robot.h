@@ -44,6 +44,7 @@ private:
 	bool bulldozerKickToggle;
 
 	Preferences *prefs;
+	float autoDelay;
 	frc::SendableChooser<const AutoController::PositionOptions*> autoStrategyChooser;
 	const AutoController::InstructionSet* selectedAutoStrategy;
 	bool autoStrategyCompleted;

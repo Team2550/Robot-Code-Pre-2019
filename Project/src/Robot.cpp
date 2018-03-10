@@ -214,7 +214,9 @@ void Robot::UpdatePreferences()
 	speedTurtle = prefs->GetFloat("SpeedTurtle", 0.25f);
 	speedBoost = prefs->GetFloat("SpeedBoost", 1.0f);
 
-
+	// Get specified delay for autonomous
+	frc::SmartDashboard::SetDefaultNumber("Auto Delay", 0);
+	autoDelay = frc::SmartDashboard::GetNumber("Auto Delay", 0);
 
 	// Setup autonomous strategy chooser
 	autoStrategyChooser.AddObject("R Exchange", &AUTO_STRATEGIES::RIGHT_EXCHANGE_OPTIONS);
