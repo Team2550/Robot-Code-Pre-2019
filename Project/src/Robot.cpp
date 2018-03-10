@@ -67,7 +67,7 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	if (!autoStrategyCompleted)
+	if (autoTimer.Get() >= autoDelay && !autoStrategyCompleted)
 	{
 		std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
 		          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << ' '
