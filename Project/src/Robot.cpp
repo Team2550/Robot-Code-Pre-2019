@@ -214,15 +214,7 @@ void Robot::UpdatePreferences()
 	speedTurtle = prefs->GetFloat("SpeedTurtle", 0.25f);
 	speedBoost = prefs->GetFloat("SpeedBoost", 1.0f);
 
-	if (prefs->GetBoolean("WillStartOnRight", true))
-		autoStartPosition = RIGHT;
-	else
-		autoStartPosition = LEFT;
 
-	autoMinSpeed = prefs->GetFloat("AutoMinSpeed", speedTurtle * 0.8);
-	autoMaxSpeed = prefs->GetFloat("AutoMaxSpeed", speedTurtle);
-	autoBufferStart = prefs->GetFloat("AutoBufferStart", 12);
-	autoBufferLength = prefs->GetFloat("AutoBufferLength", 24); // distance from start of buffer zone to limit of ultrasonic.
 
 	// Setup autonomous strategy chooser
 	autoStrategyChooser.AddObject("R Exchange", &AUTO_STRATEGIES::RIGHT_EXCHANGE_OPTIONS);

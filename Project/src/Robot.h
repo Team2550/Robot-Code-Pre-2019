@@ -32,12 +32,6 @@ private:
 	float speedTurtle;
 	float speedBoost;
 
-	Position autoStartPosition; // Position that the robot starts autonomous round at.
-	float autoMinSpeed; // Speed of robot after reaching wall
-	float autoMaxSpeed; // Speed of robot before reaching wall
-	float autoBufferStart; // Distance at which robot will reach min speed.
-	float autoBufferLength; // Length of region where the robot will slow on approach to wall
-
 	int axisTankLeft;
 	int axisTankRight;
 	int buttonBoost;
