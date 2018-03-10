@@ -1,4 +1,4 @@
-#include <AutoController.h>
+#include "AutoController.h"
 
 AutoController::AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro* gyroscope)
 {
@@ -49,34 +49,30 @@ bool AutoController::Execute()
 	bool instructionCompleted = false;
 
 	// Instruction Information
-	InstructionType instructionType = (instructionSet.steps + currentInstruction)->type;
-	double target = (instructionSet.steps + currentInstruction)->target;
-	bool stopAtTarget = (instructionSet.steps + currentInstruction)->stopAtTarget;
-	double leftSpeed = (instructionSet.steps + currentInstruction)->leftSpeed;
-	double rightSpeed = (instructionSet.steps + currentInstruction)->rightSpeed;
-	std::cout << "Left Speed: " << leftSpeed << " Right Speed: " << rightSpeed << std::endl;
+	Instruction inst = *(instructionSet.steps + currentInstruction);
+	std::cout << "Left Speed: " << inst.leftSpeed << " Right Speed: " << inst.rightSpeed << std::endl;
 
-	switch (instructionType)
+	switch (inst.type)
 	{
 	case WAIT_TIME:
-		target += instructionStartTime;
+		inst.target += instructionStartTime;
 	case WAIT_UNTIL:
-		driveBase->Drive(leftSpeed, rightSpeed);
-		instructionCompleted = (timer.Get() >= target);
+		driveBase->Drive(inst.leftSpeed, inst.rightSpeed);
+		instructionCompleted = (timer.Get() >= inst.target);
 		break;
 
 	case DRIVE_DIST:
-		target += instructionStartDistance;
+		inst.target += instructionStartDistance;
 	case DRIVE_TO:
-		std::cout << "Driving to " << target << " and angle of " << instructionTargetAngle << std::endl;
-		instructionCompleted = AutoDriveToDist( leftSpeed, rightSpeed, target, instructionTargetAngle, stopAtTarget );
+		std::cout << "Driving to " << inst.target << " and angle of " << instructionTargetAngle << std::endl;
+		instructionCompleted = AutoDriveToDist( inst.leftSpeed, inst.rightSpeed, inst.target, instructionTargetAngle, inst.stopAtTarget );
 		break;
 
 	case ROTATE_DEG:
-		target += instructionTargetAngle;
+		inst.target += instructionTargetAngle;
 	case ROTATE_TO:
-		std::cout << "Rotating to " << target << std::endl;
-		instructionCompleted = AutoRotateToAngle( leftSpeed, rightSpeed, target, stopAtTarget );
+		std::cout << "Rotating to " << inst.target << std::endl;
+		instructionCompleted = AutoRotateToAngle( inst.leftSpeed, inst.rightSpeed, inst.target, inst.stopAtTarget );
 		break;
 
 	case RESET_DIST_0:
@@ -123,8 +119,8 @@ bool AutoController::Execute()
 		instructionStartTime = timer.Get();
 		instructionStartDistance = driveBase->GetRightDistance(); //(driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2;
 
-		if (instructionType == ROTATE_DEG || instructionType == ROTATE_TO)
-			instructionTargetAngle = target;
+		if (inst.type == ROTATE_DEG || inst.type == ROTATE_TO)
+			instructionTargetAngle = inst.target;
 
 		currentInstruction++;
 	}
