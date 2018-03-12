@@ -9,6 +9,18 @@
 class AutoController
 {
 public:
+	// WAIT_UNTIL:		Pauses execution until 'target' seconds has passed since the start of the round. (Drives if speeds are given)
+	// WAIT_TIME:		Pauses execution for 'target' seconds. (Drives if speeds are given)
+	// DRIVE_TO:		Drives the robot at the speed given to a distance 'target' inches from the last time the distance was reset. (Distance is reset at start)
+	// DRIVE_DIST:		Drives the robot at the speed for 'target' inches.
+	// ROTATE_TO:		Rotates the robot to 'target' degrees relative to the starting position.
+	// ROTATE_DEG:  	Rotates the robot 'target' degrees relative to its current position.
+	//            		Left and right motor speeds dictate how the robot rotates. If only one speed is given, robot rotates in place.
+	// RESET_DIST_0:	Resets the measured distances to 0.
+	// EXTEND:			Begins extending the bulldozer.
+	// RETRACT:			Begins retracting the bulldozer.
+	// KICK:			Activates the kicker piston on top of the bulldozer.
+	// 		Note: DRIVE_TO, DRIVE_DIST, ROTATE_TO, and ROTATE_DEG slow down on approach to target if 'stopAtTarget' is true.
 	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, EXTEND, RETRACT, KICK }; //, RESET_DIST_ULTRA  };
 
 	struct Instruction
@@ -17,7 +29,7 @@ public:
 		double target = 0; // Distance or angle, depending on instruction
 		bool stopAtTarget = true; // Slow down/stop near target.
 		double leftSpeed = 0; // Acts as speed of both sides if only one specified.
-		double rightSpeed = leftSpeed; // Default to both sides sharing the same speed
+		double rightSpeed = leftSpeed; // Defaults to both sides sharing the same speed
 	};
 
 	struct InstructionSet
