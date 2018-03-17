@@ -1,5 +1,7 @@
 #include "AutoController.h"
 
+const float AUTO_STEER_STRENGTH = 1.5;
+
 AutoController::AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro* gyroscope)
 {
 	this->driveBase = driveBase;
@@ -151,7 +153,7 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 		angleOffsetPercent = -1;
 
 	// Parabolic curve of speed scaling
-	angleOffsetPercent *= abs(angleOffsetPercent);
+	angleOffsetPercent *= pow(fabs(angleOffsetPercent), AUTO_STEER_STRENGTH - 1);
 
 	// Scale the speed based on distance to target
 	double speedMultiplier = 1;
@@ -170,7 +172,7 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	if (stopAtTarget)
 	{
 		// Distance to decelerate is greater for higher speeds
-		double decelerateDistance = 40 * (fabs(leftSpeed) + fabs(rightSpeed)) / 2;
+		double decelerateDistance = 50 * (fabs(leftSpeed) + fabs(rightSpeed)) / 2;
 
 		// Slow down on approach
 		if (fabs(targetDistance - currentDistance) < decelerateDistance)

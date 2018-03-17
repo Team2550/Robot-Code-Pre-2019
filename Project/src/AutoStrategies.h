@@ -127,12 +127,11 @@ namespace AUTO_STRATEGIES
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED}, // Turn to the right
 		{AutoController::DRIVE_DIST, 60, true, AUTO_DRIVE_SPEED}, // Drive past switch
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED}, // Turn forward
-		{AutoController::DRIVE_DIST, SWITCH_WIDTH + 72 + ROBOT_LENGTH, true, AUTO_DRIVE_SPEED}, // Drive past switch
+		{AutoController::DRIVE_DIST, SWITCH_WIDTH + ROBOT_LENGTH + 8 + 24, true, AUTO_DRIVE_SPEED}, // Drive past switch
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED}, // Turn left
-		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::DRIVE_DIST, SWITCH_LENGTH, true, AUTO_DRIVE_SPEED * 1.2}, // Drive along length of switch
 	};
-	const AutoController::InstructionSet RIGHT_SWITCH_SAME_SIDE = {RIGHT_SWITCH_SAME_SIDE_STEPS, 15};
+	const AutoController::InstructionSet RIGHT_SWITCH_SAME_SIDE = {RIGHT_SWITCH_SAME_SIDE_STEPS, 14};
 
 	// Ownership of left side of switch
 	// Inner route
@@ -141,7 +140,6 @@ namespace AUTO_STRATEGIES
 		// Drive around to left side of switch
 		{AutoController::DRIVE_DIST, EXCHANGE_DEPTH + 12, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED},
-		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2, true, AUTO_DRIVE_SPEED * 1.2},
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH / 2 - ROBOT_LENGTH / 2 - EXCHANGE_DEPTH - 12, true, AUTO_DRIVE_SPEED},
@@ -155,7 +153,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet RIGHT_SWITCH_OTHER_SIDE_INNER = {RIGHT_SWITCH_OTHER_SIDE_INNER_STEPS, 13};
+	const AutoController::InstructionSet RIGHT_SWITCH_OTHER_SIDE_INNER = {RIGHT_SWITCH_OTHER_SIDE_INNER_STEPS, 12};
 
 	// Outer route
 	const AutoController::Instruction RIGHT_SWITCH_OTHER_SIDE_OUTER_STEPS[] =
@@ -165,7 +163,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::ROTATE_TO, 45, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, sqrt(2)*(PLAYER_STATION_WIDTH), true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH - PLAYER_STATION_WIDTH + 24, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH - PLAYER_STATION_WIDTH, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
 		{AutoController::ROTATE_TO, -180, true, AUTO_ROTATE_SPEED},
@@ -194,7 +192,6 @@ namespace AUTO_STRATEGIES
 		// Drive around to right side of switch
 		{AutoController::DRIVE_DIST, EXCHANGE_DEPTH + 12, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
-		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
 
@@ -206,7 +203,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_INNER = {LEFT_SWITCH_OTHER_SIDE_INNER_STEPS, 11};
+	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_INNER = {LEFT_SWITCH_OTHER_SIDE_INNER_STEPS, 10};
 
 	// Outer route
 	const AutoController::Instruction LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS[] =
@@ -214,7 +211,6 @@ namespace AUTO_STRATEGIES
 		// Drive around to right side of switch
 		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH + 24, true, AUTO_DRIVE_SPEED * 1.2},
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
-		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
 		{AutoController::ROTATE_TO, 180, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, SWITCH_WIDTH / 2 + ROBOT_LENGTH / 2 + 24, true, AUTO_DRIVE_SPEED},
@@ -228,7 +224,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_OUTER = {LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS, 13};
+	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_OUTER = {LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS, 12};
 
 	// Ownership of left side of switch
 	const AutoController::Instruction LEFT_SWITCH_SAME_SIDE_STEPS[] =
