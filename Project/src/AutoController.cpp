@@ -150,6 +150,9 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	if (angleOffsetPercent < -1)
 		angleOffsetPercent = -1;
 
+	// Parabolic curve of speed scaling
+	angleOffsetPercent *= abs(angleOffsetPercent);
+
 	// Scale the speed based on distance to target
 	double speedMultiplier = 1;
 
@@ -202,8 +205,13 @@ bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, dou
 
 	double speedMult = 1;
 
-	if (fabs(targetAngleOffset) < 15)
+	// Slow down robot on approach
+	if (stopAtTarget && fabs(targetAngleOffset) < 15)
 		speedMult = fabs(targetAngleOffset) / 15.0;
+
+	// Prevent robot from driving too slowly
+	if (speedMult < 0.5)
+		speedMult = 0.5;
 
 	// Turn clockwise
 	if ( targetAngleOffset > 4 )

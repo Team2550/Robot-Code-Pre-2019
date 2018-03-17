@@ -55,7 +55,6 @@ private:
 	AutoController autoController;
 	Timer autoTimer;
 
-	LimitSwitch bumperSwitch;
 	UltrasonicAnalog ultrasonic;
 	ADXRS450_Gyro gyroscope;
 
