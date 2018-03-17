@@ -174,14 +174,16 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 		// Distance to decelerate is greater for higher speeds
 		double decelerateDistance = 50 * (fabs(leftSpeed) + fabs(rightSpeed)) / 2;
 
-		// Slow down on approach
+		// Slow down on start/approach
 		if (fabs(targetDistance - currentDistance) < decelerateDistance)
 			speedMultiplier *= fabs(targetDistance - currentDistance) / decelerateDistance;
-
-		// Prevent robot from driving too slowly
-		if (fabs(speedMultiplier) < 0.5)
-			speedMultiplier *= 0.5 / fabs(speedMultiplier);
+		else if (fabs(instructionStartDistance - currentDistance) < decelerateDistance)
+			speedMultiplier *= fabs(instructionStartDistance - currentDistance) / decelerateDistance;
 	}
+
+	// Prevent robot from driving too slowly
+	if (fabs(speedMultiplier) < 0.5)
+		speedMultiplier *= 0.5 / fabs(speedMultiplier);
 
 	driveBase->Drive(leftSpeed * speedMultiplier * leftSpeedMult, rightSpeed * speedMultiplier * rightSpeedMult);
 
