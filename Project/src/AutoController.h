@@ -69,6 +69,7 @@ private:
 	unsigned int currentInstruction;
 	double instructionStartTime;
 	double instructionStartDistance;
+	double instructionStartAngle;
 	double instructionTargetAngle;
 	bool bulldozerExtended;
 	bool bulldozerKicking;

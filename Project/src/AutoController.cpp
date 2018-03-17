@@ -38,6 +38,7 @@ void AutoController::Init(InstructionSet instructionSet)
 	currentInstruction = 0;
 	instructionStartTime = 0;
 	instructionStartDistance = 0;
+	instructionStartAngle = 0;
 	instructionTargetAngle = 0;
 	bulldozerExtended = false;
 }
@@ -120,6 +121,7 @@ bool AutoController::Execute()
 	{
 		instructionStartTime = timer.Get();
 		instructionStartDistance = driveBase->GetRightDistance(); //(driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2;
+		instructionStartAngle = gyroscope->GetAngle();
 
 		if (inst.type == ROTATE_DEG || inst.type == ROTATE_TO)
 			instructionTargetAngle = inst.target;
@@ -210,8 +212,13 @@ bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, dou
 	double speedMult = 1;
 
 	// Slow down robot on approach
-	if (stopAtTarget && fabs(targetAngleOffset) < 15)
-		speedMult = fabs(targetAngleOffset) / 15.0;
+	if (stopAtTarget)
+	{
+		if (fabs(targetAngleOffset) < 15)
+			speedMult = fabs(targetAngleOffset) / 15.0;
+		else if (fabs(targetAngle - instructionStartAngle) < 15)
+			speedMult = fabs(targetAngle - instructionStartAngle) / 15.0;
+	}
 
 	// Prevent robot from driving too slowly
 	if (speedMult < 0.5)
