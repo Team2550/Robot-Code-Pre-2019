@@ -120,7 +120,7 @@ bool AutoController::Execute()
 	if (instructionCompleted)
 	{
 		instructionStartTime = timer.Get();
-		instructionStartDistance = driveBase->GetRightDistance(); //(driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2;
+		instructionStartDistance = GetCurrentDistance();
 		instructionStartAngle = gyroscope->GetAngle();
 
 		if (inst.type == ROTATE_DEG || inst.type == ROTATE_TO)
@@ -142,7 +142,7 @@ bool AutoController::Execute()
 bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle, bool stopAtTarget )
 {
 	// Get sensor data
-	double currentDistance = driveBase->GetRightDistance(); //(driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2; // Average of left and right distances.
+	double currentDistance = GetCurrentDistance(); // Average of left and right distances.
 	double currentAngle = gyroscope->GetAngle();
 
 	// Get the angle that the robot has drifted from its target as a percentage out of 90 degrees
@@ -179,8 +179,8 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 		// Slow down on start/approach
 		if (fabs(targetDistance - currentDistance) < decelerateDistance)
 			speedMultiplier *= fabs(targetDistance - currentDistance) / decelerateDistance;
-		else if (fabs(instructionStartDistance - currentDistance) < decelerateDistance)
-			speedMultiplier *= fabs(instructionStartDistance - currentDistance) / decelerateDistance;
+		else if (fabs(timer.Get() - instructionStartTime) < .5)
+			speedMultiplier *= 0.5 + fabs(timer.Get() - instructionStartTime);
 	}
 
 	// Prevent robot from driving too slowly
@@ -189,8 +189,8 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 
 	driveBase->Drive(leftSpeed * speedMultiplier * leftSpeedMult, rightSpeed * speedMultiplier * rightSpeedMult);
 
-	// Returns true if distance to target is less than 3 (0.5 foot range)
-	return abs( currentDistance - targetDistance ) < 3;
+	// Returns true if distance to target is less than 2 (1/6 foot range)
+	return abs( currentDistance - targetDistance ) < 2;
 }
 
 bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle, bool stopAtTarget )
@@ -209,28 +209,28 @@ bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, dou
 	// Get sensor data
 	double targetAngleOffset = targetAngle - gyroscope->GetAngle();
 
-	double speedMult = 1;
+	double speedMultiplier = 1;
 
 	// Slow down robot on approach
 	if (stopAtTarget)
 	{
 		if (fabs(targetAngleOffset) < 15)
-			speedMult = fabs(targetAngleOffset) / 15.0;
-		else if (fabs(targetAngle - instructionStartAngle) < 15)
-			speedMult = fabs(targetAngle - instructionStartAngle) / 15.0;
+			speedMultiplier = fabs(targetAngleOffset) / 15.0;
+		else if (fabs(timer.Get() - instructionStartTime) < .5)
+			speedMultiplier *= 0.5 + fabs(timer.Get() - instructionStartTime);
 	}
 
 	// Prevent robot from driving too slowly
-	if (speedMult < 0.5)
-		speedMult = 0.5;
+	if (speedMultiplier < 0.5)
+		speedMultiplier = 0.5;
 
 	// Turn clockwise
 	if ( targetAngleOffset > 4 )
-		driveBase->Drive(leftSpeed * speedMult, rightSpeed * speedMult);
+		driveBase->Drive(leftSpeed * speedMultiplier, rightSpeed * speedMultiplier);
 
 	// Turn counter-clockwise
 	else if ( targetAngleOffset < -4 )
-		driveBase->Drive(-leftSpeed * speedMult, -rightSpeed * speedMult);
+		driveBase->Drive(-leftSpeed * speedMultiplier, -rightSpeed * speedMultiplier);
 
 	// Stop
 	else if (stopAtTarget)
@@ -239,4 +239,9 @@ bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, dou
 
 	// Return true if angle is within range of (targetAngle - 4, targetAngle + 4))
 	return abs( targetAngleOffset ) < 4;
+}
+
+double AutoController::GetCurrentDistance()
+{
+	return (driveBase->GetLeftDistance() + driveBase->GetRightDistance()) / 2;
 }

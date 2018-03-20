@@ -76,6 +76,7 @@ private:
 
 	bool AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle, bool stopAtTarget );
 	bool AutoRotateToAngle( double leftSpeed, double rightSpeed, double targetAngle, bool stopAtTarget );
+	double GetCurrentDistance();
 
 };
 

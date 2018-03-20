@@ -6,7 +6,7 @@
 namespace AUTO_STRATEGIES
 {
 	const float AUTO_DRIVE_SPEED = 0.45f; // Increased from 0.4 to better grip block while moving
-	const float AUTO_ROTATE_SPEED = 0.375f;
+	const float AUTO_ROTATE_SPEED = 0.4f;
 
 	const float ROBOT_WIDTH = 31.25f;
 	const float ROBOT_LENGTH = 24.0f;
@@ -127,7 +127,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED}, // Turn to the right
 		{AutoController::DRIVE_DIST, 60, true, AUTO_DRIVE_SPEED}, // Drive past switch
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED}, // Turn forward
-		{AutoController::DRIVE_DIST, SWITCH_WIDTH + ROBOT_LENGTH + 8 + 24, true, AUTO_DRIVE_SPEED}, // Drive past switch
+		{AutoController::DRIVE_DIST, SWITCH_WIDTH + ROBOT_LENGTH + 12 + 36, true, AUTO_DRIVE_SPEED}, // Drive past switch
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED}, // Turn left
 		{AutoController::DRIVE_DIST, SWITCH_LENGTH, true, AUTO_DRIVE_SPEED * 1.2}, // Drive along length of switch
 	};
