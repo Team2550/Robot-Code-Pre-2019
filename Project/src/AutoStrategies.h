@@ -6,10 +6,12 @@
 namespace AUTO_STRATEGIES
 {
 	const float AUTO_DRIVE_SPEED = 0.45f; // Increased from 0.4 to better grip block while moving
+	const float AUTO_BOOST_SPEED = 0.8f;
 	const float AUTO_ROTATE_SPEED = 0.4f;
+	const float AUTO_GAP_TO_SWITCH = 10.0f;
 
-	const float ROBOT_WIDTH = 31.25f;
-	const float ROBOT_LENGTH = 24.0f;
+	const float ROBOT_WIDTH = 37.5f; //1.25f; // Without bumpers
+	const float ROBOT_LENGTH = 30.0f; //24.0f;
 
 	const float BACK_WALL_WIDTH = 264.0f;
 	const float PLAYER_STATION_WIDTH = 72.0f;
@@ -18,7 +20,6 @@ namespace AUTO_STRATEGIES
 	const float EXCHANGE_OFFSET = 5.0f; // Exchange slot is slightly offset from the center of the exchange
 
 	const float SWITCH_DIST = 140.0f;
-
 	const float SWITCH_WIDTH = 56.0f;
 	const float SWITCH_LENGTH = 152.88f;
 
@@ -60,7 +61,7 @@ namespace AUTO_STRATEGIES
 
 		// Retract and backup to auto line
 		{AutoController::RETRACT},
-		{AutoController::DRIVE_DIST, -(SWITCH_DIST - ROBOT_LENGTH + 4), true, AUTO_DRIVE_SPEED * 1.2}
+		{AutoController::DRIVE_DIST, -(SWITCH_DIST - ROBOT_LENGTH + 4), true, AUTO_BOOST_SPEED}
 	};
 	const AutoController::InstructionSet RIGHT_EXCHANGE = {RIGHT_EXCHANGE_STEPS, 17};
 
@@ -101,7 +102,7 @@ namespace AUTO_STRATEGIES
 
 		// Retract and backup to auto line
 		{AutoController::RETRACT},
-		{AutoController::DRIVE_DIST, -(SWITCH_DIST - ROBOT_LENGTH + 4), true, AUTO_DRIVE_SPEED * 1.2}
+		{AutoController::DRIVE_DIST, -(SWITCH_DIST - ROBOT_LENGTH + 4), true, AUTO_BOOST_SPEED}
 	};
 	const AutoController::InstructionSet LEFT_EXCHANGE = {LEFT_EXCHANGE_STEPS, 17};
 
@@ -115,7 +116,7 @@ namespace AUTO_STRATEGIES
 	{
 		// Push block onto switch
 		{AutoController::RESET_DIST_0},
-		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 8, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
 		{AutoController::EXTEND},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::KICK},
@@ -129,7 +130,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED}, // Turn forward
 		{AutoController::DRIVE_DIST, SWITCH_WIDTH + ROBOT_LENGTH + 12 + 36, true, AUTO_DRIVE_SPEED}, // Drive past switch
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED}, // Turn left
-		{AutoController::DRIVE_DIST, SWITCH_LENGTH, true, AUTO_DRIVE_SPEED * 1.2}, // Drive along length of switch
+		{AutoController::DRIVE_DIST, SWITCH_LENGTH, true, AUTO_BOOST_SPEED}, // Drive along length of switch
 	};
 	const AutoController::InstructionSet RIGHT_SWITCH_SAME_SIDE = {RIGHT_SWITCH_SAME_SIDE_STEPS, 14};
 
@@ -140,13 +141,13 @@ namespace AUTO_STRATEGIES
 		// Drive around to left side of switch
 		{AutoController::DRIVE_DIST, EXCHANGE_DEPTH + 12, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2, true, AUTO_DRIVE_SPEED * 1.2},
+		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 12, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH / 2 - ROBOT_LENGTH / 2 - EXCHANGE_DEPTH - 12, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
 
 		// Place block on switch
-		{AutoController::DRIVE_DIST, 55.56 - ROBOT_LENGTH - 8, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 55.56 - ROBOT_LENGTH - 12 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
 		{AutoController::EXTEND},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::KICK},
@@ -165,13 +166,13 @@ namespace AUTO_STRATEGIES
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH - PLAYER_STATION_WIDTH, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
+		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH - 6, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, -180, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, SWITCH_WIDTH / 2 + ROBOT_LENGTH / 2 + 24, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -270, true, AUTO_ROTATE_SPEED},
 
 		// Place block on switch
-		{AutoController::DRIVE_DIST, 55.56 - ROBOT_LENGTH - 12, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 55.56 - ROBOT_LENGTH - 6 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
 		{AutoController::EXTEND},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::KICK},
@@ -192,11 +193,11 @@ namespace AUTO_STRATEGIES
 		// Drive around to right side of switch
 		{AutoController::DRIVE_DIST, EXCHANGE_DEPTH + 12, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
+		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
 
 		// Place block on switch
-		{AutoController::DRIVE_DIST, SWITCH_DIST - ROBOT_LENGTH - EXCHANGE_DEPTH - 20, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, SWITCH_DIST - ROBOT_LENGTH - EXCHANGE_DEPTH - 12 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
 		{AutoController::EXTEND},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::KICK},
@@ -209,15 +210,15 @@ namespace AUTO_STRATEGIES
 	const AutoController::Instruction LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS[] =
 	{
 		// Drive around to right side of switch
-		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH + 24, true, AUTO_DRIVE_SPEED * 1.2},
+		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH + 24, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH, true, AUTO_DRIVE_SPEED * 1.2},
+		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH - 6, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, 180, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, SWITCH_WIDTH / 2 + ROBOT_LENGTH / 2 + 24, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, 270, true, AUTO_ROTATE_SPEED},
 
 		// Place block on switch
-		{AutoController::DRIVE_DIST, 55.56 - ROBOT_LENGTH - 12, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 55.56 - ROBOT_LENGTH - 6 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
 		{AutoController::EXTEND},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::KICK},
@@ -230,11 +231,11 @@ namespace AUTO_STRATEGIES
 	const AutoController::Instruction LEFT_SWITCH_SAME_SIDE_STEPS[] =
 	{
 		// Drive forward and face switch
-		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH / 2 - ROBOT_LENGTH / 2, true, AUTO_DRIVE_SPEED * 1.2},
+		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH / 2 - ROBOT_LENGTH / 2, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
 
 		// Place block on switch
-		{AutoController::DRIVE_DIST, 55.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 8, true, AUTO_DRIVE_SPEED},
+		{AutoController::DRIVE_DIST, 55.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
 		{AutoController::EXTEND},
 		{AutoController::WAIT_TIME, 0.5},
 		{AutoController::KICK},
