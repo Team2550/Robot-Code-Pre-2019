@@ -1,6 +1,8 @@
 #include "AutoController.h"
 
-const float AUTO_STEER_STRENGTH = 1.5;
+const float AUTO_STEER_STRENGTH = 1.3;
+const float STRAIGHT_DECEL_MULT = 90;
+const float ROTATE_DECEL_MULT = 100;
 
 AutoController::AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro* gyroscope)
 {
@@ -174,7 +176,7 @@ bool AutoController::AutoDriveToDist( double leftSpeed, double rightSpeed, doubl
 	if (stopAtTarget)
 	{
 		// Distance to decelerate is greater for higher speeds
-		double decelerateDistance = 110 * pow((fabs(leftSpeed) + fabs(rightSpeed)) / 2, 2);
+		double decelerateDistance = STRAIGHT_DECEL_MULT * pow((fabs(leftSpeed) + fabs(rightSpeed)) / 2, 2);
 
 		// Slow down on start/approach
 		if (fabs(targetDistance - currentDistance) < decelerateDistance)
@@ -214,8 +216,10 @@ bool AutoController::AutoRotateToAngle( double leftSpeed, double rightSpeed, dou
 	// Slow down robot on approach
 	if (stopAtTarget)
 	{
-		if (fabs(targetAngleOffset) < 15)
-			speedMultiplier = fabs(targetAngleOffset) / 15.0;
+		double decelerateAngle = ROTATE_DECEL_MULT * pow((fabs(leftSpeed) + fabs(rightSpeed)) / 2, 2);
+
+		if (fabs(targetAngleOffset) < decelerateAngle)
+			speedMultiplier = fabs(targetAngleOffset) / decelerateAngle;
 		else if (fabs(timer.Get() - instructionStartTime) < .5)
 			speedMultiplier *= 0.5 + fabs(timer.Get() - instructionStartTime);
 	}
