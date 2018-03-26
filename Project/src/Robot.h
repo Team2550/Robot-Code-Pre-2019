@@ -31,6 +31,7 @@ private:
 	float speedNormal;
 	float speedTurtle;
 	float speedBoost;
+	float boostDecelerationTime;
 
 	int axisTankLeft;
 	int axisTankRight;
@@ -40,6 +41,7 @@ private:
 	int buttonBulldozerPulse;
 	int buttonBulldozerKick;
 
+	float boostPressTime;
 	bool bulldozerPulseToggle;
 	bool bulldozerKickToggle;
 
@@ -53,7 +55,7 @@ private:
 	Joystick driveController;
 	Joystick perifController;
 	AutoController autoController;
-	Timer autoTimer;
+	Timer timer;
 
 	UltrasonicAnalog ultrasonic;
 	ADXRS450_Gyro gyroscope;
