@@ -9,6 +9,7 @@
 #include "AutoStrategies.h"
 #include "DriveBase.h"
 #include "Bulldozer.h"
+#include "Clamp.h"
 #include "UltrasonicAnalog.h"
 #include "LimitSwitch.h"
 
@@ -39,6 +40,8 @@ private:
 	int buttonBulldozerExtend;
 	int buttonBulldozerPulse;
 	int buttonBulldozerKick;
+	int buttonArmToggle;
+	int buttonClampToggle;
 
 	bool bulldozerPulseToggle;
 	bool bulldozerKickToggle;
@@ -60,6 +63,7 @@ private:
 
 	DriveBase driveBase;
 	Bulldozer bulldozer;
+	Clamp clamp;
 
 };
 
