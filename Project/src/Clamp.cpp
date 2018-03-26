@@ -1,6 +1,6 @@
 #include "Clamp.h"
 
-Clamp::Clamp(int armDownPort, int armUpPort, int openPort, int closePort) :
+Clamp::Clamp(int armUpPort, int armDownPort, int closePort, int openPort) :
 	armSolenoid(armDownPort, armUpPort), clampSolenoid(openPort, closePort)
 {
 	armSolenoid.Set(DoubleSolenoid::kOff);

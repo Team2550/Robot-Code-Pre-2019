@@ -6,7 +6,7 @@
 class Clamp
 {
 public:
-	Clamp(int armDownPort, int armUpPort, int openPort, int closePort);
+	Clamp(int armUpPort, int armDownPort, int closePort, int openPort);
 
 	void ArmUp();
 	void ArmDown();
