@@ -2,6 +2,7 @@
 #define BULLDOZER_H
 
 #include <WPILib.h>
+#include "Utility.h"
 
 class Bulldozer
 {
@@ -16,18 +17,17 @@ public:
 	bool Kick(double pauseTime); // Returns true if complete
 
 private:
-	enum State { UNKNOWN, RETRACT, EXTEND };
 
 	DoubleSolenoid bulldozerSolenoid;
 	DoubleSolenoid kickerSolenoid;
 
 	Timer bulldozerDelay;
 	bool bulldozerPulsing;
-	State bulldozerLastState;
+	Utility::PneumaticState bulldozerLastState;
 
 	Timer kickerDelay;
 	bool kicking;
-	State kickerLastState;
+	Utility::PneumaticState kickerLastState;
 
 	double extensionTime;
 

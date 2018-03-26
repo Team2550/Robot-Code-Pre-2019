@@ -9,6 +9,8 @@
 
 namespace Utility
 {
+	enum PneumaticState { UNKNOWN, RETRACT, EXTEND };
+
 	enum RumbleSide { LEFT, RIGHT, BOTH };
 
 	/*=================================================

@@ -16,10 +16,10 @@ Bulldozer::Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOu
 	kickerDelay.Reset();
 	kickerDelay.Start();
 
-	bulldozerLastState = UNKNOWN;
+	bulldozerLastState = Utility::UNKNOWN;
 	bulldozerPulsing = false;
 
-	kickerLastState = UNKNOWN;
+	kickerLastState = Utility::UNKNOWN;
 	kicking = false;
 
 	this->extensionTime = extensionTime;
@@ -27,20 +27,20 @@ Bulldozer::Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOu
 
 void Bulldozer::Reset()
 {
-	bulldozerLastState = UNKNOWN;
+	bulldozerLastState = Utility::UNKNOWN;
 	bulldozerSolenoid.Set(frc::DoubleSolenoid::kOff);
 	bulldozerDelay.Reset();
-	kickerLastState = UNKNOWN;
+	kickerLastState = Utility::UNKNOWN;
 	kickerSolenoid.Set(frc::DoubleSolenoid::kOff);
 	kickerDelay.Reset();
 }
 
 void Bulldozer::Extend()
 {
-	if (bulldozerLastState != EXTEND)
+	if (bulldozerLastState != Utility::EXTEND)
 	{
 		bulldozerDelay.Reset();
-		bulldozerLastState = EXTEND;
+		bulldozerLastState = Utility::EXTEND;
 	}
 	bulldozerPulsing = false;
 
@@ -52,10 +52,10 @@ void Bulldozer::Extend()
 
 void Bulldozer::Retract()
 {
-	if (bulldozerLastState != RETRACT)
+	if (bulldozerLastState != Utility::RETRACT)
 	{
 		bulldozerDelay.Reset();
-		bulldozerLastState = RETRACT;
+		bulldozerLastState = Utility::RETRACT;
 	}
 	bulldozerPulsing = false;
 
@@ -71,10 +71,10 @@ bool Bulldozer::Pulse(double pauseTime)
 	{
 		bulldozerPulsing = true;
 		bulldozerDelay.Reset();
-		bulldozerLastState = EXTEND;
+		bulldozerLastState = Utility::EXTEND;
 	}
 
-	if (bulldozerLastState == EXTEND)
+	if (bulldozerLastState == Utility::EXTEND)
 	{
 		if (bulldozerDelay.Get() < extensionTime)
 			bulldozerSolenoid.Set(frc::DoubleSolenoid::kForward);
@@ -83,7 +83,7 @@ bool Bulldozer::Pulse(double pauseTime)
 		else
 		{
 			bulldozerDelay.Reset();
-			bulldozerLastState = RETRACT;
+			bulldozerLastState = Utility::RETRACT;
 			bulldozerSolenoid.Set(frc::DoubleSolenoid::kReverse);
 		}
 	}
@@ -108,10 +108,10 @@ bool Bulldozer::Kick(double pauseTime)
 	{
 		kicking = true;
 		kickerDelay.Reset();
-		kickerLastState = EXTEND;
+		kickerLastState = Utility::EXTEND;
 	}
 
-	if (kickerLastState == EXTEND)
+	if (kickerLastState == Utility::EXTEND)
 	{
 		if (kickerDelay.Get() < extensionTime)
 			kickerSolenoid.Set(frc::DoubleSolenoid::kForward);
@@ -120,7 +120,7 @@ bool Bulldozer::Kick(double pauseTime)
 		else
 		{
 			kickerDelay.Reset();
-			kickerLastState = RETRACT;
+			kickerLastState = Utility::RETRACT;
 			kickerSolenoid.Set(frc::DoubleSolenoid::kReverse);
 		}
 	}
