@@ -7,12 +7,13 @@
 class Bulldozer
 {
 public:
-	Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOutPort, double extensionTime);
+	Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOutPort);
 
-	void Reset();
 	void Extend();
 	void Retract();
-	void Stop();
+
+	bool GetIsExtended();
+
 	bool Pulse(double pauseTime); // Returns true if complete
 	bool Kick(double pauseTime); // Returns true if complete
 
@@ -22,16 +23,11 @@ private:
 	DoubleSolenoid bulldozerSolenoid;
 	DoubleSolenoid kickerSolenoid;
 
-	Timer bulldozerDelay;
-	bool bulldozerPulsing;
-	State bulldozerLastState;
+	Timer pulseTimer;
+	Timer kickTimer;
 
-	Timer kickerDelay;
-	bool kicking;
-	State kickerLastState;
-
-	double extensionTime;
-
+	bool isPulsing;
+	bool isKicking;
 };
 
 #endif

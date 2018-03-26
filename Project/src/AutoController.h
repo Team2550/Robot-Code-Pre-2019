@@ -71,7 +71,6 @@ private:
 	double instructionStartDistance;
 	double instructionStartAngle;
 	double instructionTargetAngle;
-	bool bulldozerExtended;
 	bool bulldozerKicking;
 
 	bool AutoDriveToDist( double leftSpeed, double rightSpeed, double targetDistance, double targetAngle, bool stopAtTarget );

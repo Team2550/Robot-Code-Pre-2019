@@ -16,8 +16,8 @@ AutoController::AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro*
 	currentInstruction = 0;
 	instructionStartTime = 0;
 	instructionStartDistance = 0;
+	instructionStartAngle = 0;
 	instructionTargetAngle = 0;
-	bulldozerExtended = false;
 	bulldozerKicking = false;
 }
 
@@ -42,7 +42,7 @@ void AutoController::Init(InstructionSet instructionSet)
 	instructionStartDistance = 0;
 	instructionStartAngle = 0;
 	instructionTargetAngle = 0;
-	bulldozerExtended = false;
+	bulldozerKicking = false;
 }
 
 bool AutoController::Execute()
@@ -87,12 +87,12 @@ bool AutoController::Execute()
 		break;
 
 	case EXTEND:
-		bulldozerExtended = true;
+		bulldozer->Extend();
 		instructionCompleted = true;
 		break;
 
 	case RETRACT:
-		bulldozerExtended = false;
+		bulldozer->Retract();
 		instructionCompleted = true;
 		break;
 
@@ -111,13 +111,8 @@ bool AutoController::Execute()
 		driveBase->Stop();
 	}
 
-	if (bulldozerExtended)
-		bulldozer->Extend();
-	else
-		bulldozer->Retract();
-
 	if (bulldozerKicking)
-		bulldozerKicking = !bulldozer->Kick(0);
+		bulldozerKicking = !bulldozer->Kick(0.5);
 
 	if (instructionCompleted)
 	{

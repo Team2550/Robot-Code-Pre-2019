@@ -7,133 +7,87 @@
 
 #include "Bulldozer.h"
 
-Bulldozer::Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOutPort, double extensionTime) :
+Bulldozer::Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOutPort) :
 	bulldozerSolenoid(extendPort, retractPort), kickerSolenoid(kickOutPort, kickInPort)
 {
-	bulldozerDelay.Reset();
-	bulldozerDelay.Start();
+	pulseTimer.Reset();
+	pulseTimer.Start();
 
-	kickerDelay.Reset();
-	kickerDelay.Start();
+	kickTimer.Reset();
+	kickTimer.Start();
 
-	bulldozerLastState = UNKNOWN;
-	bulldozerPulsing = false;
+	bulldozerSolenoid.Set(DoubleSolenoid::kOff);
+	kickerSolenoid.Set(frc::DoubleSolenoid::kOff);
 
-	kickerLastState = UNKNOWN;
-	kicking = false;
-
-	this->extensionTime = extensionTime;
-}
-
-void Bulldozer::Reset()
-{
-	bulldozerLastState = UNKNOWN;
-	bulldozerSolenoid.Set(frc::DoubleSolenoid::kOff);
-	bulldozerDelay.Reset();
-	kickerLastState = UNKNOWN;
-	kickerSolenoid.Set(frc::DoubleSolenoid::kReverse);
-	kickerDelay.Reset();
+	isPulsing = false;
+	isKicking = false;
 }
 
 void Bulldozer::Extend()
 {
-	if (bulldozerLastState != EXTEND)
-	{
-		bulldozerDelay.Reset();
-		bulldozerLastState = EXTEND;
-	}
-	bulldozerPulsing = false;
-
-	if (bulldozerDelay.Get() < extensionTime)
-		bulldozerSolenoid.Set(frc::DoubleSolenoid::kForward);
-	else
-		bulldozerSolenoid.Set(frc::DoubleSolenoid::kOff);
+	isPulsing = false;
+	bulldozerSolenoid.Set(DoubleSolenoid::kForward);
 }
 
 void Bulldozer::Retract()
 {
-	if (bulldozerLastState != RETRACT)
-	{
-		bulldozerDelay.Reset();
-		bulldozerLastState = RETRACT;
-	}
-	bulldozerPulsing = false;
 
-	if (bulldozerDelay.Get() < extensionTime)
-		bulldozerSolenoid.Set(frc::DoubleSolenoid::kReverse);
-	else
-		bulldozerSolenoid.Set(frc::DoubleSolenoid::kOff);
+	isPulsing = false;
+	bulldozerSolenoid.Set(DoubleSolenoid::kReverse);
 }
 
-bool Bulldozer::Pulse(double pauseTime)
+bool Bulldozer::GetIsExtended()
 {
-	if (!bulldozerPulsing)
+	return bulldozerSolenoid.Get() == DoubleSolenoid::kForward;
+}
+
+bool Bulldozer::Pulse(double waitTimeSec)
+{
+	if (!isPulsing)
 	{
-		bulldozerPulsing = true;
-		bulldozerDelay.Reset();
-		bulldozerLastState = EXTEND;
+		pulseTimer.Reset();
+		isPulsing = true;
 	}
 
-	if (bulldozerLastState == EXTEND)
+	if (pulseTimer.Get() < waitTimeSec)
 	{
-		if (bulldozerDelay.Get() < extensionTime)
-			bulldozerSolenoid.Set(frc::DoubleSolenoid::kForward);
-		else if (bulldozerDelay.Get() < extensionTime + pauseTime)
-			bulldozerSolenoid.Set(frc::DoubleSolenoid::kOff);
-		else
-		{
-			bulldozerDelay.Reset();
-			bulldozerLastState = RETRACT;
-			bulldozerSolenoid.Set(frc::DoubleSolenoid::kReverse);
-		}
+		bulldozerSolenoid.Set(DoubleSolenoid::kForward);
+	}
+	else if (pulseTimer.Get() < waitTimeSec * 2)
+	{
+		bulldozerSolenoid.Set(DoubleSolenoid::kReverse);
 	}
 	else
 	{
-		if (bulldozerDelay.Get() < extensionTime)
-			bulldozerSolenoid.Set(frc::DoubleSolenoid::kReverse);
-		else
-		{
-			bulldozerSolenoid.Set(frc::DoubleSolenoid::kOff);
-			bulldozerPulsing = false;
-			return true;
-		}
+		bulldozerSolenoid.Set(DoubleSolenoid::kReverse);
+		isPulsing = false;
+		return true;
 	}
 
 	return false;
 }
 
-bool Bulldozer::Kick(double pauseTime)
+bool Bulldozer::Kick(double waitTimeSec)
 {
-	if (!kicking)
+	if (!isKicking)
 	{
-		kicking = true;
-		kickerDelay.Reset();
-		kickerLastState = EXTEND;
+		kickTimer.Reset();
+		isKicking = true;
 	}
 
-	if (kickerLastState == EXTEND)
+	if (kickTimer.Get() < waitTimeSec)
 	{
-		if (kickerDelay.Get() < extensionTime)
-			kickerSolenoid.Set(frc::DoubleSolenoid::kForward);
-		else if (kickerDelay.Get() < extensionTime + pauseTime)
-			kickerSolenoid.Set(frc::DoubleSolenoid::kOff);
-		else
-		{
-			kickerDelay.Reset();
-			kickerLastState = RETRACT;
-			kickerSolenoid.Set(frc::DoubleSolenoid::kReverse);
-		}
+		kickerSolenoid.Set(DoubleSolenoid::kForward);
+	}
+	else if (kickTimer.Get() < waitTimeSec * 2)
+	{
+		kickerSolenoid.Set(DoubleSolenoid::kReverse);
 	}
 	else
 	{
-		if (kickerDelay.Get() < extensionTime)
-			kickerSolenoid.Set(frc::DoubleSolenoid::kReverse);
-		else
-		{
-			kickerSolenoid.Set(frc::DoubleSolenoid::kReverse);
-			kicking = false;
-			return true;
-		}
+		kickerSolenoid.Set(DoubleSolenoid::kReverse);
+		isKicking = false;
+		return true;
 	}
 
 	if (kickerSolenoid.Get() == DoubleSolenoid::kForward)

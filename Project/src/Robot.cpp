@@ -8,7 +8,7 @@ Robot::Robot() : driveController(0), perifController(1),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
 				 gyroscope(frc::SPI::Port::kOnboardCS0),
 				 driveBase(0, 1, 0, 1, 2, 3, 6.07 * M_PI, 512), // Pulses per rotation is set by encoder DIP switch. 512 PPR uses DIP switch configuration 0001.
-				 bulldozer(0, 1, 2, 3, 0.5)
+				 bulldozer(0, 1, 4, 5)
 {
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
@@ -47,8 +47,6 @@ void Robot::AutonomousInit()
 	UpdatePreferences();
 
 	driveBase.Stop();
-
-	bulldozer.Reset();
 
 	timer.Reset();
 	timer.Start();
@@ -102,7 +100,6 @@ void Robot::TeleopInit()
 	driveBase.ResetDistance();
 	boostPressTime = -999;
 
-	bulldozer.Reset();
 	bulldozerPulseToggle = false;
 	bulldozerKickToggle = false;
 
@@ -182,16 +179,18 @@ void Robot::TeleopPeriodic()
 		bulldozer.Extend();
 		bulldozerPulseToggle = false;
 	}
-	else if (bulldozerPulseToggle)
-		bulldozerPulseToggle = !bulldozer.Pulse(0); // Disables toggle if pulse is complete
-	else
+	else if (!bulldozerPulseToggle)
 		bulldozer.Retract();
 
+	if (bulldozerPulseToggle)
+		bulldozerPulseToggle = !bulldozer.Pulse(0.5);
+
+	// Kicker
 	if (perifController.GetRawButton(buttonBulldozerKick))
 		bulldozerKickToggle = true;
 
 	if (bulldozerKickToggle)
-		bulldozerKickToggle = !bulldozer.Kick(0.1);
+		bulldozerKickToggle = !bulldozer.Kick(0.5);
 }
 
 /*==============================================================
