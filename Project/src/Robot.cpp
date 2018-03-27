@@ -115,17 +115,17 @@ void Robot::TeleopPeriodic()
 	// Use D-pad of controller to drive in basic directions
 	int controllerPOV = driveController.GetPOV();
 
-	if (controllerPOV == 315)
-	{
-		driveBase.Drive(0, speedTurtle);
-	}
-	else if (controllerPOV == 0)
+	if (controllerPOV == 0)
 	{
 		driveBase.Drive(speedTurtle);
 	}
 	else if (controllerPOV == 45)
 	{
 		driveBase.Drive(speedTurtle, 0);
+	}
+	else if (controllerPOV == 90)
+	{
+		driveBase.Drive(speedTurtle, -speedTurtle);
 	}
 	else if (controllerPOV == 135)
 	{
@@ -138,6 +138,14 @@ void Robot::TeleopPeriodic()
 	else if (controllerPOV == 225)
 	{
 		driveBase.Drive(-speedTurtle, 0);
+	}
+	else if (controllerPOV == 270)
+	{
+		driveBase.Drive(-speedTurtle, speedTurtle);
+	}
+	else if (controllerPOV == 315)
+	{
+		driveBase.Drive(0, speedTurtle);
 	}
 	else // No buttons on D-pad being pressed, use joysticks
 	{
