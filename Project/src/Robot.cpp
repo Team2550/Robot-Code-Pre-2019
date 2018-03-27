@@ -222,7 +222,7 @@ void Robot::UpdatePreferences()
 	speedNormal = prefs->GetFloat("SpeedNormal", 0.5f);
 	speedTurtle = prefs->GetFloat("SpeedTurtle", 0.25f);
 	speedBoost = prefs->GetFloat("SpeedBoost", 1.0f);
-	boostDecelerationTime = prefs->GetFloat("BoostDecelTime", 1.0f);
+	boostDecelerationTime = prefs->GetFloat("BoostDecelTime", 0.5f);
 	// Get specified delay for autonomous
 	frc::SmartDashboard::SetDefaultNumber("Auto Delay", 0);
 	autoDelay = frc::SmartDashboard::GetNumber("Auto Delay", 0);
