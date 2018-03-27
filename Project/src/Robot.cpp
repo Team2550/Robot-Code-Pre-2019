@@ -162,7 +162,7 @@ void Robot::TeleopPeriodic()
 			boostPressTime = timer.Get();
 		}
 		else if (timer.Get() < boostPressTime + boostDecelerationTime) // Deceleration from boost
-			baseSpeed = speedNormal + (speedBoost - speedNormal) * ((timer.Get() - boostPressTime) / boostDecelerationTime);
+			baseSpeed = speedBoost + (speedNormal - speedBoost) * ((timer.Get() - boostPressTime) / boostDecelerationTime);
 
 		driveBase.Drive(leftSpeed * baseSpeed,
 						rightSpeed * baseSpeed);
