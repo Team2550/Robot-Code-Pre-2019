@@ -17,14 +17,14 @@ void Clamp::ArmDown()
 	armSolenoid.Set(DoubleSolenoid::kForward);
 }
 
-void Clamp::Open()
-{
-	clampSolenoid.Set(DoubleSolenoid::kForward);
-}
-
 void Clamp::Close()
 {
 	clampSolenoid.Set(DoubleSolenoid::kReverse);
+}
+
+void Clamp::Open()
+{
+	clampSolenoid.Set(DoubleSolenoid::kForward);
 }
 
 bool Clamp::GetIsDown()

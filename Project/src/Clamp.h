@@ -10,8 +10,8 @@ public:
 
 	void ArmUp();
 	void ArmDown();
-	void Open();
 	void Close();
+	void Open();
 
 	bool GetIsDown();
 	bool GetIsOpen();
