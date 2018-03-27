@@ -31,7 +31,7 @@ void Bulldozer::Reset()
 	bulldozerSolenoid.Set(frc::DoubleSolenoid::kOff);
 	bulldozerDelay.Reset();
 	kickerLastState = UNKNOWN;
-	kickerSolenoid.Set(frc::DoubleSolenoid::kOff);
+	kickerSolenoid.Set(frc::DoubleSolenoid::kReverse);
 	kickerDelay.Reset();
 }
 
@@ -130,11 +130,18 @@ bool Bulldozer::Kick(double pauseTime)
 			kickerSolenoid.Set(frc::DoubleSolenoid::kReverse);
 		else
 		{
-			kickerSolenoid.Set(frc::DoubleSolenoid::kOff);
+			kickerSolenoid.Set(frc::DoubleSolenoid::kReverse);
 			kicking = false;
 			return true;
 		}
 	}
+
+	if (kickerSolenoid.Get() == DoubleSolenoid::kForward)
+		std::cout << "Forward\n";
+	else if (kickerSolenoid.Get() == DoubleSolenoid::kReverse)
+		std::cout << "Reverse\n";
+	else
+		std::cout << "Off\n";
 
 	return false;
 }

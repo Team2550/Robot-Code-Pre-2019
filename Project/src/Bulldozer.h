@@ -2,6 +2,7 @@
 #define BULLDOZER_H
 
 #include <WPILib.h>
+#include <iostream>
 
 class Bulldozer
 {
