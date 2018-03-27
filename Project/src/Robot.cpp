@@ -18,7 +18,9 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonBulldozerPulse = xbox::btn::lb;
 	buttonBulldozerKick = xbox::btn::a;
 
+	boostPressTime = -999;
 	bulldozerPulseToggle = false;
+	bulldozerKickToggle = false;
 
 	selectedAutoStrategy = NULL;
 
@@ -98,8 +100,11 @@ void Robot::TeleopInit()
 
 	driveBase.Stop();
 	driveBase.ResetDistance();
+	boostPressTime = -999;
 
 	bulldozer.Reset();
+	bulldozerPulseToggle = false;
+	bulldozerKickToggle = false;
 
 	timer.Reset();
 	timer.Start();
