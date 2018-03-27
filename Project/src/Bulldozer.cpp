@@ -17,7 +17,7 @@ Bulldozer::Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOu
 	kickTimer.Start();
 
 	bulldozerSolenoid.Set(DoubleSolenoid::kOff);
-	kickerSolenoid.Set(frc::DoubleSolenoid::kOff);
+	kickerSolenoid.Set(frc::DoubleSolenoid::kReverse);
 
 	isPulsing = false;
 	isKicking = false;
