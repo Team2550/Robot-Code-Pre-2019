@@ -8,7 +8,7 @@ Robot::Robot() : driveController(0), perifController(1),
                  ultrasonic(0, (5 / 4.88) * (1000 / 25.4), 1), // (5 mm / 4.88 mV) * (1/25.4 in/mm) * (1000 mV/V)
 				 gyroscope(frc::SPI::Port::kOnboardCS0),
 				 driveBase(0, 1, 0, 1, 2, 3, 6.07 * M_PI, 512), // Pulses per rotation is set by encoder DIP switch. 512 PPR uses DIP switch configuration 0001.
-				 bulldozer(0, 1, 4, 5, 0.5)
+				 bulldozer(0, 1, 2, 3, 0.5)
 {
 	axisTankLeft = xbox::axis::leftY;
 	axisTankRight = xbox::axis::rightY;
