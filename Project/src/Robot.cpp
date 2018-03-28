@@ -200,7 +200,7 @@ void Robot::TeleopPeriodic()
 	{
 		if (clamp.GetIsDown())
 			clamp.ArmUp();
-		else
+		else if (!bulldozer.GetIsExtended())
 			clamp.ArmDown();
 	}
 
@@ -208,7 +208,7 @@ void Robot::TeleopPeriodic()
 	{
 		if (clamp.GetIsOpen())
 			clamp.Close();
-		else if (!bulldozer.GetIsExtended())
+		else
 			clamp.Open();
 	}
 }
