@@ -17,7 +17,7 @@ Bulldozer::Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOu
 	kickTimer.Start();
 
 	bulldozerSolenoid.Set(DoubleSolenoid::kOff);
-	kickerSolenoid.Set(frc::DoubleSolenoid::kOff);
+	kickerSolenoid.Set(DoubleSolenoid::kReverse);
 
 	isPulsing = false;
 	isKicking = false;
@@ -88,6 +88,13 @@ bool Bulldozer::Kick(double waitTimeSec)
 		isKicking = false;
 		return true;
 	}
+
+	if (kickerSolenoid.Get() == DoubleSolenoid::kForward)
+		std::cout << "Forward\n";
+	else if (kickerSolenoid.Get() == DoubleSolenoid::kReverse)
+		std::cout << "Reverse\n";
+	else
+		std::cout << "Off\n";
 
 	return false;
 }

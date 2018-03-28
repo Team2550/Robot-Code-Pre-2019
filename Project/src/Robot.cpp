@@ -21,7 +21,9 @@ Robot::Robot() : driveController(0), perifController(1),
 	buttonArmToggle = xbox::btn::y;
 	buttonClampToggle = xbox::btn::x;
 
+	boostPressTime = -999;
 	bulldozerPulseToggle = false;
+	bulldozerKickToggle = false;
 
 	selectedAutoStrategy = NULL;
 
@@ -49,8 +51,8 @@ void Robot::AutonomousInit()
 
 	driveBase.Stop();
 
-	autoTimer.Reset();
-	autoTimer.Start();
+	timer.Reset();
+	timer.Start();
 
 	if (selectedAutoStrategy != NULL)
 	{
@@ -67,7 +69,7 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-	if (autoTimer.Get() >= autoDelay && !autoStrategyCompleted)
+	if (timer.Get() >= autoDelay && !autoStrategyCompleted)
 	{
 		std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
 		          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << ' '
@@ -79,7 +81,7 @@ void Robot::AutonomousPeriodic()
 
 		if (autoStrategyCompleted)
 		{
-			std::cout << "Finished at " << autoTimer.Get() << " seconds" << std::endl;
+			std::cout << "Finished at " << timer.Get() << " seconds" << std::endl;
 			std::cout << "Left: " << std::setw(5) << driveBase.GetLeftDistance() << ' '
 			          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << ' '
 					  << "Angle: " << std::setw(5) << gyroscope.GetAngle() << std::endl;
@@ -99,6 +101,13 @@ void Robot::TeleopInit()
 
 	driveBase.Stop();
 	driveBase.ResetDistance();
+	boostPressTime = -999;
+
+	bulldozerPulseToggle = false;
+	bulldozerKickToggle = false;
+
+	timer.Reset();
+	timer.Start();
 }
 
 void Robot::TeleopPeriodic()
@@ -107,19 +116,21 @@ void Robot::TeleopPeriodic()
 	          << "Right: " << std::setw(5) << driveBase.GetRightDistance() << ' '
 			  << "Angle: " << std::setw(5) << gyroscope.GetAngle() << std::endl;
 
+	// Drivebase
+	// Use D-pad of controller to drive in basic directions
 	int controllerPOV = driveController.GetPOV();
 
-	if (controllerPOV == 315)
-	{
-		driveBase.Drive(0, speedTurtle);
-	}
-	else if (controllerPOV == 0)
+	if (controllerPOV == 0)
 	{
 		driveBase.Drive(speedTurtle);
 	}
 	else if (controllerPOV == 45)
 	{
 		driveBase.Drive(speedTurtle, 0);
+	}
+	else if (controllerPOV == 90)
+	{
+		driveBase.Drive(speedTurtle, -speedTurtle);
 	}
 	else if (controllerPOV == 135)
 	{
@@ -133,17 +144,30 @@ void Robot::TeleopPeriodic()
 	{
 		driveBase.Drive(-speedTurtle, 0);
 	}
-	else
+	else if (controllerPOV == 270)
+	{
+		driveBase.Drive(-speedTurtle, speedTurtle);
+	}
+	else if (controllerPOV == 315)
+	{
+		driveBase.Drive(0, speedTurtle);
+	}
+	else // No buttons on D-pad being pressed, use joysticks
 	{
 		float leftSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankLeft));
 		float rightSpeed = Utility::Deadzone(-driveController.GetRawAxis(axisTankRight));
 
 		float baseSpeed = speedNormal;
 
-		if (driveController.GetRawButton(buttonTurtle))
+		if (driveController.GetRawButton(buttonTurtle)) // Turtle
 			baseSpeed = speedTurtle;
-		else if (driveController.GetRawButton(buttonBoost))
+		else if (driveController.GetRawButton(buttonBoost)) // Boost
+		{
 			baseSpeed = speedBoost;
+			boostPressTime = timer.Get();
+		}
+		else if (timer.Get() < boostPressTime + boostDecelerationTime) // Deceleration from boost
+			baseSpeed = speedBoost + (speedNormal - speedBoost) * ((timer.Get() - boostPressTime) / boostDecelerationTime);
 
 		driveBase.Drive(leftSpeed * baseSpeed,
 						rightSpeed * baseSpeed);
@@ -230,7 +254,7 @@ void Robot::UpdatePreferences()
 	speedNormal = prefs->GetFloat("SpeedNormal", 0.5f);
 	speedTurtle = prefs->GetFloat("SpeedTurtle", 0.25f);
 	speedBoost = prefs->GetFloat("SpeedBoost", 1.0f);
-
+	boostDecelerationTime = prefs->GetFloat("BoostDecelTime", 0.5f);
 	// Get specified delay for autonomous
 	frc::SmartDashboard::SetDefaultNumber("Auto Delay", 0);
 	autoDelay = frc::SmartDashboard::GetNumber("Auto Delay", 0);

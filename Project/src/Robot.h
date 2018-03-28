@@ -12,6 +12,7 @@
 #include "Clamp.h"
 #include "UltrasonicAnalog.h"
 #include "LimitSwitch.h"
+#include "Utility.h"
 
 class Robot: public IterativeRobot
 {
@@ -32,6 +33,7 @@ private:
 	float speedNormal;
 	float speedTurtle;
 	float speedBoost;
+	float boostDecelerationTime;
 
 	int axisTankLeft;
 	int axisTankRight;
@@ -43,6 +45,7 @@ private:
 	int buttonArmToggle;
 	int buttonClampToggle;
 
+	float boostPressTime;
 	bool bulldozerPulseToggle;
 	bool bulldozerKickToggle;
 
@@ -56,7 +59,7 @@ private:
 	Joystick driveController;
 	Joystick perifController;
 	AutoController autoController;
-	Timer autoTimer;
+	Timer timer;
 
 	UltrasonicAnalog ultrasonic;
 	ADXRS450_Gyro gyroscope;
