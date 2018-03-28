@@ -117,10 +117,12 @@ namespace AUTO_STRATEGIES
 		// Push block onto switch
 		{AutoController::RESET_DIST_0},
 		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
+		{AutoController::OPEN_CLAMP},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::EXTEND},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::KICK},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::RETRACT},
 		{AutoController::DRIVE_TO, SWITCH_DIST - ROBOT_LENGTH - 24, true, AUTO_DRIVE_SPEED},
 
@@ -132,7 +134,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED}, // Turn left
 		{AutoController::DRIVE_DIST, SWITCH_LENGTH, true, AUTO_BOOST_SPEED}, // Drive along length of switch
 	};
-	const AutoController::InstructionSet RIGHT_SWITCH_SAME_SIDE = {RIGHT_SWITCH_SAME_SIDE_STEPS, 14};
+	const AutoController::InstructionSet RIGHT_SWITCH_SAME_SIDE = {RIGHT_SWITCH_SAME_SIDE_STEPS, 16};
 
 	// Ownership of left side of switch
 	// Inner route
@@ -148,13 +150,15 @@ namespace AUTO_STRATEGIES
 
 		// Place block on switch
 		{AutoController::DRIVE_DIST, 55.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
+		{AutoController::OPEN_CLAMP},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::EXTEND},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::KICK},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet RIGHT_SWITCH_OTHER_SIDE_INNER = {RIGHT_SWITCH_OTHER_SIDE_INNER_STEPS, 12};
+	const AutoController::InstructionSet RIGHT_SWITCH_OTHER_SIDE_INNER = {RIGHT_SWITCH_OTHER_SIDE_INNER_STEPS, 14};
 
 	// Outer route
 	const AutoController::Instruction RIGHT_SWITCH_OTHER_SIDE_OUTER_STEPS[] =
@@ -173,13 +177,15 @@ namespace AUTO_STRATEGIES
 
 		// Place block on switch
 		{AutoController::DRIVE_DIST, 55.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
+		{AutoController::OPEN_CLAMP},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::EXTEND},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::KICK},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet RIGHT_SWITCH_OTHER_SIDE_OUTER = {RIGHT_SWITCH_OTHER_SIDE_OUTER_STEPS, 16};
+	const AutoController::InstructionSet RIGHT_SWITCH_OTHER_SIDE_OUTER = {RIGHT_SWITCH_OTHER_SIDE_OUTER_STEPS, 18};
 
 	const AutoController::PositionOptions RIGHT_SWITCH_INNER_OPTIONS = {&RIGHT_SWITCH_OTHER_SIDE_INNER, &RIGHT_SWITCH_SAME_SIDE};
 	const AutoController::PositionOptions RIGHT_SWITCH_OUTER_OPTIONS = {&RIGHT_SWITCH_OTHER_SIDE_OUTER, &RIGHT_SWITCH_SAME_SIDE};
@@ -198,13 +204,15 @@ namespace AUTO_STRATEGIES
 
 		// Place block on switch
 		{AutoController::DRIVE_DIST, SWITCH_DIST - ROBOT_LENGTH - EXCHANGE_DEPTH - 12 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
+		{AutoController::OPEN_CLAMP},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::EXTEND},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::KICK},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_INNER = {LEFT_SWITCH_OTHER_SIDE_INNER_STEPS, 10};
+	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_INNER = {LEFT_SWITCH_OTHER_SIDE_INNER_STEPS, 12};
 
 	// Outer route
 	const AutoController::Instruction LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS[] =
@@ -219,13 +227,15 @@ namespace AUTO_STRATEGIES
 
 		// Place block on switch
 		{AutoController::DRIVE_DIST, 55.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - 6 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
+		{AutoController::OPEN_CLAMP},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::EXTEND},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::KICK},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_OUTER = {LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS, 12};
+	const AutoController::InstructionSet LEFT_SWITCH_OTHER_SIDE_OUTER = {LEFT_SWITCH_OTHER_SIDE_OUTER_STEPS, 14};
 
 	// Ownership of left side of switch
 	const AutoController::Instruction LEFT_SWITCH_SAME_SIDE_STEPS[] =
@@ -236,13 +246,15 @@ namespace AUTO_STRATEGIES
 
 		// Place block on switch
 		{AutoController::DRIVE_DIST, 55.56 - ROBOT_WIDTH / 2 - ROBOT_LENGTH / 2 - AUTO_GAP_TO_SWITCH, true, AUTO_DRIVE_SPEED},
+		{AutoController::OPEN_CLAMP},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::EXTEND},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::KICK},
-		{AutoController::WAIT_TIME, 0.5},
+		{AutoController::WAIT_TIME, 0.25},
 		{AutoController::RETRACT}
 	};
-	const AutoController::InstructionSet LEFT_SWITCH_SAME_SIDE = {LEFT_SWITCH_SAME_SIDE_STEPS, 8};
+	const AutoController::InstructionSet LEFT_SWITCH_SAME_SIDE = {LEFT_SWITCH_SAME_SIDE_STEPS, 10};
 
 	const AutoController::PositionOptions LEFT_SWITCH_INNER_OPTIONS = {&LEFT_SWITCH_SAME_SIDE, &LEFT_SWITCH_OTHER_SIDE_INNER};
 	const AutoController::PositionOptions LEFT_SWITCH_OUTER_OPTIONS = {&LEFT_SWITCH_SAME_SIDE, &LEFT_SWITCH_OTHER_SIDE_OUTER};
