@@ -4,10 +4,11 @@ const float AUTO_STEER_STRENGTH = 1.3;
 const float STRAIGHT_DECEL_MULT = 90;
 const float ROTATE_DECEL_MULT = 100;
 
-AutoController::AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro* gyroscope)
+AutoController::AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Clamp* clamp, Gyro* gyroscope)
 {
 	this->driveBase = driveBase;
 	this->bulldozer = bulldozer;
+	this->clamp = clamp;
 	this->gyroscope = gyroscope;
 
 	instructionSet.steps = NULL;
@@ -98,6 +99,16 @@ bool AutoController::Execute()
 
 	case KICK:
 		bulldozerKicking = true;
+		instructionCompleted = true;
+		break;
+
+	case OPEN_CLAMP:
+		clamp->Open();
+		instructionCompleted = true;
+		break;
+
+	case CLOSE_CLAMP:
+		clamp->Close();
 		instructionCompleted = true;
 		break;
 

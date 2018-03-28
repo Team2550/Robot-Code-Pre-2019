@@ -5,6 +5,7 @@
 #include <iostream>
 #include "DriveBase.h"
 #include "Bulldozer.h"
+#include "Clamp.h"
 
 class AutoController
 {
@@ -21,7 +22,7 @@ public:
 	// RETRACT:			Begins retracting the bulldozer.
 	// KICK:			Activates the kicker piston on top of the bulldozer.
 	// 		Note: DRIVE_TO, DRIVE_DIST, ROTATE_TO, and ROTATE_DEG slow down on approach to target if 'stopAtTarget' is true.
-	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, EXTEND, RETRACT, KICK }; //, RESET_DIST_ULTRA  };
+	enum InstructionType { WAIT_UNTIL, WAIT_TIME, DRIVE_TO, DRIVE_DIST, ROTATE_TO, ROTATE_DEG, RESET_DIST_0, EXTEND, RETRACT, KICK, OPEN_CLAMP, CLOSE_CLAMP }; //, RESET_DIST_ULTRA  };
 
 	struct Instruction
 	{
@@ -44,7 +45,7 @@ public:
 		const InstructionSet* rightOption;
 	};
 
-	AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Gyro* gyroscope);
+	AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Clamp* clamp, Gyro* gyroscope);
 	~AutoController();
 
 	// Name:	Execute
@@ -60,6 +61,7 @@ public:
 private:
 	DriveBase* driveBase;
 	Bulldozer* bulldozer;
+	Clamp* clamp;
 	Gyro* gyroscope;
 
 	Timer timer;
