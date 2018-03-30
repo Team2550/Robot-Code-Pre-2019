@@ -50,6 +50,7 @@ void Robot::AutonomousInit()
 	UpdatePreferences();
 
 	driveBase.Stop();
+	clamp.Close();
 
 	timer.Reset();
 	timer.Start();
