@@ -50,6 +50,7 @@ void Robot::AutonomousInit()
 	UpdatePreferences();
 
 	driveBase.Stop();
+	bulldozer.Reset();
 	clamp.Close();
 
 	timer.Reset();
@@ -106,6 +107,7 @@ void Robot::TeleopInit()
 
 	bulldozerPulseToggle = false;
 	bulldozerKickToggle = false;
+	bulldozer.Reset();
 
 	timer.Reset();
 	timer.Start();

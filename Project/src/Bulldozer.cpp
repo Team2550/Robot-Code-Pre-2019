@@ -23,6 +23,12 @@ Bulldozer::Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOu
 	isKicking = false;
 }
 
+void Bulldozer::Reset()
+{
+	bulldozerSolenoid.Set(DoubleSolenoid::kOff);
+	kickerSolenoid.Set(DoubleSolenoid::kReverse);
+}
+
 void Bulldozer::Extend()
 {
 	isPulsing = false;

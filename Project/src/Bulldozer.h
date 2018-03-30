@@ -9,6 +9,8 @@ class Bulldozer
 public:
 	Bulldozer(int retractPort, int extendPort, int kickInPort, int kickOutPort);
 
+	void Reset();
+
 	void Extend();
 	void Retract();
 
