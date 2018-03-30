@@ -12,6 +12,7 @@ namespace AUTO_STRATEGIES
 
 	const float ROBOT_WIDTH = 37.5f; //1.25f; // Without bumpers
 	const float ROBOT_LENGTH = 30.0f; //24.0f;
+	const float BUMPER_THICKNESS = 3.25f;
 
 	const float PLAYER_STATION_WIDTH = 72.0f;
 	const float EXCHANGE_WIDTH = 48.0f;
@@ -143,7 +144,7 @@ namespace AUTO_STRATEGIES
 		// Drive around to left side of switch
 		{AutoController::DRIVE_DIST, EXCHANGE_DEPTH + 12, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH, true, AUTO_BOOST_SPEED},
+		{AutoController::DRIVE_DIST, 2 * PLAYER_STATION_WIDTH + EXCHANGE_WIDTH - ROBOT_WIDTH + BUMPER_THICKNESS, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH / 2 - ROBOT_LENGTH / 2 - EXCHANGE_DEPTH - 12, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, 90, true, AUTO_ROTATE_SPEED},
@@ -170,7 +171,7 @@ namespace AUTO_STRATEGIES
 		{AutoController::ROTATE_TO, 0, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, SWITCH_DIST + SWITCH_WIDTH - PLAYER_STATION_WIDTH, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, -90, true, AUTO_ROTATE_SPEED},
-		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH, true, AUTO_BOOST_SPEED},
+		{AutoController::DRIVE_DIST, BACK_WALL_WIDTH - ROBOT_WIDTH + BUMPER_THICKNESS, true, AUTO_BOOST_SPEED},
 		{AutoController::ROTATE_TO, -180, true, AUTO_ROTATE_SPEED},
 		{AutoController::DRIVE_DIST, SWITCH_WIDTH / 2 + ROBOT_LENGTH / 2 + 24, true, AUTO_DRIVE_SPEED},
 		{AutoController::ROTATE_TO, -270, true, AUTO_ROTATE_SPEED},
