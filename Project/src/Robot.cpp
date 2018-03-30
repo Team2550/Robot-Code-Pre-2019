@@ -42,7 +42,7 @@ void Robot::RobotInit()
 	std::cout << "Gyro calibrated" << std::endl;
 
 	// Start Video Stream
-	CameraServer::GetInstance()->StartAutomaticCapture();
+	//CameraServer::GetInstance()->StartAutomaticCapture();
 }
 
 void Robot::AutonomousInit()
