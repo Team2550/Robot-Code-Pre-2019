@@ -190,7 +190,10 @@ void Robot::TeleopPeriodic()
 
 	// Kicker
 	if (perifController.GetRawButton(buttonBulldozerKick))
+	{
 		bulldozerKickToggle = true;
+		clamp.Open();
+	}
 
 	if (bulldozerKickToggle)
 		bulldozerKickToggle = !bulldozer.Kick(0.5);
