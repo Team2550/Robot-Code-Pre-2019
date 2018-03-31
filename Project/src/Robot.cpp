@@ -44,7 +44,6 @@ void Robot::RobotInit()
 	// Start Video Stream
 	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
 	camera.SetResolution(320, 240);
-	camera.SetFPS(30);
 }
 
 void Robot::AutonomousInit()
