@@ -4,8 +4,6 @@
 #include <WPILib.h>
 #include <iostream>
 #include "DriveBase.h"
-#include "Bulldozer.h"
-#include "Clamp.h"
 
 class AutoController
 {
@@ -60,8 +58,6 @@ public:
 
 private:
 	DriveBase* driveBase;
-	Bulldozer* bulldozer;
-	Clamp* clamp;
 	Gyro* gyroscope;
 
 	Timer timer;

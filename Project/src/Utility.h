@@ -1,5 +1,12 @@
-#ifndef UTILITY_H
-#define UTILITY_H
+/*
+ * Utility.h
+ *
+ *  Created on: Nov 13, 2018
+ *      Author: Brayton Kerekffy
+ */
+
+#ifndef UTILITY_H_
+#define UTILITY_H_
 
 #include <WPILib.h>
 #include <math.h>
@@ -59,4 +66,7 @@ namespace Utility
 
 }
 
-#endif
+
+
+
+#endif /* SRC_UTILITY_H_ */

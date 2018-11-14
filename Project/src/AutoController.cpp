@@ -4,11 +4,9 @@ const float AUTO_STEER_STRENGTH = 1.3;
 const float STRAIGHT_DECEL_MULT = 90;
 const float ROTATE_DECEL_MULT = 100;
 
-AutoController::AutoController(DriveBase* driveBase, Bulldozer* bulldozer, Clamp* clamp, Gyro* gyroscope)
+AutoController::AutoController(DriveBase* driveBase, Gyro* gyroscope)
 {
 	this->driveBase = driveBase;
-	this->bulldozer = bulldozer;
-	this->clamp = clamp;
 	this->gyroscope = gyroscope;
 
 	instructionSet.steps = NULL;

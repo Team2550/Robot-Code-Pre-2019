@@ -1,3 +1,10 @@
+/*
+ * xBox.h
+ *
+ *  Created on: Nov 13, 2018
+ *      Author: Brayton Kerekffy
+ */
+
 #ifndef XBOX_H
 #define XBOX_H
 
@@ -35,4 +42,7 @@ namespace xbox
 	}
 }
 
-#endif
+
+
+
+#endif /* SRC_XBOX_H_ */
